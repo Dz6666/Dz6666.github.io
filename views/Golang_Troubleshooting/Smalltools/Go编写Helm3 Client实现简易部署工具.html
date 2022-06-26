@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Go编写Helm3 Client实现简易部署工具 | SRE运维充电站</title>
+    <meta name="generator" content="VuePress 1.9.7">
+    <link rel="icon" href="/images/favicon.svg">
+    <script>var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?668842dc21c1b8f215b000531ec8f69e";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();</script>
+    <meta name="description" content="这个杀手不太冷">
+    <meta name="baidu_union_verify" content="a0036ccf0b657813fb236f80f376c429">
+    <meta name="Keywords" content="Devops代哲,SRE运维充电站,pyenv.cc,Brains">
+    <meta name="author" content="Devops代哲,SRE运维充电站,pyenv.cc,Brains">
+    
+    <link rel="preload" href="/assets/css/0.styles.938d6ff2.css" as="style"><link rel="preload" href="/assets/js/app.cd5fa041.js" as="script"><link rel="preload" href="/assets/js/3.ee7e7098.js" as="script"><link rel="preload" href="/assets/js/1.277d6ebc.js" as="script"><link rel="preload" href="/assets/js/27.aaaa8f8c.js" as="script"><link rel="prefetch" href="/assets/js/10.d3b54896.js"><link rel="prefetch" href="/assets/js/11.f4bb5601.js"><link rel="prefetch" href="/assets/js/12.ed610cd8.js"><link rel="prefetch" href="/assets/js/13.3a9eb8fa.js"><link rel="prefetch" href="/assets/js/14.b6ae182d.js"><link rel="prefetch" href="/assets/js/15.db6f82c2.js"><link rel="prefetch" href="/assets/js/16.3d5e10b6.js"><link rel="prefetch" href="/assets/js/17.471efd1e.js"><link rel="prefetch" href="/assets/js/18.832fe344.js"><link rel="prefetch" href="/assets/js/19.b59cbfac.js"><link rel="prefetch" href="/assets/js/20.472c4b66.js"><link rel="prefetch" href="/assets/js/21.800f456d.js"><link rel="prefetch" href="/assets/js/22.ffd207bc.js"><link rel="prefetch" href="/assets/js/23.323321ef.js"><link rel="prefetch" href="/assets/js/24.b9a5f746.js"><link rel="prefetch" href="/assets/js/25.60904ca4.js"><link rel="prefetch" href="/assets/js/26.fad8d09c.js"><link rel="prefetch" href="/assets/js/28.d65a84c8.js"><link rel="prefetch" href="/assets/js/29.ce7bd2fb.js"><link rel="prefetch" href="/assets/js/30.f2c39de0.js"><link rel="prefetch" href="/assets/js/31.f02ef496.js"><link rel="prefetch" href="/assets/js/32.0889c36c.js"><link rel="prefetch" href="/assets/js/33.7b2efadd.js"><link rel="prefetch" href="/assets/js/34.4ff3296a.js"><link rel="prefetch" href="/assets/js/35.6b05b4ad.js"><link rel="prefetch" href="/assets/js/36.4322a33f.js"><link rel="prefetch" href="/assets/js/37.73e5620d.js"><link rel="prefetch" href="/assets/js/38.6e6461a9.js"><link rel="prefetch" href="/assets/js/39.0b0071eb.js"><link rel="prefetch" href="/assets/js/4.6d9bb9fb.js"><link rel="prefetch" href="/assets/js/40.692bdf78.js"><link rel="prefetch" href="/assets/js/41.66cfe668.js"><link rel="prefetch" href="/assets/js/42.1b912be2.js"><link rel="prefetch" href="/assets/js/43.116e6cb6.js"><link rel="prefetch" href="/assets/js/44.00d176ef.js"><link rel="prefetch" href="/assets/js/45.06d1d798.js"><link rel="prefetch" href="/assets/js/46.43bfeb5c.js"><link rel="prefetch" href="/assets/js/47.735867da.js"><link rel="prefetch" href="/assets/js/48.12a1df49.js"><link rel="prefetch" href="/assets/js/5.99213a31.js"><link rel="prefetch" href="/assets/js/6.7a0b7b07.js"><link rel="prefetch" href="/assets/js/7.356b6533.js"><link rel="prefetch" href="/assets/js/8.9f6a6c22.js"><link rel="prefetch" href="/assets/js/9.832ff77d.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.938d6ff2.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container no-sidebar" data-v-130b300a><div data-v-130b300a><div class="password-shadow password-wrapper-out" style="display:none;" data-v-25ba6db2 data-v-130b300a data-v-130b300a><h3 class="title" data-v-25ba6db2 data-v-25ba6db2>SRE运维充电站</h3> <p class="description" data-v-25ba6db2 data-v-25ba6db2>这个杀手不太冷</p> <label id="box" class="inputBox" data-v-25ba6db2 data-v-25ba6db2><input type="password" value="" data-v-25ba6db2> <span data-v-25ba6db2>Konck! Knock!</span> <button data-v-25ba6db2>OK</button></label> <div class="footer" data-v-25ba6db2 data-v-25ba6db2><span data-v-25ba6db2><i class="iconfont reco-theme" data-v-25ba6db2></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-25ba6db2>vuePress-theme-reco</a></span> <span data-v-25ba6db2><i class="iconfont reco-copyright" data-v-25ba6db2></i> <a data-v-25ba6db2><span data-v-25ba6db2>Brains</span>
+            
+          <!---->
+          2022
+        </a></span></div></div> <div class="hide" data-v-130b300a><header class="navbar" data-v-130b300a><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><img src="/images/favicon.svg" alt="SRE运维充电站" class="logo"> <span class="site-name">SRE运维充电站</span></a> <div class="links"><div class="color-picker"><a class="color-button"><i class="iconfont reco-color"></i></a> <div class="color-picker-menu" style="display:none;"><div class="mode-options"><h4 class="title">Choose mode</h4> <ul class="color-mode-options"><li class="dark">dark</li><li class="auto active">auto</li><li class="light">light</li></ul></div></div></div> <div class="search-box"><i class="iconfont reco-search"></i> <input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link"><i class="iconfont reco-home"></i>
+  主页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-category"></i>
+      分类
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/categories/HTML/" class="nav-link"><i class="undefined"></i>
+  HTML
+</a></li><li class="dropdown-item"><!----> <a href="/categories/JavaScript/" class="nav-link"><i class="undefined"></i>
+  JavaScript
+</a></li><li class="dropdown-item"><!----> <a href="/categories/CSS/" class="nav-link"><i class="undefined"></i>
+  CSS
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Go/" class="nav-link"><i class="undefined"></i>
+  Go
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Docker/" class="nav-link"><i class="undefined"></i>
+  Docker
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Kubernetes/" class="nav-link"><i class="undefined"></i>
+  Kubernetes
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Monitoring/" class="nav-link"><i class="undefined"></i>
+  Monitoring
+</a></li><li class="dropdown-item"><!----> <a href="/categories/ServiceMesh/" class="nav-link"><i class="undefined"></i>
+  ServiceMesh
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Vue/" class="nav-link"><i class="undefined"></i>
+  Vue
+</a></li></ul></div></div><div class="nav-item"><a href="/tag/" class="nav-link"><i class="iconfont reco-tag"></i>
+  标签
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont icon-tools"></i>
+      工具箱
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="https://www.uupoop.com/" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="undefined"></i>
+  在线PS
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://cowtransfer.com/" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="undefined"></i>
+  奶牛快传
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://www.tiobe.com/tiobe-index/" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="undefined"></i>
+  编程语言排行榜
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div></div><div class="nav-item"><a href="/timeline/" class="nav-link"><i class="iconfont reco-date"></i>
+  时间线
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-message"></i>
+      关于
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/views/About/resume.html" class="nav-link"><i class="iconfont reco-document"></i>
+  简历
+</a></li><li class="dropdown-item"><!----> <a href="https://blog.csdn.net/weixin_41989934" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-csdn"></i>
+  CSDN
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://github.com/Dz6666" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-github"></i>
+  GitHub
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://gitee.com/Dz6666" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-mayun"></i>
+  Gitee
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div></div> <!----></nav></div></header> <div class="sidebar-mask" data-v-130b300a></div> <aside class="sidebar" data-v-130b300a><div class="personal-info-wrapper" data-v-39576ba9 data-v-130b300a><img src="/images/head_portrait.svg" alt="author-avatar" class="personal-img" data-v-39576ba9> <h3 class="name" data-v-39576ba9>
+    Brains
+  </h3> <div class="num" data-v-39576ba9><div data-v-39576ba9><h3 data-v-39576ba9>30</h3> <h6 data-v-39576ba9>Articles</h6></div> <div data-v-39576ba9><h3 data-v-39576ba9>16</h3> <h6 data-v-39576ba9>Tags</h6></div></div> <ul class="social-links" data-v-39576ba9></ul> <hr data-v-39576ba9></div> <nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link"><i class="iconfont reco-home"></i>
+  主页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-category"></i>
+      分类
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/categories/HTML/" class="nav-link"><i class="undefined"></i>
+  HTML
+</a></li><li class="dropdown-item"><!----> <a href="/categories/JavaScript/" class="nav-link"><i class="undefined"></i>
+  JavaScript
+</a></li><li class="dropdown-item"><!----> <a href="/categories/CSS/" class="nav-link"><i class="undefined"></i>
+  CSS
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Go/" class="nav-link"><i class="undefined"></i>
+  Go
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Docker/" class="nav-link"><i class="undefined"></i>
+  Docker
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Kubernetes/" class="nav-link"><i class="undefined"></i>
+  Kubernetes
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Monitoring/" class="nav-link"><i class="undefined"></i>
+  Monitoring
+</a></li><li class="dropdown-item"><!----> <a href="/categories/ServiceMesh/" class="nav-link"><i class="undefined"></i>
+  ServiceMesh
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Vue/" class="nav-link"><i class="undefined"></i>
+  Vue
+</a></li></ul></div></div><div class="nav-item"><a href="/tag/" class="nav-link"><i class="iconfont reco-tag"></i>
+  标签
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont icon-tools"></i>
+      工具箱
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="https://www.uupoop.com/" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="undefined"></i>
+  在线PS
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://cowtransfer.com/" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="undefined"></i>
+  奶牛快传
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://www.tiobe.com/tiobe-index/" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="undefined"></i>
+  编程语言排行榜
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div></div><div class="nav-item"><a href="/timeline/" class="nav-link"><i class="iconfont reco-date"></i>
+  时间线
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-message"></i>
+      关于
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/views/About/resume.html" class="nav-link"><i class="iconfont reco-document"></i>
+  简历
+</a></li><li class="dropdown-item"><!----> <a href="https://blog.csdn.net/weixin_41989934" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-csdn"></i>
+  CSDN
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://github.com/Dz6666" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-github"></i>
+  GitHub
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://gitee.com/Dz6666" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-mayun"></i>
+  Gitee
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div></div> <!----></nav> <!----> </aside> <div class="password-shadow password-wrapper-in" style="display:none;" data-v-25ba6db2 data-v-130b300a><h3 class="title" data-v-25ba6db2 data-v-25ba6db2>Go编写Helm3 Client实现简易部署工具</h3> <!----> <label id="box" class="inputBox" data-v-25ba6db2 data-v-25ba6db2><input type="password" value="" data-v-25ba6db2> <span data-v-25ba6db2>Konck! Knock!</span> <button data-v-25ba6db2>OK</button></label> <div class="footer" data-v-25ba6db2 data-v-25ba6db2><span data-v-25ba6db2><i class="iconfont reco-theme" data-v-25ba6db2></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-25ba6db2>vuePress-theme-reco</a></span> <span data-v-25ba6db2><i class="iconfont reco-copyright" data-v-25ba6db2></i> <a data-v-25ba6db2><span data-v-25ba6db2>Brains</span>
+            
+          <!---->
+          2022
+        </a></span></div></div> <div data-v-130b300a><main class="page"><section><div class="page-title"><h1 class="title">Go编写Helm3 Client实现简易部署工具</h1> <div data-v-f875f3fc><i class="iconfont reco-account" data-v-f875f3fc><span data-v-f875f3fc>Brains</span></i> <i class="iconfont reco-date" data-v-f875f3fc><span data-v-f875f3fc>1/16/2022</span></i> <i class="iconfont reco-eye" data-v-f875f3fc><span id="/views/Golang_Troubleshooting/Smalltools/Go%E7%BC%96%E5%86%99Helm3%20Client%E5%AE%9E%E7%8E%B0%E7%AE%80%E6%98%93%E9%83%A8%E7%BD%B2%E5%B7%A5%E5%85%B7.html" data-flag-title="Your Article Title" class="leancloud-visitors" data-v-f875f3fc><a class="leancloud-visitors-count" style="font-size:.9rem;font-weight:normal;color:#999;"></a></span></i> <i class="tags iconfont reco-tag" data-v-f875f3fc><span class="tag-item" data-v-f875f3fc>Go-Smalltools</span></i></div></div> <div class="theme-reco-content content__default"><div class="custom-block tip"><p class="title"></p><p><img src="https://atlas.pingcode.com/files/public/62309e2fdc11ad87e4cb243c" alt="image.png"></p></div> <p></p><div class="table-of-contents"><ul><li><a href="#helm-sh使用自定义charts部署release">helm.sh使用自定义charts部署release</a></li><li><a href="#client-go-资源获取">client-go - 资源获取</a></li><li><a href="#helm3-client工具">Helm3 Client工具</a><ul><li><a href="#部署功能">部署功能</a></li><li><a href="#部署及资源watch功能">部署及资源Watch功能</a></li></ul></li></ul></div><p></p> <h2 id="helm-sh使用自定义charts部署release"><a href="#helm-sh使用自定义charts部署release" class="header-anchor">#</a> helm.sh使用自定义charts部署release</h2> <blockquote><p>SKD ：  https://pkg.go.dev/helm.sh/helm/v3@v3.7.2/pkg/action</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;log&quot;
+    &quot;os&quot;
+    &quot;helm.sh/helm/v3/pkg/action&quot;
+    &quot;helm.sh/helm/v3/pkg/chart/loader&quot;
+    &quot;helm.sh/helm/v3/pkg/cli&quot;
+)
+
+func main() {
+    chartPath := &quot;./charts.tgz&quot;
+    namespace := &quot;default&quot;
+    releaseName := &quot;main-sky-beta&quot;
+
+    settings := cli.New()
+
+    actionConfig := new(action.Configuration)
+    // You can pass an empty string instead of settings.Namespace() to list
+    // all namespaces
+    if err := actionConfig.Init(settings.RESTClientGetter(), namespace,
+        os.Getenv(&quot;HELM_DRIVER&quot;), log.Printf); err != nil {
+        log.Printf(&quot;%+v&quot;, err)
+        os.Exit(1)
+    }
+
+    // define values
+    vals := map[string]interface{}{
+        &quot;namespace&quot;:    namespace,
+        &quot;replicaCount&quot;: &quot;1&quot;,
+        &quot;image&quot;: map[string]interface{}{
+            &quot;name&quot;:       &quot;image&quot;,
+            &quot;pullPolicy&quot;: &quot;IfNotPresent&quot;,
+        },
+        &quot;nameOverride&quot;:     releaseName,
+        &quot;fullnameOverride&quot;: releaseName,
+        &quot;service&quot;: map[string]interface{}{
+            &quot;type&quot;: &quot;ClusterIP&quot;,
+            &quot;port&quot;: &quot;8080&quot;,
+        },
+        &quot;hostAliases&quot;: map[string]interface{}{
+            &quot;hostAliasesSet&quot;: false,
+            &quot;hostAliasesMap&quot;: &quot;&quot;,
+        },
+        &quot;imagePull&quot;: map[string]interface{}{
+            &quot;secretsSet&quot;: true,
+            &quot;secrets&quot;:    &quot;secret-harbor&quot;,
+        },
+        &quot;envConfig&quot;: map[string]interface{}{
+            &quot;configSet&quot;: false,
+            &quot;config&quot;:    &quot;&quot;,
+        },
+        &quot;resources&quot;: map[string]interface{}{
+            &quot;resourcesSet&quot;: false,
+            &quot;requests&quot;: map[string]interface{}{
+                &quot;memory&quot;: &quot;&quot;,
+                &quot;cpu&quot;:    &quot;&quot;,
+            },
+            &quot;limits&quot;: map[string]interface{}{
+                &quot;memory&quot;: &quot;&quot;,
+                &quot;cpu&quot;:    &quot;&quot;,
+            },
+            &quot;affinity&quot;: map[string]interface{}{
+                &quot;affinitySet&quot;: false,
+                &quot;key&quot;:         &quot;&quot;,
+                &quot;operator&quot;:    &quot;In&quot;,
+                &quot;values&quot;:      &quot;&quot;,
+            },
+            &quot;tolerations&quot;: map[string]interface{}{
+                &quot;tolerationsSet&quot;: false,
+                &quot;key&quot;:            &quot;__TOLERATIONS_KEY__&quot;,
+                &quot;operator&quot;:       &quot;Equal&quot;,
+                &quot;value&quot;:          &quot;__TOLERATIONS_VALUE__&quot;,
+                &quot;effect&quot;:         &quot;NoSchedule&quot;,
+            },
+            &quot;livenessProbe&quot;: map[string]interface{}{
+                &quot;livenessGetSet&quot;:     false,
+                &quot;livenessGet&quot;:        &quot;__LIVENESS_GET__&quot;,
+                &quot;livenessCommandSet&quot;: false,
+                &quot;livenessCommand&quot;:    &quot;__LIVENESS_COMMAND__&quot;,
+            },
+            &quot;command&quot;: map[string]interface{}{
+                &quot;commandSet&quot;:   false,
+                &quot;startCommand&quot;: &quot;__COMMAND__&quot;,
+            },
+            &quot;AnnoTations&quot;: map[string]interface{}{
+                &quot;AnnoTationSet&quot;: false,
+            },
+        },
+    }
+
+    // load chart from the path
+    chart, err := loader.Load(chartPath)
+    if err != nil {
+        fmt.Println(err)
+        panic(err)
+    }
+
+    client := action.NewInstall(actionConfig)
+    client.Namespace = namespace
+    client.ReleaseName = releaseName
+    // client.DryRun = true - very handy!
+
+    // install the chart here
+    rel, err := client.Run(chart, vals)
+    if err != nil {
+        panic(err)
+    }
+
+    log.Printf(&quot;Installed Chart from path: %s in namespace: %s\n&quot;, rel.Name, rel.Namespace)
+    // this will confirm the values set during installation
+    log.Println(rel.Config)
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br><span class="line-number">64</span><br><span class="line-number">65</span><br><span class="line-number">66</span><br><span class="line-number">67</span><br><span class="line-number">68</span><br><span class="line-number">69</span><br><span class="line-number">70</span><br><span class="line-number">71</span><br><span class="line-number">72</span><br><span class="line-number">73</span><br><span class="line-number">74</span><br><span class="line-number">75</span><br><span class="line-number">76</span><br><span class="line-number">77</span><br><span class="line-number">78</span><br><span class="line-number">79</span><br><span class="line-number">80</span><br><span class="line-number">81</span><br><span class="line-number">82</span><br><span class="line-number">83</span><br><span class="line-number">84</span><br><span class="line-number">85</span><br><span class="line-number">86</span><br><span class="line-number">87</span><br><span class="line-number">88</span><br><span class="line-number">89</span><br><span class="line-number">90</span><br><span class="line-number">91</span><br><span class="line-number">92</span><br><span class="line-number">93</span><br><span class="line-number">94</span><br><span class="line-number">95</span><br><span class="line-number">96</span><br><span class="line-number">97</span><br><span class="line-number">98</span><br><span class="line-number">99</span><br><span class="line-number">100</span><br><span class="line-number">101</span><br><span class="line-number">102</span><br><span class="line-number">103</span><br><span class="line-number">104</span><br><span class="line-number">105</span><br><span class="line-number">106</span><br><span class="line-number">107</span><br><span class="line-number">108</span><br><span class="line-number">109</span><br><span class="line-number">110</span><br><span class="line-number">111</span><br><span class="line-number">112</span><br><span class="line-number">113</span><br><span class="line-number">114</span><br></div></div><h2 id="client-go-资源获取"><a href="#client-go-资源获取" class="header-anchor">#</a> client-go - 资源获取</h2> <blockquote><p>SDK ： https://pkg.go.dev/k8s.io/api@v0.22.4</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>package main
+
+import (
+    &quot;context&quot;
+    &quot;fmt&quot;
+    &quot;log&quot;
+    &quot;time&quot;
+    v1 &quot;k8s.io/api/core/v1&quot;
+    metav1 &quot;k8s.io/apimachinery/pkg/apis/meta/v1&quot;
+    &quot;k8s.io/client-go/kubernetes&quot;
+    &quot;k8s.io/client-go/tools/clientcmd&quot;
+)
+
+func list() {
+    // config 
+    configPath := &quot;etc/kube.conf&quot;
+    config, err := clientcmd.BuildConfigFromFlags(&quot;&quot;, configPath)
+    if err != nil {
+        log.Fatal(err)
+    }
+    clientSet, err := kubernetes.NewForConfig(config)
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    // 查看Node信息
+    fmt.Println(&quot;*****************************************************************&quot;)
+    nodeList, err := clientSet.CoreV1().Nodes().List(context.TODO(), metav1.ListOptions{})
+    if err != nil {
+        log.Fatal(err)
+    }
+    for _, node := range nodeList.Items {
+        fmt.Printf(&quot;%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s,\n&quot;,
+            node.Name,
+            node.Status.Phase,
+            node.Status.Addresses,
+            node.Status.NodeInfo.OSImage,
+            node.Status.NodeInfo.KubeletVersion,
+            node.Status.NodeInfo.OperatingSystem,
+            node.Status.NodeInfo.Architecture,
+            node.CreationTimestamp,
+        )
+    }
+
+    // 查看Namespace
+    fmt.Println(&quot;*****************************************************************&quot;)
+    namespaceList, err := clientSet.CoreV1().Namespaces().List(context.TODO(), metav1.ListOptions{})
+    if err != nil {
+        log.Fatal(err)
+    }
+    for _, namespace := range namespaceList.Items {
+        fmt.Println(namespace.Name, namespace.CreationTimestamp, namespace.Status.Phase)
+    }
+
+    // 查看Service
+    fmt.Println(&quot;*****************************************************************&quot;)
+    // Services(&quot;&quot;) 传递指定的namespace
+    serviceList, err := clientSet.CoreV1().Services(&quot;&quot;).List(context.TODO(), metav1.ListOptions{})
+    if err != nil {
+        log.Fatal(err)
+    }
+    for _, service := range serviceList.Items {
+        fmt.Println(service.Name, service.Spec.Type, service.CreationTimestamp, service.Spec.Ports)
+    }
+
+    // 查看deployment
+    fmt.Println(&quot;*****************************************************************&quot;)
+    // Deployments(&quot;&quot;) 传递指定的namespace
+    deploymentList, err := clientSet.AppsV1().Deployments(&quot;&quot;).List(context.TODO(), metav1.ListOptions{})
+    if err != nil {
+        log.Fatal(err)
+    }
+    for _, deployment := range deploymentList.Items {
+        fmt.Println(deployment.Namespace, deployment.Name, deployment.CreationTimestamp, deployment.Spec.Selector.MatchLabels, deployment.Status.Replicas, deployment.Status.AvailableReplicas)
+    }
+
+    // Watch deployment 资源变动
+    fmt.Println(&quot;*****************************************************************&quot;)
+    deploymentListW, errw := clientSet.AppsV1().Deployments(&quot;default&quot;).Watch(context.TODO(), metav1.ListOptions{Watch: true, LabelSelector: &quot;app=demoappv10&quot;})
+    if errw != nil {
+        log.Fatal(err)
+    }
+    for event := range deploymentListW.ResultChan() {
+        fmt.Printf(&quot;Type: %v\n&quot;, event.Type)
+        p, ok := event.Object.(*v1.Pod)
+        if !ok {
+            log.Fatal(&quot;unexpected type&quot;)
+        }
+        fmt.Println(p.Status.ContainerStatuses)
+        fmt.Println(p.Status.Phase)
+    }
+
+    // Watch Pod 资源变动
+    fmt.Println(&quot;*****************************************************************&quot;)
+    label := &quot;app=demoapp&quot;
+    podListW, errw := clientSet.CoreV1().Pods(&quot;default&quot;).Watch(context.TODO(), metav1.ListOptions{LabelSelector: label})
+    if errw != nil {
+        log.Fatal(err)
+    }
+    go func() {
+        for event := range podListW.ResultChan() {
+            fmt.Printf(&quot;Type: %v\n&quot;, event.Type)
+            p, ok := event.Object.(*v1.Pod)
+            if !ok {
+                log.Fatal(&quot;unexpected type&quot;)
+            }
+            fmt.Println(p.Status.ContainerStatuses)
+            fmt.Println(p.Status.Phase)
+        }
+    }()
+    time.Sleep(5 * time.Second)
+}
+
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br><span class="line-number">64</span><br><span class="line-number">65</span><br><span class="line-number">66</span><br><span class="line-number">67</span><br><span class="line-number">68</span><br><span class="line-number">69</span><br><span class="line-number">70</span><br><span class="line-number">71</span><br><span class="line-number">72</span><br><span class="line-number">73</span><br><span class="line-number">74</span><br><span class="line-number">75</span><br><span class="line-number">76</span><br><span class="line-number">77</span><br><span class="line-number">78</span><br><span class="line-number">79</span><br><span class="line-number">80</span><br><span class="line-number">81</span><br><span class="line-number">82</span><br><span class="line-number">83</span><br><span class="line-number">84</span><br><span class="line-number">85</span><br><span class="line-number">86</span><br><span class="line-number">87</span><br><span class="line-number">88</span><br><span class="line-number">89</span><br><span class="line-number">90</span><br><span class="line-number">91</span><br><span class="line-number">92</span><br><span class="line-number">93</span><br><span class="line-number">94</span><br><span class="line-number">95</span><br><span class="line-number">96</span><br><span class="line-number">97</span><br><span class="line-number">98</span><br><span class="line-number">99</span><br><span class="line-number">100</span><br><span class="line-number">101</span><br><span class="line-number">102</span><br><span class="line-number">103</span><br><span class="line-number">104</span><br><span class="line-number">105</span><br><span class="line-number">106</span><br><span class="line-number">107</span><br><span class="line-number">108</span><br><span class="line-number">109</span><br><span class="line-number">110</span><br><span class="line-number">111</span><br><span class="line-number">112</span><br><span class="line-number">113</span><br></div></div><h2 id="helm3-client工具"><a href="#helm3-client工具" class="header-anchor">#</a> Helm3 Client工具</h2> <h3 id="部署功能"><a href="#部署功能" class="header-anchor">#</a> 部署功能</h3> <ul><li>server</li></ul> <blockquote><p>实现 helm upgrade --install 功能的逻辑：</p> <p>由于helm.sh SDK未直接提供 upgrade --install  的方法，所以需要自行使用 NewHistory 获取release是否存在，若存在则调用 NewUpgrade 方法，若不存在则调用 NewInstall 方法；</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>package main
+
+import (
+    &quot;encoding/json&quot;
+    &quot;fmt&quot;
+    &quot;log&quot;
+    &quot;os&quot;
+    &quot;io/ioutil&quot;
+    &quot;net/http&quot;
+    &quot;helm.sh/helm/v3/pkg/action&quot;
+    &quot;helm.sh/helm/v3/pkg/chart/loader&quot;
+    &quot;helm.sh/helm/v3/pkg/cli&quot;
+    &quot;helm.sh/helm/v3/pkg/cli/output&quot;
+    &quot;helm.sh/helm/v3/pkg/storage/driver&quot;
+)
+
+var tmp string
+var outfmt output.Format
+
+type Image struct {
+    Name       string `json:&quot;name&quot;`
+    PullPolicy string `json:&quot;pullPolicy&quot;`
+}
+
+type Service struct {
+    Type string `json:&quot;type&quot;`
+    Port string `json:&quot;port&quot;`
+}
+
+type HostAliases struct {
+    HostAliasesSet bool `json:&quot;hostAliasesSet&quot;`
+    // HostAliasesMap map[string]interface{} `json:&quot;hostAliasesMap&quot;`
+    HostAliasesMap string `json:&quot;hostAliasesMap&quot;`
+}
+
+type ImagePull struct {
+    SecretsSet bool   `json:&quot;secretsSet&quot;`
+    Secrets    string `json:&quot;secrets&quot;`
+}
+
+type EnvConfig struct {
+    ConfigSet bool   `json:&quot;configSet&quot;`
+    Config    string `json:&quot;config&quot;`
+}
+
+type Requests struct {
+    Memory string `json:&quot;memory&quot;`
+    Cpu    string `json:&quot;cpu&quot;`
+}
+type Limits struct {
+    Memory string `json:&quot;memory&quot;`
+    Cpu    string `json:&quot;cpu&quot;`
+}
+type Resources struct {
+    ResourcesSet bool      `json:&quot;resourcesSet&quot;`
+    Requests     *Requests `json:&quot;requests&quot;`
+    Limits       *Limits   `json:&quot;limits&quot;`
+}
+
+type Affinity struct {
+    AffinitySet bool   `json:&quot;affinitySet&quot;`
+    Key         string `json:&quot;key&quot;`
+    Operator    string `json:&quot;operator&quot;`
+    Values      string `json:&quot;values&quot;`
+}
+
+type Tolerations struct {
+    TolerationsSet bool   `json:&quot;tolerationsSet&quot;`
+    Key            string `json:&quot;key&quot;`
+    Operator       string `json:&quot;operator&quot;`
+    Values         string `json:&quot;values&quot;`
+    Effect         string `json:&quot;effect&quot;`
+}
+
+type LivenessProbe struct {
+    LivenessGetSet     bool   `json:&quot;livenessGetSet&quot;`
+    LivenessGet        string `json:&quot;livenessGet&quot;`
+    LivenessCommandSet bool   `json:&quot;livenessCommandSet&quot;`
+    LivenessCommand    string `json&quot;livenessCommand&quot;`
+}
+
+type Command struct {
+    CommandSet   bool   `json:&quot;commandSet&quot;`
+    StartCommand string `json:&quot;startCommand'`
+}
+
+type AnnoTations struct {
+    AnnoTationSet     bool   `json:&quot;AnnoTationSet&quot;`
+    AnnoTationExplain string `json:&quot;AnnoTationExplain&quot;`
+}
+
+type PipeParams struct {
+    Namespace    string `json:&quot;namespace&quot;`
+    ReplicaCount string `json:&quot;replicaCount&quot;`
+    // Image      map[string]interface{} `json:&quot;image&quot;`
+    Image            Image         `json:&quot;image&quot;`
+    NameOverride     string        `json:&quot;nameOverride&quot;`
+    FullnameOverride string        `json:&quot;fullnameOverride&quot;`
+    Service          Service       `json:&quot;service&quot;`
+    HostAliases      HostAliases   `json:&quot;hostAliases&quot;`
+    ImagePull        ImagePull     `json:&quot;imagePull&quot;`
+    EnvConfig        EnvConfig     `json:&quot;envConfig&quot;`
+    Resources        Resources     `json:&quot;resources&quot;`
+    Affinity         Affinity      `json:&quot;affinity&quot;`
+    Tolerations      Tolerations   `json:&quot;tolerations&quot;`
+    LivenessProbe    LivenessProbe `json:&quot;livenessProbe&quot;`
+    Command          Command       `json:&quot;command&quot;`
+    AnnoTations      AnnoTations   `json:AnnoTations`
+}
+
+
+func Helm_Upgrade(args map[string]interface{}, namespace string, releaseName string) {
+    fmt.Println(&quot;args:&quot;, args)
+    chartPath := &quot;./charts.tgz&quot;
+
+    settings := cli.New()
+
+    actionConfig := new(action.Configuration)
+    // You can pass an empty string instead of settings.Namespace() to list
+    // all namespaces
+    if err := actionConfig.Init(settings.RESTClientGetter(), namespace,
+        os.Getenv(&quot;HELM_DRIVER&quot;), log.Printf); err != nil {
+        log.Printf(&quot;%+v&quot;, err)
+        os.Exit(1)
+    }
+
+    // define values
+    // load chart from the path
+    chart, err := loader.Load(chartPath)
+    if err != nil {
+        fmt.Println(err)
+        panic(err)
+    }
+
+    client := action.NewUpgrade(actionConfig)
+    fmt.Println(namespace, releaseName)
+    client.Namespace = namespace
+    client.Install = true
+    // client.DryRun = true - very handy!
+
+    // Support reading values from STDIN for `upgrade` command
+    if client.Install {
+        // If a release does not exist, install it.
+        histClient := action.NewHistory(actionConfig)
+        histClient.Max = 1
+        if _, err := histClient.Run(releaseName); err == driver.ErrReleaseNotFound {
+            fmt.Println(&quot;Start Installation ...&quot;, releaseName)
+            // Only print this to stdout for table output
+            fmt.Println(&quot;Release does not exist. Installing it now&quot;)
+
+            instClient := action.NewInstall(actionConfig)
+            instClient.Namespace = namespace
+            instClient.ReleaseName = releaseName
+            // instClient.DryRun = client.DryRun
+            instClient.Timeout = 5000
+            instClient.Wait = true
+            rel, err := instClient.Run(chart, args)
+            if err != nil {
+                panic(err)
+            }
+            fmt.Println(rel.Info)
+        } else {
+            fmt.Println(&quot;Start Upgrate ...&quot;, releaseName)
+            // install the chart here
+            rel, err := client.Run(releaseName, chart, args)
+            if err != nil {
+                panic(err)
+
+            }
+            // fmt.Println(rel.Info.Notes)
+            fmt.Println(rel.Info.LastDeployed)
+            log.Printf(&quot;Installed Chart from path: %s in namespace: %s\n&quot;, rel.Name, rel.Namespace)
+
+        }
+    }
+}
+
+// http
+func PipeHook(w http.ResponseWriter, r *http.Request) {
+    defer r.Body.Close()
+    fmt.Println(&quot;method:&quot;, r.Method)
+    body, err := ioutil.ReadAll(r.Body)
+    if err != nil {
+        fmt.Printf(&quot;read body err, %v\n&quot;, err)
+        return
+    }
+
+    // println(&quot;json:&quot;, string(body))
+    tmp := string(body)
+
+    var struct_tmp PipeParams
+
+    err = json.Unmarshal([]byte(tmp), &amp;struct_tmp)
+    if err != nil {
+        fmt.Println(err)
+    } else {
+        var resMap map[string]interface{}
+
+        err := json.Unmarshal([]byte(tmp), &amp;resMap)
+        if err != nil {
+            fmt.Println(err)
+        }
+
+        Helm_Upgrade(resMap, struct_tmp.Namespace, struct_tmp.NameOverride)
+        // Get_Release()
+    }
+}
+
+func main() {
+    http.HandleFunc(&quot;/pipeline/&quot;, PipeHook)
+    err := http.ListenAndServe(&quot;:9090&quot;, nil)
+    if err != nil {
+        fmt.Printf(&quot;http server failed, err:%v\n&quot;, err)
+        return
+    }
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br><span class="line-number">64</span><br><span class="line-number">65</span><br><span class="line-number">66</span><br><span class="line-number">67</span><br><span class="line-number">68</span><br><span class="line-number">69</span><br><span class="line-number">70</span><br><span class="line-number">71</span><br><span class="line-number">72</span><br><span class="line-number">73</span><br><span class="line-number">74</span><br><span class="line-number">75</span><br><span class="line-number">76</span><br><span class="line-number">77</span><br><span class="line-number">78</span><br><span class="line-number">79</span><br><span class="line-number">80</span><br><span class="line-number">81</span><br><span class="line-number">82</span><br><span class="line-number">83</span><br><span class="line-number">84</span><br><span class="line-number">85</span><br><span class="line-number">86</span><br><span class="line-number">87</span><br><span class="line-number">88</span><br><span class="line-number">89</span><br><span class="line-number">90</span><br><span class="line-number">91</span><br><span class="line-number">92</span><br><span class="line-number">93</span><br><span class="line-number">94</span><br><span class="line-number">95</span><br><span class="line-number">96</span><br><span class="line-number">97</span><br><span class="line-number">98</span><br><span class="line-number">99</span><br><span class="line-number">100</span><br><span class="line-number">101</span><br><span class="line-number">102</span><br><span class="line-number">103</span><br><span class="line-number">104</span><br><span class="line-number">105</span><br><span class="line-number">106</span><br><span class="line-number">107</span><br><span class="line-number">108</span><br><span class="line-number">109</span><br><span class="line-number">110</span><br><span class="line-number">111</span><br><span class="line-number">112</span><br><span class="line-number">113</span><br><span class="line-number">114</span><br><span class="line-number">115</span><br><span class="line-number">116</span><br><span class="line-number">117</span><br><span class="line-number">118</span><br><span class="line-number">119</span><br><span class="line-number">120</span><br><span class="line-number">121</span><br><span class="line-number">122</span><br><span class="line-number">123</span><br><span class="line-number">124</span><br><span class="line-number">125</span><br><span class="line-number">126</span><br><span class="line-number">127</span><br><span class="line-number">128</span><br><span class="line-number">129</span><br><span class="line-number">130</span><br><span class="line-number">131</span><br><span class="line-number">132</span><br><span class="line-number">133</span><br><span class="line-number">134</span><br><span class="line-number">135</span><br><span class="line-number">136</span><br><span class="line-number">137</span><br><span class="line-number">138</span><br><span class="line-number">139</span><br><span class="line-number">140</span><br><span class="line-number">141</span><br><span class="line-number">142</span><br><span class="line-number">143</span><br><span class="line-number">144</span><br><span class="line-number">145</span><br><span class="line-number">146</span><br><span class="line-number">147</span><br><span class="line-number">148</span><br><span class="line-number">149</span><br><span class="line-number">150</span><br><span class="line-number">151</span><br><span class="line-number">152</span><br><span class="line-number">153</span><br><span class="line-number">154</span><br><span class="line-number">155</span><br><span class="line-number">156</span><br><span class="line-number">157</span><br><span class="line-number">158</span><br><span class="line-number">159</span><br><span class="line-number">160</span><br><span class="line-number">161</span><br><span class="line-number">162</span><br><span class="line-number">163</span><br><span class="line-number">164</span><br><span class="line-number">165</span><br><span class="line-number">166</span><br><span class="line-number">167</span><br><span class="line-number">168</span><br><span class="line-number">169</span><br><span class="line-number">170</span><br><span class="line-number">171</span><br><span class="line-number">172</span><br><span class="line-number">173</span><br><span class="line-number">174</span><br><span class="line-number">175</span><br><span class="line-number">176</span><br><span class="line-number">177</span><br><span class="line-number">178</span><br><span class="line-number">179</span><br><span class="line-number">180</span><br><span class="line-number">181</span><br><span class="line-number">182</span><br><span class="line-number">183</span><br><span class="line-number">184</span><br><span class="line-number">185</span><br><span class="line-number">186</span><br><span class="line-number">187</span><br><span class="line-number">188</span><br><span class="line-number">189</span><br><span class="line-number">190</span><br><span class="line-number">191</span><br><span class="line-number">192</span><br><span class="line-number">193</span><br><span class="line-number">194</span><br><span class="line-number">195</span><br><span class="line-number">196</span><br><span class="line-number">197</span><br><span class="line-number">198</span><br><span class="line-number">199</span><br><span class="line-number">200</span><br><span class="line-number">201</span><br><span class="line-number">202</span><br><span class="line-number">203</span><br><span class="line-number">204</span><br><span class="line-number">205</span><br><span class="line-number">206</span><br><span class="line-number">207</span><br><span class="line-number">208</span><br><span class="line-number">209</span><br><span class="line-number">210</span><br><span class="line-number">211</span><br><span class="line-number">212</span><br><span class="line-number">213</span><br><span class="line-number">214</span><br><span class="line-number">215</span><br><span class="line-number">216</span><br></div></div><p></p> <ul><li>Client</li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>curl 127.0.0.1:9090/pipeline/ -X POST -d '{
+    &quot;namespace&quot;: &quot;default&quot;,
+    &quot;replicaCount&quot;: &quot;1&quot;,
+    &quot;image&quot;: {
+        &quot;name&quot;: &quot;image&quot;,
+        &quot;pullPolicy&quot;: &quot;IfNotPresent&quot;
+    },
+    &quot;nameOverride&quot;: &quot;main-sky-test&quot;,
+    &quot;fullnameOverride&quot;: &quot;main-sky-test&quot;,
+    &quot;service&quot;: {
+        &quot;type&quot;: &quot;ClusterIP&quot;,
+        &quot;port&quot;: &quot;8080&quot;
+    },
+    &quot;hostAliases&quot;: {
+        &quot;hostAliasesSet&quot;: false,
+        &quot;hostAliasesMap&quot;: &quot;&quot;
+    },
+    &quot;imagePull&quot;: {
+        &quot;secretsSet&quot;: true,
+        &quot;secrets&quot;: &quot;secret-harbor&quot;
+    },
+    &quot;envConfig&quot;: {
+        &quot;configSet&quot;: false,
+        &quot;config&quot;: &quot;&quot;
+    },
+    &quot;resources&quot;: {
+        &quot;resourcesSet&quot;: false,
+        &quot;requests&quot;: {
+            &quot;memory&quot;: &quot;&quot;,
+            &quot;cpu&quot;: &quot;&quot;
+        },
+        &quot;limits&quot;: {
+            &quot;memory&quot;: &quot;&quot;,
+            &quot;cpu&quot;: &quot;&quot;
+        }
+    },
+    &quot;affinity&quot;: {
+        &quot;affinitySet&quot;: false,
+        &quot;key&quot;: &quot;&quot;,
+        &quot;operator&quot;: &quot;In&quot;,
+        &quot;values&quot;: &quot;&quot;
+    },
+    &quot;tolerations&quot;: {
+        &quot;tolerationsSet&quot;: false,
+        &quot;key&quot;: &quot;__TOLERATIONS_KEY__&quot;,
+        &quot;operator&quot;: &quot;Equal&quot;,
+        &quot;value&quot;: &quot;__TOLERATIONS_VALUE__&quot;,
+        &quot;effect&quot;: &quot;NoSchedule&quot;
+    },
+    &quot;livenessProbe&quot;: {
+        &quot;livenessGetSet&quot;: false,
+        &quot;livenessGet&quot;: &quot;__LIVENESS_GET__&quot;,
+        &quot;livenessCommandSet&quot;: false,
+        &quot;livenessCommand&quot;: &quot;__LIVENESS_COMMAND__&quot;
+    },
+    &quot;command&quot;: {
+        &quot;commandSet&quot;: false,
+        &quot;startCommand&quot;: &quot;__COMMAND__&quot;
+    },
+    &quot;AnnoTations&quot;: {
+        &quot;AnnoTationSet&quot;: false,
+        &quot;AnnoTationExplain&quot;: &quot;&quot;
+    }
+}' --header &quot;Content-Type: application/json&quot;
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br><span class="line-number">64</span><br></div></div><h3 id="部署及资源watch功能"><a href="#部署及资源watch功能" class="header-anchor">#</a> 部署及资源Watch功能</h3> <blockquote><p>出于让客户端可以看到各个资源部署状态，故增加对 Deployment、Pod资源Watch机制；</p></blockquote> <ul><li>server</li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>package main
+
+import (
+    &quot;context&quot;
+    &quot;encoding/json&quot;
+    &quot;fmt&quot;
+    &quot;io/ioutil&quot;
+    &quot;log&quot;
+    &quot;net/http&quot;
+    &quot;os&quot;
+
+    &quot;helm.sh/helm/v3/pkg/action&quot;
+    &quot;helm.sh/helm/v3/pkg/chart/loader&quot;
+    &quot;helm.sh/helm/v3/pkg/cli&quot;
+    &quot;helm.sh/helm/v3/pkg/cli/output&quot;
+    &quot;helm.sh/helm/v3/pkg/storage/driver&quot;
+    appsV1 &quot;k8s.io/api/apps/v1&quot;
+    v1 &quot;k8s.io/api/core/v1&quot;
+    metav1 &quot;k8s.io/apimachinery/pkg/apis/meta/v1&quot;
+    &quot;k8s.io/client-go/kubernetes&quot;
+    &quot;k8s.io/client-go/tools/clientcmd&quot;
+)
+
+// 操纵K8S每个方法同一超时时长
+// var timeout int = 5
+
+type Image struct {
+    Name       string `json:&quot;name&quot;`
+    PullPolicy string `json:&quot;pullPolicy&quot;`
+}
+
+type Service struct {
+    Type string `json:&quot;type&quot;`
+    Port string `json:&quot;port&quot;`
+}
+
+type HostAliases struct {
+    HostAliasesSet bool `json:&quot;hostAliasesSet&quot;`
+    HostAliasesMap string `json:&quot;hostAliasesMap&quot;`
+}
+
+type ImagePull struct {
+    SecretsSet bool   `json:&quot;secretsSet&quot;`
+    Secrets    string `json:&quot;secrets&quot;`
+}
+
+type EnvConfig struct {
+    ConfigSet bool   `json:&quot;configSet&quot;`
+    Config    string `json:&quot;config&quot;`
+}
+
+type Requests struct {
+    Memory string `json:&quot;memory&quot;`
+    Cpu    string `json:&quot;cpu&quot;`
+}
+type Limits struct {
+    Memory string `json:&quot;memory&quot;`
+    Cpu    string `json:&quot;cpu&quot;`
+}
+type Resources struct {
+    ResourcesSet bool      `json:&quot;resourcesSet&quot;`
+    Requests     *Requests `json:&quot;requests&quot;`
+    Limits       *Limits   `json:&quot;limits&quot;`
+}
+
+type Affinity struct {
+    AffinitySet bool   `json:&quot;affinitySet&quot;`
+    Key         string `json:&quot;key&quot;`
+    Operator    string `json:&quot;operator&quot;`
+    Values      string `json:&quot;values&quot;`
+}
+
+type Tolerations struct {
+    TolerationsSet bool   `json:&quot;tolerationsSet&quot;`
+    Key            string `json:&quot;key&quot;`
+    Operator       string `json:&quot;operator&quot;`
+    Values         string `json:&quot;values&quot;`
+    Effect         string `json:&quot;effect&quot;`
+}
+
+type LivenessProbe struct {
+    LivenessGetSet     bool   `json:&quot;livenessGetSet&quot;`
+    LivenessGet        string `json:&quot;livenessGet&quot;`
+    LivenessCommandSet bool   `json:&quot;livenessCommandSet&quot;`
+    LivenessCommand    string `json:&quot;livenessCommand&quot;`
+}
+
+type Command struct {
+    CommandSet   bool   `json:&quot;commandSet&quot;`
+    StartCommand string `json:&quot;startCommand&quot;`
+}
+
+type AnnoTations struct {
+    AnnoTationSet     bool   `json:&quot;AnnoTationSet&quot;`
+    AnnoTationExplain string `json:&quot;AnnoTationExplain&quot;`
+}
+
+type PipeParams struct {
+    Namespace    string `json:&quot;namespace&quot;`
+    ReplicaCount string `json:&quot;replicaCount&quot;`
+    // Image      map[string]interface{} `json:&quot;image&quot;`
+    Image            Image         `json:&quot;image&quot;`
+    NameOverride     string        `json:&quot;nameOverride&quot;`
+    FullnameOverride string        `json:&quot;fullnameOverride&quot;`
+    Service          Service       `json:&quot;service&quot;`
+    HostAliases      HostAliases   `json:&quot;hostAliases&quot;`
+    ImagePull        ImagePull     `json:&quot;imagePull&quot;`
+    EnvConfig        EnvConfig     `json:&quot;envConfig&quot;`
+    Resources        Resources     `json:&quot;resources&quot;`
+    Affinity         Affinity      `json:&quot;affinity&quot;`
+    Tolerations      Tolerations   `json:&quot;tolerations&quot;`
+    LivenessProbe    LivenessProbe `json:&quot;livenessProbe&quot;`
+    Command          Command       `json:&quot;command&quot;`
+    AnnoTations      AnnoTations   `json:&quot;AnnoTations&quot;`
+}
+
+//
+
+type Deployment struct {
+    // Resources string      `json:&quot;Resources&quot;`
+    Name      string      `json:&quot;Name&quot;`
+    Ready     string      `json:&quot;Ready&quot;`
+    Avatlable string      `json:&quot;Avatlable&quot;`
+    Age       metav1.Time `json:&quot;Age&quot;`
+    Image     string      `json:&quot;Image&quot;`
+}
+
+type JsonResponse struct {
+    Deployment Deployment    `json:&quot;Deployment&quot;`
+    Pod        []interface{} `json:&quot;Pod&quot;`
+}
+
+// TODO
+/*
+    Helm 状态返回
+    Helm 状态回滚
+*/
+
+type JsonResult struct {
+    Code       int          `json:&quot;code&quot;`
+    Msg        string       `json:&quot;msg&quot;`
+    Deployment JsonResponse `json:&quot;deployment&quot;`
+}
+
+// 加载配置文件
+func K8s_Conf() (*kubernetes.Clientset, error) {
+    configPath := &quot;etc/kube.conf&quot;
+    config, err := clientcmd.BuildConfigFromFlags(&quot;&quot;, configPath)
+    if err != nil {
+        log.Fatal(err)
+    }
+    clientSet, err := kubernetes.NewForConfig(config)
+    if err != nil {
+        log.Fatal(err)
+    }
+    return clientSet, err
+}
+
+func Pod_Watch(name, namespace string) []interface{} {
+    // var podstatus Pod
+    var test []interface{}
+    label := &quot;app.kubernetes.io/name=&quot; + name
+    // label := &quot;app=demoapp&quot;
+    timeout := new(int64)
+    *timeout = 8
+
+    clientSet, err := K8s_Conf()
+    if err != nil {
+        log.Fatal(err)
+    }
+    // fmt.Println(&quot;*****************************************************************&quot;)
+
+    podListW, errw := clientSet.CoreV1().Pods(namespace).Watch(context.TODO(), metav1.ListOptions{LabelSelector: label, TimeoutSeconds: timeout})
+    if errw != nil {
+        log.Fatal(err)
+    }
+    // go func() {
+    for event := range podListW.ResultChan() {
+        // fmt.Printf(&quot;Type: %v\n&quot;, event.Type)
+        p, ok := event.Object.(*v1.Pod)
+        if !ok {
+            log.Fatal(&quot;unexpected type&quot;)
+        }
+        pname := p.Name           // demoappv10-6ff964cbff-hmsb8
+        pstatus := p.Status.Phase // Running
+        reason := p.Status.StartTime
+        fmt.Printf(&quot;==&gt; v1/Pod(related)\nNAME\t\t\t\t\tSTATUS\t\t\tAGE\n%s\t\t%s\t\t\t%v\t\n&quot;, pname, pstatus, reason)
+
+        reasonstring := fmt.Sprintf(&quot;%v&quot;, p.Status.StartTime)
+        pod := map[string]interface{}{
+            pname: []string{
+                string(pstatus), reasonstring,
+            },
+        }
+        // fmt.Println(pod)
+        test = append(test, pod)
+    }
+    return test
+}
+
+func K8s_Client(name, namespace string) JsonResponse {
+    var result JsonResponse
+
+    clientSet, err := K8s_Conf()
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    fmt.Println(&quot;*****************************************************************&quot;)
+    label := &quot;app.kubernetes.io/name=&quot; + name
+    timeout := new(int64)
+    *timeout = 2
+    deploymentListW, errw := clientSet.AppsV1().Deployments(namespace).Watch(context.TODO(), metav1.ListOptions{LabelSelector: label, TimeoutSeconds: timeout})
+    if errw != nil {
+        log.Fatal(err)
+    }
+
+    for event := range deploymentListW.ResultChan() {
+        fmt.Printf(&quot;Type: %v\n&quot;, event.Type)
+        p, ok := event.Object.(*appsV1.Deployment)
+        if !ok {
+            log.Fatal(&quot;unexpected type&quot;)
+        }
+        // dns := p.Namespace
+        dna := p.Name
+        dreplicas := p.Status.Replicas
+        dreadyreplicas := p.Status.ReadyReplicas
+        davailablereplicas := p.Status.AvailableReplicas
+        dcreationtimestamp := p.CreationTimestamp
+        dgetimage := p.Spec.Template.Spec.Containers[0].Image
+        client_result := fmt.Sprintf(&quot;*****************************************************************\nRESOURCES:\n===&gt; v1/Deployment\nNAME\t\tREADY\tAVAILABLE\tAGE\t\t\t\t\tIMAGE\n%s\t%v/%v\t%v\t\t%v\t\t%v\n&quot;, dna, dreplicas, dreadyreplicas, davailablereplicas, dcreationtimestamp, dgetimage)
+        fmt.Println(client_result)
+        result.Deployment.Name = p.Name
+        result.Deployment.Ready = fmt.Sprintf(&quot;%v/%v&quot;, p.Status.ReadyReplicas, p.Status.AvailableReplicas)
+        result.Deployment.Avatlable = fmt.Sprintf(&quot;%v&quot;, p.Status.AvailableReplicas)
+        result.Deployment.Age = p.CreationTimestamp
+        result.Deployment.Image = p.Spec.Template.Spec.Containers[0].Image
+        fmt.Println(result)
+
+        fmt.Println(name)
+        result.Pod = Pod_Watch(name, namespace)
+
+        if dreadyreplicas != dreplicas {
+            // 监视 Pod资源变动
+            fmt.Println(&quot;Pod_Watch&quot;)
+            result.Pod = Pod_Watch(name, namespace)
+        }
+
+    }
+
+    return result
+}
+
+var tmp string
+var outfmt output.Format
+
+func Helm_Upgrade(args map[string]interface{}, namespace string, releaseName string) JsonResult {
+    var result JsonResult
+
+    fmt.Println(&quot;args:&quot;, args)
+    chartPath := &quot;./charts.tgz&quot;
+
+    settings := cli.New()
+
+    actionConfig := new(action.Configuration)
+    // You can pass an empty string instead of settings.Namespace() to list
+    // all namespaces
+    if err := actionConfig.Init(settings.RESTClientGetter(), namespace,
+        os.Getenv(&quot;HELM_DRIVER&quot;), log.Printf); err != nil {
+        log.Printf(&quot;%+v&quot;, err)
+        os.Exit(1)
+    }
+
+    // define values
+    // load chart from the path
+    chart, err := loader.Load(chartPath)
+    if err != nil {
+        fmt.Println(err)
+        panic(err)
+    }
+
+    client := action.NewUpgrade(actionConfig)
+    fmt.Println(namespace, releaseName)
+    client.Namespace = namespace
+    client.Install = true
+    client.Timeout = 30
+    // client.DryRun = true - very handy!
+
+    // Fixes #7002 - Support reading values from STDIN for `upgrade` command
+    // Must load values AFTER determining if we have to call install so that values loaded from stdin are are not read twice
+
+    if client.Install {
+        // If a release does not exist, install it.
+        histClient := action.NewHistory(actionConfig)
+        histClient.Max = 1
+        if _, err := histClient.Run(releaseName); err == driver.ErrReleaseNotFound {
+            fmt.Println(&quot;Start Installation ...&quot;, releaseName)
+            // Only print this to stdout for table output
+            fmt.Println(&quot;Release does not exist. Installing it now&quot;)
+
+            instClient := action.NewInstall(actionConfig)
+            instClient.Namespace = namespace
+            instClient.ReleaseName = releaseName
+            // instClient.DryRun = client.DryRun
+            instClient.Timeout = 30
+            // instClient.Wait = true
+            rel, err := instClient.Run(chart, args)
+            if err != nil {
+                panic(err)
+            }
+            fmt.Println(rel.Info)
+
+            msg := &quot;Install success&quot; + releaseName + &quot;in&quot; + namespace
+            result.Code = 200
+            result.Msg = msg
+            result.Deployment = K8s_Client(releaseName, namespace)
+            return result
+
+        } else {
+            fmt.Println(&quot;Start Upgrate ...&quot;, releaseName)
+            rel, err := client.Run(releaseName, chart, args)
+            if err != nil {
+                panic(err)
+
+            }
+
+            fmt.Println(rel.Info.LastDeployed)
+
+            log.Printf(&quot;Installed Chart from path: %s in namespace: %s\n&quot;, rel.Name, rel.Namespace)
+
+            // this will confirm the values set during installation
+            // log.Println(rel.Config)
+            msg := &quot;Upgrate success &quot; + releaseName + &quot; in &quot; + namespace
+            result.Code = 200
+            result.Msg = msg
+            result.Deployment = K8s_Client(releaseName, namespace)
+            return result
+        }
+    }
+    msg := &quot;Install filed&quot; + releaseName + &quot;in&quot; + namespace
+    result.Code = 500
+    result.Msg = msg
+    return result
+}
+
+// http
+func PipeHook(w http.ResponseWriter, r *http.Request) {
+    defer r.Body.Close()
+    fmt.Println(&quot;method:&quot;, r.Method)
+    body, err := ioutil.ReadAll(r.Body)
+    if err != nil {
+        fmt.Printf(&quot;read body err, %v\n&quot;, err)
+        return
+    }
+
+    tmp := string(body)
+    var struct_tmp PipeParams
+
+    err = json.Unmarshal([]byte(tmp), &amp;struct_tmp)
+    if err != nil {
+        fmt.Println(err)
+    } else {
+        // fmt.Println(&quot;STRUCT:&quot;, struct_tmp.Resources.Requests.Cpu)
+        var resMap map[string]interface{}
+        err := json.Unmarshal([]byte(tmp), &amp;resMap)
+        if err != nil {
+            fmt.Println(err)
+        }
+
+        response := Helm_Upgrade(resMap, struct_tmp.Namespace, struct_tmp.NameOverride)
+        w.Header().Set(&quot;content-type&quot;, &quot;text/json&quot;)
+        msg, _ := json.Marshal(response)
+        w.Write(msg)
+    }
+}
+
+func main() {
+    fmt.Println(&quot;The service listens on port 9090....&quot;)
+    http.HandleFunc(&quot;/pipeline/&quot;, PipeHook)
+    err := http.ListenAndServe(&quot;:9090&quot;, nil)
+    if err != nil {
+        fmt.Printf(&quot;http server failed, err:%v\n&quot;, err)
+        return
+    }
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br><span class="line-number">64</span><br><span class="line-number">65</span><br><span class="line-number">66</span><br><span class="line-number">67</span><br><span class="line-number">68</span><br><span class="line-number">69</span><br><span class="line-number">70</span><br><span class="line-number">71</span><br><span class="line-number">72</span><br><span class="line-number">73</span><br><span class="line-number">74</span><br><span class="line-number">75</span><br><span class="line-number">76</span><br><span class="line-number">77</span><br><span class="line-number">78</span><br><span class="line-number">79</span><br><span class="line-number">80</span><br><span class="line-number">81</span><br><span class="line-number">82</span><br><span class="line-number">83</span><br><span class="line-number">84</span><br><span class="line-number">85</span><br><span class="line-number">86</span><br><span class="line-number">87</span><br><span class="line-number">88</span><br><span class="line-number">89</span><br><span class="line-number">90</span><br><span class="line-number">91</span><br><span class="line-number">92</span><br><span class="line-number">93</span><br><span class="line-number">94</span><br><span class="line-number">95</span><br><span class="line-number">96</span><br><span class="line-number">97</span><br><span class="line-number">98</span><br><span class="line-number">99</span><br><span class="line-number">100</span><br><span class="line-number">101</span><br><span class="line-number">102</span><br><span class="line-number">103</span><br><span class="line-number">104</span><br><span class="line-number">105</span><br><span class="line-number">106</span><br><span class="line-number">107</span><br><span class="line-number">108</span><br><span class="line-number">109</span><br><span class="line-number">110</span><br><span class="line-number">111</span><br><span class="line-number">112</span><br><span class="line-number">113</span><br><span class="line-number">114</span><br><span class="line-number">115</span><br><span class="line-number">116</span><br><span class="line-number">117</span><br><span class="line-number">118</span><br><span class="line-number">119</span><br><span class="line-number">120</span><br><span class="line-number">121</span><br><span class="line-number">122</span><br><span class="line-number">123</span><br><span class="line-number">124</span><br><span class="line-number">125</span><br><span class="line-number">126</span><br><span class="line-number">127</span><br><span class="line-number">128</span><br><span class="line-number">129</span><br><span class="line-number">130</span><br><span class="line-number">131</span><br><span class="line-number">132</span><br><span class="line-number">133</span><br><span class="line-number">134</span><br><span class="line-number">135</span><br><span class="line-number">136</span><br><span class="line-number">137</span><br><span class="line-number">138</span><br><span class="line-number">139</span><br><span class="line-number">140</span><br><span class="line-number">141</span><br><span class="line-number">142</span><br><span class="line-number">143</span><br><span class="line-number">144</span><br><span class="line-number">145</span><br><span class="line-number">146</span><br><span class="line-number">147</span><br><span class="line-number">148</span><br><span class="line-number">149</span><br><span class="line-number">150</span><br><span class="line-number">151</span><br><span class="line-number">152</span><br><span class="line-number">153</span><br><span class="line-number">154</span><br><span class="line-number">155</span><br><span class="line-number">156</span><br><span class="line-number">157</span><br><span class="line-number">158</span><br><span class="line-number">159</span><br><span class="line-number">160</span><br><span class="line-number">161</span><br><span class="line-number">162</span><br><span class="line-number">163</span><br><span class="line-number">164</span><br><span class="line-number">165</span><br><span class="line-number">166</span><br><span class="line-number">167</span><br><span class="line-number">168</span><br><span class="line-number">169</span><br><span class="line-number">170</span><br><span class="line-number">171</span><br><span class="line-number">172</span><br><span class="line-number">173</span><br><span class="line-number">174</span><br><span class="line-number">175</span><br><span class="line-number">176</span><br><span class="line-number">177</span><br><span class="line-number">178</span><br><span class="line-number">179</span><br><span class="line-number">180</span><br><span class="line-number">181</span><br><span class="line-number">182</span><br><span class="line-number">183</span><br><span class="line-number">184</span><br><span class="line-number">185</span><br><span class="line-number">186</span><br><span class="line-number">187</span><br><span class="line-number">188</span><br><span class="line-number">189</span><br><span class="line-number">190</span><br><span class="line-number">191</span><br><span class="line-number">192</span><br><span class="line-number">193</span><br><span class="line-number">194</span><br><span class="line-number">195</span><br><span class="line-number">196</span><br><span class="line-number">197</span><br><span class="line-number">198</span><br><span class="line-number">199</span><br><span class="line-number">200</span><br><span class="line-number">201</span><br><span class="line-number">202</span><br><span class="line-number">203</span><br><span class="line-number">204</span><br><span class="line-number">205</span><br><span class="line-number">206</span><br><span class="line-number">207</span><br><span class="line-number">208</span><br><span class="line-number">209</span><br><span class="line-number">210</span><br><span class="line-number">211</span><br><span class="line-number">212</span><br><span class="line-number">213</span><br><span class="line-number">214</span><br><span class="line-number">215</span><br><span class="line-number">216</span><br><span class="line-number">217</span><br><span class="line-number">218</span><br><span class="line-number">219</span><br><span class="line-number">220</span><br><span class="line-number">221</span><br><span class="line-number">222</span><br><span class="line-number">223</span><br><span class="line-number">224</span><br><span class="line-number">225</span><br><span class="line-number">226</span><br><span class="line-number">227</span><br><span class="line-number">228</span><br><span class="line-number">229</span><br><span class="line-number">230</span><br><span class="line-number">231</span><br><span class="line-number">232</span><br><span class="line-number">233</span><br><span class="line-number">234</span><br><span class="line-number">235</span><br><span class="line-number">236</span><br><span class="line-number">237</span><br><span class="line-number">238</span><br><span class="line-number">239</span><br><span class="line-number">240</span><br><span class="line-number">241</span><br><span class="line-number">242</span><br><span class="line-number">243</span><br><span class="line-number">244</span><br><span class="line-number">245</span><br><span class="line-number">246</span><br><span class="line-number">247</span><br><span class="line-number">248</span><br><span class="line-number">249</span><br><span class="line-number">250</span><br><span class="line-number">251</span><br><span class="line-number">252</span><br><span class="line-number">253</span><br><span class="line-number">254</span><br><span class="line-number">255</span><br><span class="line-number">256</span><br><span class="line-number">257</span><br><span class="line-number">258</span><br><span class="line-number">259</span><br><span class="line-number">260</span><br><span class="line-number">261</span><br><span class="line-number">262</span><br><span class="line-number">263</span><br><span class="line-number">264</span><br><span class="line-number">265</span><br><span class="line-number">266</span><br><span class="line-number">267</span><br><span class="line-number">268</span><br><span class="line-number">269</span><br><span class="line-number">270</span><br><span class="line-number">271</span><br><span class="line-number">272</span><br><span class="line-number">273</span><br><span class="line-number">274</span><br><span class="line-number">275</span><br><span class="line-number">276</span><br><span class="line-number">277</span><br><span class="line-number">278</span><br><span class="line-number">279</span><br><span class="line-number">280</span><br><span class="line-number">281</span><br><span class="line-number">282</span><br><span class="line-number">283</span><br><span class="line-number">284</span><br><span class="line-number">285</span><br><span class="line-number">286</span><br><span class="line-number">287</span><br><span class="line-number">288</span><br><span class="line-number">289</span><br><span class="line-number">290</span><br><span class="line-number">291</span><br><span class="line-number">292</span><br><span class="line-number">293</span><br><span class="line-number">294</span><br><span class="line-number">295</span><br><span class="line-number">296</span><br><span class="line-number">297</span><br><span class="line-number">298</span><br><span class="line-number">299</span><br><span class="line-number">300</span><br><span class="line-number">301</span><br><span class="line-number">302</span><br><span class="line-number">303</span><br><span class="line-number">304</span><br><span class="line-number">305</span><br><span class="line-number">306</span><br><span class="line-number">307</span><br><span class="line-number">308</span><br><span class="line-number">309</span><br><span class="line-number">310</span><br><span class="line-number">311</span><br><span class="line-number">312</span><br><span class="line-number">313</span><br><span class="line-number">314</span><br><span class="line-number">315</span><br><span class="line-number">316</span><br><span class="line-number">317</span><br><span class="line-number">318</span><br><span class="line-number">319</span><br><span class="line-number">320</span><br><span class="line-number">321</span><br><span class="line-number">322</span><br><span class="line-number">323</span><br><span class="line-number">324</span><br><span class="line-number">325</span><br><span class="line-number">326</span><br><span class="line-number">327</span><br><span class="line-number">328</span><br><span class="line-number">329</span><br><span class="line-number">330</span><br><span class="line-number">331</span><br><span class="line-number">332</span><br><span class="line-number">333</span><br><span class="line-number">334</span><br><span class="line-number">335</span><br><span class="line-number">336</span><br><span class="line-number">337</span><br><span class="line-number">338</span><br><span class="line-number">339</span><br><span class="line-number">340</span><br><span class="line-number">341</span><br><span class="line-number">342</span><br><span class="line-number">343</span><br><span class="line-number">344</span><br><span class="line-number">345</span><br><span class="line-number">346</span><br><span class="line-number">347</span><br><span class="line-number">348</span><br><span class="line-number">349</span><br><span class="line-number">350</span><br><span class="line-number">351</span><br><span class="line-number">352</span><br><span class="line-number">353</span><br><span class="line-number">354</span><br><span class="line-number">355</span><br><span class="line-number">356</span><br><span class="line-number">357</span><br><span class="line-number">358</span><br><span class="line-number">359</span><br><span class="line-number">360</span><br><span class="line-number">361</span><br><span class="line-number">362</span><br><span class="line-number">363</span><br><span class="line-number">364</span><br><span class="line-number">365</span><br><span class="line-number">366</span><br><span class="line-number">367</span><br><span class="line-number">368</span><br><span class="line-number">369</span><br><span class="line-number">370</span><br><span class="line-number">371</span><br><span class="line-number">372</span><br><span class="line-number">373</span><br><span class="line-number">374</span><br><span class="line-number">375</span><br><span class="line-number">376</span><br><span class="line-number">377</span><br><span class="line-number">378</span><br><span class="line-number">379</span><br><span class="line-number">380</span><br><span class="line-number">381</span><br><span class="line-number">382</span><br><span class="line-number">383</span><br><span class="line-number">384</span><br><span class="line-number">385</span><br></div></div><p></p> <ul><li>client</li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>#!/bin/bash
+curl 127.0.0.1:9090/pipeline/ --connect-timeout 15 -m 20 -X POST -d '{
+    &quot;namespace&quot;: &quot;default&quot;,
+    &quot;replicaCount&quot;: &quot;1&quot;,
+    &quot;image&quot;: {
+    &quot;name&quot;: &quot;image_name&quot;,
+    &quot;pullPolicy&quot;: &quot;IfNotPresent&quot;
+    },
+    &quot;nameOverride&quot;: &quot;gaea-test&quot;,
+    &quot;fullnameOverride&quot;: &quot;gaea-test&quot;,
+    &quot;service&quot;: {
+    &quot;type&quot;: &quot;ClusterIP&quot;,
+    &quot;port&quot;: &quot;8080&quot;
+    },
+    &quot;hostAliases&quot;: {
+    &quot;hostAliasesSet&quot;: false,
+    &quot;hostAliasesMap&quot;: &quot;&quot;
+    },
+    &quot;imagePull&quot;: {
+    &quot;secretsSet&quot;: true,
+    &quot;secrets&quot;: &quot;secret-harbor&quot;
+    },
+    &quot;envConfig&quot;: {
+    &quot;configSet&quot;: true,
+    &quot;config&quot;: &quot;configmap&quot;
+    },
+    &quot;resources&quot;: {
+    &quot;resourcesSet&quot;: false,
+    &quot;requests&quot;: {
+    &quot;memory&quot;: &quot;&quot;,
+    &quot;cpu&quot;: &quot;&quot;
+    },
+    &quot;limits&quot;: {
+    &quot;memory&quot;: &quot;&quot;,
+    &quot;cpu&quot;: &quot;&quot;
+    }
+    },
+    &quot;affinity&quot;: {
+    &quot;affinitySet&quot;: false,
+    &quot;key&quot;: &quot;&quot;,
+    &quot;operator&quot;: &quot;In&quot;,
+    &quot;values&quot;: &quot;&quot;
+    },
+    &quot;tolerations&quot;: {
+    &quot;tolerationsSet&quot;: false,
+    &quot;key&quot;: &quot;__TOLERATIONS_KEY__&quot;,
+    &quot;operator&quot;: &quot;Equal&quot;,
+    &quot;value&quot;: &quot;__TOLERATIONS_VALUE__&quot;,
+    &quot;effect&quot;: &quot;NoSchedule&quot;
+    },
+    &quot;livenessProbe&quot;: {
+    &quot;livenessGetSet&quot;: false,
+    &quot;livenessGet&quot;: &quot;__LIVENESS_GET__&quot;,
+    &quot;livenessCommandSet&quot;: false,
+    &quot;livenessCommand&quot;: &quot;__LIVENESS_COMMAND__&quot;
+    },
+    &quot;command&quot;: {
+    &quot;commandSet&quot;: true,
+    &quot;startCommand&quot;: &quot;['bash','./start.sh']&quot;
+    },
+    &quot;AnnoTations&quot;: {
+    &quot;AnnoTationSet&quot;: false,
+    &quot;AnnoTationExplain&quot;: &quot;&quot;
+    }
+    }' --header &quot;Content-Type: application/json&quot;
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br><span class="line-number">64</span><br><span class="line-number">65</span><br></div></div><p><img src="https://atlas.pingcode.com/files/public/622700870d4581c32e190653" alt="image.png"></p></div></section> <footer class="page-edit"><!----> <!----></footer> <!----> <div class="comments-wrapper"><!----></div> <ul class="side-bar sub-sidebar-wrapper" style="width:12rem;" data-v-cb1513f6><li class="level-2" data-v-cb1513f6><a href="/views/Golang_Troubleshooting/Smalltools/Go%E7%BC%96%E5%86%99Helm3%20Client%E5%AE%9E%E7%8E%B0%E7%AE%80%E6%98%93%E9%83%A8%E7%BD%B2%E5%B7%A5%E5%85%B7.html#helm-sh使用自定义charts部署release" class="sidebar-link reco-side-helm-sh使用自定义charts部署release" data-v-cb1513f6>helm.sh使用自定义charts部署release</a></li><li class="level-2" data-v-cb1513f6><a href="/views/Golang_Troubleshooting/Smalltools/Go%E7%BC%96%E5%86%99Helm3%20Client%E5%AE%9E%E7%8E%B0%E7%AE%80%E6%98%93%E9%83%A8%E7%BD%B2%E5%B7%A5%E5%85%B7.html#client-go-资源获取" class="sidebar-link reco-side-client-go-资源获取" data-v-cb1513f6>client-go - 资源获取</a></li><li class="level-2" data-v-cb1513f6><a href="/views/Golang_Troubleshooting/Smalltools/Go%E7%BC%96%E5%86%99Helm3%20Client%E5%AE%9E%E7%8E%B0%E7%AE%80%E6%98%93%E9%83%A8%E7%BD%B2%E5%B7%A5%E5%85%B7.html#helm3-client工具" class="sidebar-link reco-side-helm3-client工具" data-v-cb1513f6>Helm3 Client工具</a></li><li class="level-3" data-v-cb1513f6><a href="/views/Golang_Troubleshooting/Smalltools/Go%E7%BC%96%E5%86%99Helm3%20Client%E5%AE%9E%E7%8E%B0%E7%AE%80%E6%98%93%E9%83%A8%E7%BD%B2%E5%B7%A5%E5%85%B7.html#部署功能" class="sidebar-link reco-side-部署功能" data-v-cb1513f6>部署功能</a></li><li class="level-3" data-v-cb1513f6><a href="/views/Golang_Troubleshooting/Smalltools/Go%E7%BC%96%E5%86%99Helm3%20Client%E5%AE%9E%E7%8E%B0%E7%AE%80%E6%98%93%E9%83%A8%E7%BD%B2%E5%B7%A5%E5%85%B7.html#部署及资源watch功能" class="sidebar-link reco-side-部署及资源watch功能" data-v-cb1513f6>部署及资源Watch功能</a></li></ul></main> <!----></div></div></div></div><div class="global-ui"><div class="back-to-ceiling" style="right:1rem;bottom:6rem;width:2.5rem;height:2.5rem;border-radius:.25rem;line-height:2.5rem;display:none;" data-v-c6073ba8 data-v-c6073ba8><svg t="1574745035067" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5404" class="icon" data-v-c6073ba8><path d="M526.60727968 10.90185116a27.675 27.675 0 0 0-29.21455937 0c-131.36607665 82.28402758-218.69155461 228.01873535-218.69155402 394.07834331a462.20625001 462.20625001 0 0 0 5.36959153 69.94390903c1.00431239 6.55289093-0.34802892 13.13561351-3.76865779 18.80351572-32.63518765 54.11355614-51.75690182 118.55860487-51.7569018 187.94566865a371.06718723 371.06718723 0 0 0 11.50484808 91.98906777c6.53300375 25.50556257 41.68394495 28.14064038 52.69160883 4.22606766 17.37162448-37.73630017 42.14135425-72.50938081 72.80769204-103.21549295 2.18761121 3.04276886 4.15646224 6.24463696 6.40373557 9.22774369a1871.4375 1871.4375 0 0 0 140.04691725 5.34970492 1866.36093723 1866.36093723 0 0 0 140.04691723-5.34970492c2.24727335-2.98310674 4.21612437-6.18497483 6.3937923-9.2178004 30.66633723 30.70611158 55.4360664 65.4791928 72.80769147 103.21549355 11.00766384 23.91457269 46.15860503 21.27949489 52.69160879-4.22606768a371.15156223 371.15156223 0 0 0 11.514792-91.99901164c0-69.36717486-19.13165746-133.82216804-51.75690182-187.92578088-3.42062944-5.66790279-4.76302748-12.26056868-3.76865837-18.80351632a462.20625001 462.20625001 0 0 0 5.36959269-69.943909c-0.00994388-166.08943902-87.32547796-311.81420293-218.6915546-394.09823051zM605.93803103 357.87693858a93.93749974 93.93749974 0 1 1-187.89594924 6.1e-7 93.93749974 93.93749974 0 0 1 187.89594924-6.1e-7z" p-id="5405" data-v-c6073ba8></path><path d="M429.50777625 765.63860547C429.50777625 803.39355007 466.44236686 1000.39046097 512.00932183 1000.39046097c45.56695499 0 82.4922232-197.00623328 82.5015456-234.7518555 0-37.75494459-36.9345906-68.35043303-82.4922232-68.34111062-45.57627738-0.00932239-82.52019037 30.59548842-82.51086798 68.34111062z" p-id="5406" data-v-c6073ba8></path></svg></div><!----><div class="kanbanniang" data-v-5775ee02><div class="banniang-container" style="display:;" data-v-5775ee02><div class="messageBox" style="right:68px;bottom:190px;display:none;" data-v-5775ee02>
+      我是Brains,欢迎你的关注 
+    </div> <div class="operation" style="right:90px;bottom:40px;display:;" data-v-5775ee02><i class="kbnfont kbn-ban-home ban-home" data-v-5775ee02></i> <i class="kbnfont kbn-ban-message message" data-v-5775ee02></i> <i class="kbnfont kbn-ban-close close" data-v-5775ee02></i> <a target="_blank" href="https://vuepress-theme-reco.recoluan.com/views/plugins/kanbanniang.html" data-v-5775ee02><i class="kbnfont kbn-ban-info info" data-v-5775ee02></i></a> <i class="kbnfont kbn-ban-theme skin" style="display:;" data-v-5775ee02></i></div> <canvas id="banniang" width="200px" height="250" class="live2d" style="right:90px;bottom:-20px;opacity:0.9;" data-v-5775ee02></canvas></div> <div class="showBanNiang" style="display:none;" data-v-5775ee02>
+    看板娘
+  </div></div><canvas id="vuepress-canvas-cursor"></canvas><!----></div></div>
+    <script src="/assets/js/app.cd5fa041.js" defer></script><script src="/assets/js/3.ee7e7098.js" defer></script><script src="/assets/js/1.277d6ebc.js" defer></script><script src="/assets/js/27.aaaa8f8c.js" defer></script>
+  </body>
+</html>

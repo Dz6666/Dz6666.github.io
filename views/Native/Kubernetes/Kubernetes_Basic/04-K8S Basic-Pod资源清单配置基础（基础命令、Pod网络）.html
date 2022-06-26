@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>04-K8S Basic-Pod资源清单配置基础（基础命令、Pod网络） | SRE运维充电站</title>
+    <meta name="generator" content="VuePress 1.9.7">
+    <link rel="icon" href="/images/favicon.svg">
+    <script>var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?668842dc21c1b8f215b000531ec8f69e";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();</script>
+    <meta name="description" content="这个杀手不太冷">
+    <meta name="baidu_union_verify" content="a0036ccf0b657813fb236f80f376c429">
+    <meta name="Keywords" content="Devops代哲,SRE运维充电站,pyenv.cc,Brains">
+    <meta name="author" content="Devops代哲,SRE运维充电站,pyenv.cc,Brains">
+    
+    <link rel="preload" href="/assets/css/0.styles.938d6ff2.css" as="style"><link rel="preload" href="/assets/js/app.cd5fa041.js" as="script"><link rel="preload" href="/assets/js/3.ee7e7098.js" as="script"><link rel="preload" href="/assets/js/1.277d6ebc.js" as="script"><link rel="preload" href="/assets/js/34.4ff3296a.js" as="script"><link rel="prefetch" href="/assets/js/10.d3b54896.js"><link rel="prefetch" href="/assets/js/11.f4bb5601.js"><link rel="prefetch" href="/assets/js/12.ed610cd8.js"><link rel="prefetch" href="/assets/js/13.3a9eb8fa.js"><link rel="prefetch" href="/assets/js/14.b6ae182d.js"><link rel="prefetch" href="/assets/js/15.db6f82c2.js"><link rel="prefetch" href="/assets/js/16.3d5e10b6.js"><link rel="prefetch" href="/assets/js/17.471efd1e.js"><link rel="prefetch" href="/assets/js/18.832fe344.js"><link rel="prefetch" href="/assets/js/19.b59cbfac.js"><link rel="prefetch" href="/assets/js/20.472c4b66.js"><link rel="prefetch" href="/assets/js/21.800f456d.js"><link rel="prefetch" href="/assets/js/22.ffd207bc.js"><link rel="prefetch" href="/assets/js/23.323321ef.js"><link rel="prefetch" href="/assets/js/24.b9a5f746.js"><link rel="prefetch" href="/assets/js/25.60904ca4.js"><link rel="prefetch" href="/assets/js/26.fad8d09c.js"><link rel="prefetch" href="/assets/js/27.aaaa8f8c.js"><link rel="prefetch" href="/assets/js/28.d65a84c8.js"><link rel="prefetch" href="/assets/js/29.ce7bd2fb.js"><link rel="prefetch" href="/assets/js/30.f2c39de0.js"><link rel="prefetch" href="/assets/js/31.f02ef496.js"><link rel="prefetch" href="/assets/js/32.0889c36c.js"><link rel="prefetch" href="/assets/js/33.7b2efadd.js"><link rel="prefetch" href="/assets/js/35.6b05b4ad.js"><link rel="prefetch" href="/assets/js/36.4322a33f.js"><link rel="prefetch" href="/assets/js/37.73e5620d.js"><link rel="prefetch" href="/assets/js/38.6e6461a9.js"><link rel="prefetch" href="/assets/js/39.0b0071eb.js"><link rel="prefetch" href="/assets/js/4.6d9bb9fb.js"><link rel="prefetch" href="/assets/js/40.692bdf78.js"><link rel="prefetch" href="/assets/js/41.66cfe668.js"><link rel="prefetch" href="/assets/js/42.1b912be2.js"><link rel="prefetch" href="/assets/js/43.116e6cb6.js"><link rel="prefetch" href="/assets/js/44.00d176ef.js"><link rel="prefetch" href="/assets/js/45.06d1d798.js"><link rel="prefetch" href="/assets/js/46.43bfeb5c.js"><link rel="prefetch" href="/assets/js/47.735867da.js"><link rel="prefetch" href="/assets/js/48.12a1df49.js"><link rel="prefetch" href="/assets/js/5.99213a31.js"><link rel="prefetch" href="/assets/js/6.7a0b7b07.js"><link rel="prefetch" href="/assets/js/7.356b6533.js"><link rel="prefetch" href="/assets/js/8.9f6a6c22.js"><link rel="prefetch" href="/assets/js/9.832ff77d.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.938d6ff2.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container no-sidebar" data-v-130b300a><div data-v-130b300a><div class="password-shadow password-wrapper-out" style="display:none;" data-v-25ba6db2 data-v-130b300a data-v-130b300a><h3 class="title" data-v-25ba6db2 data-v-25ba6db2>SRE运维充电站</h3> <p class="description" data-v-25ba6db2 data-v-25ba6db2>这个杀手不太冷</p> <label id="box" class="inputBox" data-v-25ba6db2 data-v-25ba6db2><input type="password" value="" data-v-25ba6db2> <span data-v-25ba6db2>Konck! Knock!</span> <button data-v-25ba6db2>OK</button></label> <div class="footer" data-v-25ba6db2 data-v-25ba6db2><span data-v-25ba6db2><i class="iconfont reco-theme" data-v-25ba6db2></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-25ba6db2>vuePress-theme-reco</a></span> <span data-v-25ba6db2><i class="iconfont reco-copyright" data-v-25ba6db2></i> <a data-v-25ba6db2><span data-v-25ba6db2>Brains</span>
+            
+          <!---->
+          2022
+        </a></span></div></div> <div class="hide" data-v-130b300a><header class="navbar" data-v-130b300a><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><img src="/images/favicon.svg" alt="SRE运维充电站" class="logo"> <span class="site-name">SRE运维充电站</span></a> <div class="links"><div class="color-picker"><a class="color-button"><i class="iconfont reco-color"></i></a> <div class="color-picker-menu" style="display:none;"><div class="mode-options"><h4 class="title">Choose mode</h4> <ul class="color-mode-options"><li class="dark">dark</li><li class="auto active">auto</li><li class="light">light</li></ul></div></div></div> <div class="search-box"><i class="iconfont reco-search"></i> <input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link"><i class="iconfont reco-home"></i>
+  主页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-category"></i>
+      分类
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/categories/HTML/" class="nav-link"><i class="undefined"></i>
+  HTML
+</a></li><li class="dropdown-item"><!----> <a href="/categories/JavaScript/" class="nav-link"><i class="undefined"></i>
+  JavaScript
+</a></li><li class="dropdown-item"><!----> <a href="/categories/CSS/" class="nav-link"><i class="undefined"></i>
+  CSS
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Go/" class="nav-link"><i class="undefined"></i>
+  Go
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Docker/" class="nav-link"><i class="undefined"></i>
+  Docker
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Kubernetes/" class="nav-link"><i class="undefined"></i>
+  Kubernetes
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Monitoring/" class="nav-link"><i class="undefined"></i>
+  Monitoring
+</a></li><li class="dropdown-item"><!----> <a href="/categories/ServiceMesh/" class="nav-link"><i class="undefined"></i>
+  ServiceMesh
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Vue/" class="nav-link"><i class="undefined"></i>
+  Vue
+</a></li></ul></div></div><div class="nav-item"><a href="/tag/" class="nav-link"><i class="iconfont reco-tag"></i>
+  标签
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont icon-tools"></i>
+      工具箱
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="https://www.uupoop.com/" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="undefined"></i>
+  在线PS
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://cowtransfer.com/" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="undefined"></i>
+  奶牛快传
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://www.tiobe.com/tiobe-index/" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="undefined"></i>
+  编程语言排行榜
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div></div><div class="nav-item"><a href="/timeline/" class="nav-link"><i class="iconfont reco-date"></i>
+  时间线
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-message"></i>
+      关于
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/views/About/resume.html" class="nav-link"><i class="iconfont reco-document"></i>
+  简历
+</a></li><li class="dropdown-item"><!----> <a href="https://blog.csdn.net/weixin_41989934" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-csdn"></i>
+  CSDN
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://github.com/Dz6666" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-github"></i>
+  GitHub
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://gitee.com/Dz6666" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-mayun"></i>
+  Gitee
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div></div> <!----></nav></div></header> <div class="sidebar-mask" data-v-130b300a></div> <aside class="sidebar" data-v-130b300a><div class="personal-info-wrapper" data-v-39576ba9 data-v-130b300a><img src="/images/head_portrait.svg" alt="author-avatar" class="personal-img" data-v-39576ba9> <h3 class="name" data-v-39576ba9>
+    Brains
+  </h3> <div class="num" data-v-39576ba9><div data-v-39576ba9><h3 data-v-39576ba9>30</h3> <h6 data-v-39576ba9>Articles</h6></div> <div data-v-39576ba9><h3 data-v-39576ba9>16</h3> <h6 data-v-39576ba9>Tags</h6></div></div> <ul class="social-links" data-v-39576ba9></ul> <hr data-v-39576ba9></div> <nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link"><i class="iconfont reco-home"></i>
+  主页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-category"></i>
+      分类
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/categories/HTML/" class="nav-link"><i class="undefined"></i>
+  HTML
+</a></li><li class="dropdown-item"><!----> <a href="/categories/JavaScript/" class="nav-link"><i class="undefined"></i>
+  JavaScript
+</a></li><li class="dropdown-item"><!----> <a href="/categories/CSS/" class="nav-link"><i class="undefined"></i>
+  CSS
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Go/" class="nav-link"><i class="undefined"></i>
+  Go
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Docker/" class="nav-link"><i class="undefined"></i>
+  Docker
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Kubernetes/" class="nav-link"><i class="undefined"></i>
+  Kubernetes
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Monitoring/" class="nav-link"><i class="undefined"></i>
+  Monitoring
+</a></li><li class="dropdown-item"><!----> <a href="/categories/ServiceMesh/" class="nav-link"><i class="undefined"></i>
+  ServiceMesh
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Vue/" class="nav-link"><i class="undefined"></i>
+  Vue
+</a></li></ul></div></div><div class="nav-item"><a href="/tag/" class="nav-link"><i class="iconfont reco-tag"></i>
+  标签
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont icon-tools"></i>
+      工具箱
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="https://www.uupoop.com/" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="undefined"></i>
+  在线PS
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://cowtransfer.com/" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="undefined"></i>
+  奶牛快传
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://www.tiobe.com/tiobe-index/" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="undefined"></i>
+  编程语言排行榜
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div></div><div class="nav-item"><a href="/timeline/" class="nav-link"><i class="iconfont reco-date"></i>
+  时间线
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-message"></i>
+      关于
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/views/About/resume.html" class="nav-link"><i class="iconfont reco-document"></i>
+  简历
+</a></li><li class="dropdown-item"><!----> <a href="https://blog.csdn.net/weixin_41989934" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-csdn"></i>
+  CSDN
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://github.com/Dz6666" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-github"></i>
+  GitHub
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://gitee.com/Dz6666" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-mayun"></i>
+  Gitee
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div></div> <!----></nav> <!----> </aside> <div class="password-shadow password-wrapper-in" style="display:none;" data-v-25ba6db2 data-v-130b300a><h3 class="title" data-v-25ba6db2 data-v-25ba6db2>04-K8S Basic-Pod资源清单配置基础（基础命令、Pod网络）</h3> <!----> <label id="box" class="inputBox" data-v-25ba6db2 data-v-25ba6db2><input type="password" value="" data-v-25ba6db2> <span data-v-25ba6db2>Konck! Knock!</span> <button data-v-25ba6db2>OK</button></label> <div class="footer" data-v-25ba6db2 data-v-25ba6db2><span data-v-25ba6db2><i class="iconfont reco-theme" data-v-25ba6db2></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-25ba6db2>vuePress-theme-reco</a></span> <span data-v-25ba6db2><i class="iconfont reco-copyright" data-v-25ba6db2></i> <a data-v-25ba6db2><span data-v-25ba6db2>Brains</span>
+            
+          <!---->
+          2022
+        </a></span></div></div> <div data-v-130b300a><main class="page"><section><div class="page-title"><h1 class="title">04-K8S Basic-Pod资源清单配置基础（基础命令、Pod网络）</h1> <div data-v-f875f3fc><i class="iconfont reco-account" data-v-f875f3fc><span data-v-f875f3fc>Brains</span></i> <i class="iconfont reco-date" data-v-f875f3fc><span data-v-f875f3fc>3/16/2019</span></i> <i class="iconfont reco-eye" data-v-f875f3fc><span id="/views/Native/Kubernetes/Kubernetes_Basic/04-K8S%20Basic-Pod%E8%B5%84%E6%BA%90%E6%B8%85%E5%8D%95%E9%85%8D%E7%BD%AE%E5%9F%BA%E7%A1%80%EF%BC%88%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4%E3%80%81Pod%E7%BD%91%E7%BB%9C%EF%BC%89.html" data-flag-title="Your Article Title" class="leancloud-visitors" data-v-f875f3fc><a class="leancloud-visitors-count" style="font-size:.9rem;font-weight:normal;color:#999;"></a></span></i> <i class="tags iconfont reco-tag" data-v-f875f3fc><span class="tag-item" data-v-f875f3fc>Kubernetes_Basic</span></i></div></div> <div class="theme-reco-content content__default"><p></p><div class="table-of-contents"><ul><li><a href="#_1-1、资源对象的配置格式">1.1、资源对象的配置格式</a></li><li><a href="#_1-2、和解循环-reconciliation-loop">1.2、和解循环（Reconciliation Loop）</a></li><li><a href="#_1-3、管理资源对象">1.3、管理资源对象</a></li><li><a href="#_1-4、k8s资源对象管理形式">1.4、K8s资源对象管理形式</a></li><li><a href="#_2-1、kubernetes资源配置对象官方手册">2.1、kubernetes资源配置对象官方手册</a></li><li><a href="#_2-2、namespace资源yaml格式资源配置清单创建">2.2、NameSpace资源YAML格式资源配置清单创建</a></li><li><a href="#_2-3、pod资源yaml格式资源配置清单创建-无控制器控制-自主式pod">2.3、Pod资源YAML格式资源配置清单创建（无控制器控制-自主式Pod）</a><ul><li><a href="#_2-3-1、使用模板导出方式定义pod">2.3.1、使用模板导出方式定义Pod</a></li><li><a href="#_2-3-2、手动定义一个pod-一个pod运行多个容器">2.3.2、手动定义一个Pod（一个pod运行多个容器）</a></li></ul></li><li><a href="#_2-4、kubectl-exec-连接">2.4、kubectl exec 连接</a><ul><li><a href="#_2-4-1、kubectl-exec-连接进行pod的容器的交互式接口">2.4.1、kubectl exec 连接进行pod的容器的交互式接口</a></li></ul></li><li><a href="#_2-5、kubectl-logs-查看pod日志">2.5、kubectl logs 查看pod日志</a><ul><li><a href="#_2-5-1、kubectl-logs-查看pod中容器的日志信息">2.5.1、kubectl logs 查看pod中容器的日志信息</a></li></ul></li><li><a href="#_2-6、pod网络">2.6、Pod网络</a><ul><li><a href="#_2-6-1、运行一个pod使用共享宿主机的网络-pods-spec-hostnetwork">2.6.1、运行一个pod使用共享宿主机的网络(pods.spec.hostNetwork)</a></li><li><a href="#_2-6-2、pods-spec-containers-ports指定容器端口暴漏-仅绑定容器运行的一个宿主机的地址即单一端口映射">2.6.2、pods.spec.containers.ports指定容器端口暴漏（仅绑定容器运行的一个宿主机的地址即单一端口映射）</a></li></ul></li><li><a href="#问题思考">问题思考</a></li></ul></div><p></p> <h1 id="一、pod资源清单介绍"><a href="#一、pod资源清单介绍" class="header-anchor">#</a> 一、Pod资源清单介绍</h1> <h2 id="_1-1、资源对象的配置格式"><a href="#_1-1、资源对象的配置格式" class="header-anchor">#</a> 1.1、资源对象的配置格式</h2> <ul><li>资源对象的配置格式
+<ul><li>API Server接受和返回的所有JSON对象都遵循同一个模式，它们都具有“Kind&quot; 和 “api version” 字段，用于标识对象所属的资源类型、API群组及相关的版本</li> <li>大多数的对象或列表类型的资源还具有三个嵌套型的字典 metadata、apec和status
+<ul><li><code>metadata</code> : 字段为资源提供的元数据信息，例如：名称、隶属的名称空间和标签等</li> <li><code>apec</code>：用于定义用户期望的状态，不同的资源类型，其状态的意义各有不同，例如pod资源最为核心的功能在于运行容器</li> <li><code>stats</code> ：则记录着活动对象当前的状态，它由kubernetes系统自行维护，对于用户来说为只读字段</li></ul></li> <li>kubectl api-resources 命令可以获取集群支持使用的所有资源类型</li></ul></li></ul> <h2 id="_1-2、和解循环-reconciliation-loop"><a href="#_1-2、和解循环-reconciliation-loop" class="header-anchor">#</a> 1.2、和解循环（Reconciliation Loop）</h2> <ul><li><code>和解循环（Reconciliation Loop）</code> <ul><li>客户端向API Server提交POST请求以创建对象
+<ul><li>通过JSON格式的body提交</li> <li>YAML格式需要事先完成向JSON的转换</li> <li>对象配置信息保存于etcd中，其定义出的状态也成为“期望的状态（Spec）”</li></ul></li> <li>控制器负责将其创建为Kubernetes集群上的具体对象（活动对象），并确保其当前状态（status）与用户定义的期望状态相同；
+<ul><li>stats由控制器通过各界循环（loop）不间断地监控着相关地对象地状态，在对象地当前状态发生改变时运行合适地操作当前状态无限接近期望地状态</li></ul></li></ul></li></ul> <p><img src="https://img2020.cnblogs.com/blog/1600332/202106/1600332-20210613195350520-1830519977.png" alt="image"></p> <p>04-Pod资源清单配置基础（基础命令、Pod网络）
+E编辑 F收藏 W关注中 S分享
+页面… 马哥-Kubernetes
+跳到banner的尾部
+回到标题开始
+转至元数据结尾
+由 zhe.dai创建, 最后修改于十一月 05, 2020转至元数据起始
+一、Pod资源清单介绍
+1.1、资源对象的配置格式
+1.2、和解循环（Reconciliation Loop）
+1.3、管理资源对象
+1.4、K8s资源对象管理形式
+二、资源配置对象
+2.1、kubernetes资源配置对象官方手册
+2.2、NameSpace资源YAML格式资源配置清单创建
+2.3、Pod资源YAML格式资源配置清单创建（无控制器控制-自主式Pod）
+2.3.1、使用模板导出方式定义Pod
+2.3.2、手动定义一个Pod（一个pod运行多个容器）
+2.4、kubectl exec 连接
+2.4.1、kubectl exec 连接进行pod的容器的交互式接口
+2.5、kubectl logs 查看pod日志
+2.5.1、kubectl logs 查看pod中容器的日志信息
+2.6、Pod网络
+2.6.1、运行一个pod使用共享宿主机的网络(pods.spec.hostNetwork)
+2.6.2、pods.spec.containers.ports指定容器端口暴漏（仅绑定容器运行的一个宿主机的地址即单一端口映射）
+一、Pod资源清单介绍
+1.1、资源对象的配置格式
+资源对象的配置格式</p> <p>API Server接受和返回的所有JSON对象都遵循同一个模式，它们都具有“Kind&quot; 和 “api version” 字段，用于标识对象所属的资源类型、API群组及相关的版本
+大多数的对象或列表类型的资源还具有三个嵌套型的字典 metadata、apec和status
+metadata : 字段为资源提供的元数据信息，例如：名称、隶属的名称空间和标签等
+apec：用于定义用户期望的状态，不同的资源类型，其状态的意义各有不同，例如pod资源最为核心的功能在于运行容器
+stats ：则记录着活动对象当前的状态，它由kubernetes系统自行维护，对于用户来说为只读字段
+kubectl api-resources 命令可以获取集群支持使用的所有资源类型
+1.2、和解循环（Reconciliation Loop）
+和解循环（Reconciliation Loop）</p> <p>客户端向API Server提交POST请求以创建对象
+通过JSON格式的body提交
+YAML格式需要事先完成向JSON的转换
+对象配置信息保存于etcd中，其定义出的状态也成为“期望的状态（Spec）”
+控制器负责将其创建为Kubernetes集群上的具体对象（活动对象），并确保其当前状态（status）与用户定义的期望状态相同；
+stats由控制器通过各界循环（loop）不间断地监控着相关地对象地状态，在对象地当前状态发生改变时运行合适地操作当前状态无限接近期望地状态</p> <h2 id="_1-3、管理资源对象"><a href="#_1-3、管理资源对象" class="header-anchor">#</a> 1.3、管理资源对象</h2> <p><img src="https://img2020.cnblogs.com/blog/1600332/202106/1600332-20210613195408264-1553143720.png" alt="image"></p> <h2 id="_1-4、k8s资源对象管理形式"><a href="#_1-4、k8s资源对象管理形式" class="header-anchor">#</a> 1.4、K8s资源对象管理形式</h2> <ul><li>kubectl的命令可分为三类：
+<ul><li><code>陈述式命令（Imperative Commands）</code> <ul><li>即此前用到的run、expose、delete和get等命令，它们直接多用于Kubernetes系统上的活动给对象，简单易用，但是不支持代码复用、修改复审即审计日志等功能，这些功能的实现通常要依赖于资源配置文件中，这些问问你进也被称为资源清单</li></ul></li> <li><code>陈述式对象配置 （Imperative Object Configuration）</code></li> <li><code>声明式对象配置 （Declarative Object Configuration）</code></li></ul></li> <li>配置对象指的是：要使用json或者使用YAML格式配置文件具体而清晰的定义出一个资源所期望的状态，也可以使用两种方式进行资源创建，使用create命令称为陈述式对象配置，使用apply命令称为声明式对象配置</li> <li>参考博客地址：https://blog.csdn.net/dkfajsldfsdfsd/article/details/80916543</li></ul> <h1 id="二、资源配置对象"><a href="#二、资源配置对象" class="header-anchor">#</a> 二、资源配置对象</h1> <h2 id="_2-1、kubernetes资源配置对象官方手册"><a href="#_2-1、kubernetes资源配置对象官方手册" class="header-anchor">#</a> 2.1、kubernetes资源配置对象官方手册</h2> <ul><li>https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.16/</li></ul> <h2 id="_2-2、namespace资源yaml格式资源配置清单创建"><a href="#_2-2、namespace资源yaml格式资源配置清单创建" class="header-anchor">#</a> 2.2、NameSpace资源YAML格式资源配置清单创建</h2> <ul><li>namespace资源创建语法格式参考：https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.16/#namespace-v1-core</li></ul> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code><span class="token comment">###############查看陈述式创建的名称空间###############</span>
+basic<span class="token punctuation">]</span><span class="token comment"># kubectl get ns default -o yaml</span>
+apiVersion: v1
+kind: Namespace
+metadata:
+  creationTimestamp: <span class="token string">&quot;2020-04-24T16:49:33Z&quot;</span>
+  managedFields:
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:status:
+        f:phase: <span class="token punctuation">{</span><span class="token punctuation">}</span>
+    manager: kube-apiserver
+    operation: Update
+    time: <span class="token string">&quot;2020-04-24T16:49:33Z&quot;</span>
+  name: default
+  resourceVersion: <span class="token string">&quot;153&quot;</span>
+  selfLink: /api/v1/namespaces/default
+  uid: d8651cc1-a2fb-4e2b-81cc-727f18c7080f
+spec:
+  finalizers:
+  - kubernetes
+status:
+  phase: Active     <span class="token comment"># 相位即状态，如果不指定默认也会存在</span>
+<span class="token comment">#####################################################</span>
+ 
+ 
+ 
+ 
+<span class="token number">1</span>、创建配置清单目录
+    ~<span class="token punctuation">]</span><span class="token comment"># mkdir mainfests</span>
+    ~<span class="token punctuation">]</span><span class="token comment"># cd mainfests/</span>
+ 
+    mainfests<span class="token punctuation">]</span><span class="token comment"># mkdir basic</span>
+    mainfests<span class="token punctuation">]</span><span class="token comment"># cd basic/</span>
+    basic<span class="token punctuation">]</span><span class="token comment"># pwd</span>
+        /root/mainfests/basic
+ 
+<span class="token comment">#创建YAML格式的资源配置清单文件</span>
+<span class="token number">2</span>、创建简单一个YAML格式的资源类型为名称空间
+    basic<span class="token punctuation">]</span><span class="token comment"># cat develop-ns.yaml</span>
+    <span class="token comment">#使用kubectl get ns default -o yaml --export命令导出一份配置清单加以修改</span>
+    <span class="token comment">#namespace所属的群组</span>
+    apiVersion: v1
+    <span class="token comment">#名称空间类型，首字母大写</span>
+    kind: Namespace
+    <span class="token comment">#元数据定义</span>
+    metadata:
+      name: develop
+    <span class="token comment">#所期望的状态，但是对于名称空间来讲没有什么可期望的状态，所以spec字段其实可以不写</span>
+    spec:
+    <span class="token comment">#表示由k8s来回收</span>
+      finalizers:
+      - kubernetes
+ 
+<span class="token number">3</span>、确保k8s集群上没有将要创建的develop名称空间
+    basic<span class="token punctuation">]</span><span class="token comment"># kubectl get ns</span>
+ 
+<span class="token comment">#陈述式对象配置</span>
+<span class="token number">4</span>、（陈述式对象配置 ）使用编写好的YAML清单创建名称空间   
+    basic<span class="token punctuation">]</span><span class="token comment"># kubectl create -f develop-ns.yaml</span>
+        namespace/develop created
+ 
+    basic<span class="token punctuation">]</span><span class="token comment"># kubectl get ns</span>
+        NAME              STATUS   AGE
+        default           Active   24h
+        develop           Active   15s
+ 
+<span class="token comment">#声明式对象配置</span>
+<span class="token number">5</span>、（声明式对象配置）创建一个名称为生产环境的名称空间
+    basic<span class="token punctuation">]</span><span class="token comment"># cat pord-ns.yaml</span>
+    <span class="token comment">#使用kubectl get ns default -o yaml --export命令导出一份配置清单加以修改</span>
+    <span class="token comment">#namespace所属的群组</span>
+    apiVersion: v1
+    <span class="token comment">#名称空间类型，首字母大写</span>
+    kind: Namespace
+    <span class="token comment">#元数据定义</span>
+    metadata:
+      name: prod
+    <span class="token comment">#所期望的状态，但是对于名称空间来讲没有什么可期望的状态</span>
+    spec:
+    <span class="token comment">#表示由k8s来回收</span>
+      finalizers:
+      - kubernetes
+ 
+     basic<span class="token punctuation">]</span><span class="token comment"># kubectl apply -f pord-ns.yaml</span>
+        namespace/prod created
+    basic<span class="token punctuation">]</span><span class="token comment"># kubectl get ns</span>
+        NAME              STATUS   AGE
+        default           Active   24h
+        develop           Active   4m6s
+        prod              Active   3s
+ 
+<span class="token comment">#声明式对象配置优点：如果使用同一YAML配置文件创建多次则会自动检测是否存在此资源并告知已经存在而且还支持再次目录下的YAML进行资源创建或修改，但是陈述式对象配置则会报错</span>
+<span class="token number">6</span>、声明式对象及陈述性对象对比
+    <span class="token comment">#陈述式 --&gt; 陈述式则报错为资源已经存在</span>
+    basic<span class="token punctuation">]</span><span class="token comment"># kubectl create -f develop-ns.yaml</span>
+        Error from server <span class="token punctuation">(</span>AlreadyExists<span class="token punctuation">)</span>: error when creating <span class="token string">&quot;develop-ns.yaml&quot;</span><span class="token builtin class-name">:</span> namespaces <span class="token string">&quot;develop&quot;</span> already exists
+ 
+    <span class="token comment">#声明式 --&gt; 声明式则显示资源并未进行改变</span>
+    basic<span class="token punctuation">]</span><span class="token comment"># kubectl apply -f pord-ns.yaml</span>
+        namespace/prod unchanged
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br><span class="line-number">64</span><br><span class="line-number">65</span><br><span class="line-number">66</span><br><span class="line-number">67</span><br><span class="line-number">68</span><br><span class="line-number">69</span><br><span class="line-number">70</span><br><span class="line-number">71</span><br><span class="line-number">72</span><br><span class="line-number">73</span><br><span class="line-number">74</span><br><span class="line-number">75</span><br><span class="line-number">76</span><br><span class="line-number">77</span><br><span class="line-number">78</span><br><span class="line-number">79</span><br><span class="line-number">80</span><br><span class="line-number">81</span><br><span class="line-number">82</span><br><span class="line-number">83</span><br><span class="line-number">84</span><br><span class="line-number">85</span><br><span class="line-number">86</span><br><span class="line-number">87</span><br><span class="line-number">88</span><br><span class="line-number">89</span><br><span class="line-number">90</span><br><span class="line-number">91</span><br><span class="line-number">92</span><br><span class="line-number">93</span><br><span class="line-number">94</span><br><span class="line-number">95</span><br><span class="line-number">96</span><br><span class="line-number">97</span><br><span class="line-number">98</span><br><span class="line-number">99</span><br><span class="line-number">100</span><br><span class="line-number">101</span><br><span class="line-number">102</span><br></div></div><h2 id="_2-3、pod资源yaml格式资源配置清单创建-无控制器控制-自主式pod"><a href="#_2-3、pod资源yaml格式资源配置清单创建-无控制器控制-自主式pod" class="header-anchor">#</a> 2.3、Pod资源YAML格式资源配置清单创建（无控制器控制-自主式Pod）</h2> <h3 id="_2-3-1、使用模板导出方式定义pod"><a href="#_2-3-1、使用模板导出方式定义pod" class="header-anchor">#</a> 2.3.1、使用模板导出方式定义Pod</h3> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code><span class="token number">1</span>、使用之前手动创建pod资源导出一个YAML格式的清单文件
+    basic<span class="token punctuation">]</span><span class="token comment"># kubectl get pods myapp-5c6976696c-8kpqh -o yaml --export &gt; pod-demo-yaml</span>
+ 
+<span class="token number">2</span>、编辑导出的YAML
+basic<span class="token punctuation">]</span><span class="token comment"># cat pod-demo-yaml</span>
+<span class="token comment">#pod所属的群组</span>
+apiVersion: v1
+<span class="token comment">#资源的类型为pod</span>
+kind: Pod
+<span class="token comment">#元数据</span>
+metadata:
+  creationTimestamp: null   <span class="token comment"># 创建启动时间会自动修改</span>
+  <span class="token comment">#generateName名称为手动创建自动生成的，手动定义使用name</span>
+  <span class="token comment">#generateName: myapp-5c6976696c-</span>
+  <span class="token comment">#pod名称</span>
+  name: pod-demo
+  <span class="token comment">#pod使用的名称空间</span>
+  namespace: develop
+<span class="token comment">#定义pod的属性</span>
+spec:
+  <span class="token comment">#容器</span>
+  containers:
+  <span class="token comment">#这个容器使用的镜像文件</span>
+  - image: ikubernetes/myapp:v1
+    <span class="token comment">#imagePullPolicy如果调度的node集群上没有则使用imagePullPolicy定义有三个值</span>
+    <span class="token comment">#   Always：总是拉取 pul</span>
+    <span class="token comment">#   IfNotPresent：默认值,本地有则使用本地镜像,不拉取</span>
+    <span class="token comment">#   Never：只使用本地镜像，从不拉取）</span>
+    imagePullPolicy: IfNotPresent
+    <span class="token comment">#容器的名称</span>
+    name: myapp
+    <span class="token comment">#定义这个容器期望和拥有所使用的资源</span>
+    resources: <span class="token punctuation">{</span><span class="token punctuation">}</span>
+  <span class="token comment">#dnsPolicy使用什么样的dns策略</span>
+     <span class="token comment">#  ClusterFirst：表示优先使用k8s集群中的dns服务</span>
+     <span class="token comment">#  None：无任何策略</span>
+     <span class="token comment">#  Default：默认</span>
+     <span class="token comment">#  ClusterFirstWithHostNet 集群 DNS 优先，并伴随着使用宿主机网络）</span>
+  dnsPolicy: ClusterFirst
+  <span class="token comment">#是否允许service引用此pod</span>
+  enableServiceLinks: <span class="token boolean">true</span>
+  <span class="token comment">#（节点绑定）此pod运行所调度运行的node节点，如果声明则此pod只能运行在此node上，如果不声明则可以由scheduler调度器随机调度</span>
+  <span class="token comment">#nodeName: 192.168.1.141</span>
+  <span class="token comment">#pod优先级</span>
+  priority: <span class="token number">0</span>
+  <span class="token comment">#restartPolicy定义Pod时，可以指定restartPolicy字段，表明此Pod中的容器在何种条件下会重启。restartPolicy拥有三个候选值</span>
+    <span class="token comment">#   Always：只要退出就重启</span>
+    <span class="token comment">#   OnFailure：失败退出时（exit code不为0）才重启</span>
+    <span class="token comment">#   Never：永远不重启</span>
+  restartPolicy: Always
+  <span class="token comment">#使用哪个调度器进行调度此pod</span>
+  schedulerName: default-scheduler
+  <span class="token comment">#定义安全上下文</span>
+  securityContext: <span class="token punctuation">{</span><span class="token punctuation">}</span>
+ 
+<span class="token number">3</span>、使用声明式对象配置指向YAML资源配置文件创建Pod
+    basic<span class="token punctuation">]</span><span class="token comment"># kubectl apply -f pod-demo-yaml</span>
+        pod/pod-demo created
+ 
+<span class="token number">4</span>、指定查看develop名称空间下的pod
+    basic<span class="token punctuation">]</span><span class="token comment"># kubectl get pods -n develop</span>
+        NAME       READY   STATUS    RESTARTS   AGE
+        pod-demo   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          36s
+ 
+ 
+<span class="token number">5</span>、使用kubectl explain 资源    可以查看此资源的创建讲解
+    basic<span class="token punctuation">]</span><span class="token comment"># kubectl explain pods</span>
+    KIND:     Pod
+    VERSION:  v1
+ 
+    DESCRIPTION:
+         Pod is a collection of containers that can run on a host. This resource is
+         created by clients and scheduled onto hosts.
+ 
+    FIELDS:
+       apiVersion   <span class="token operator">&lt;</span>string<span class="token operator">&gt;</span>
+         APIVersion defines the versioned schema of this representation of an
+         object. Servers should convert recognized schemas to the latest internal
+         value, and may reject unrecognized values. More info:
+         https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md<span class="token comment">#resources</span>
+ 
+       kind <span class="token operator">&lt;</span>string<span class="token operator">&gt;</span>
+         Kind is a string value representing the REST resource this object
+         represents. Servers may infer this from the endpoint the client submits
+         requests to. Cannot be updated. In CamelCase. More info:
+         https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md<span class="token comment">#types-kinds</span>
+ 
+       metadata <span class="token operator">&lt;</span>Object<span class="token operator">&gt;</span>
+         Standard object's metadata. More info:
+         https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md<span class="token comment">#metadata</span>
+ 
+       spec <span class="token operator">&lt;</span>Object<span class="token operator">&gt;</span>
+         Specification of the desired behavior of the pod. More info:
+         https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md<span class="token comment">#spec-and-status</span>
+ 
+       status   <span class="token operator">&lt;</span>Object<span class="token operator">&gt;</span>
+         Most recently observed status of the pod. This data may not be up to date.
+         Populated by the system. Read-only. More info:
+         https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md<span class="token comment">#spec-and-status</span>
+ 
+    <span class="token comment">#以上显示写为 &lt;Object&gt;都可以使用字段名称显示的更详细</span>
+    basic<span class="token punctuation">]</span><span class="token comment"># kubectl explain pods.apiVersion</span>
+    basic<span class="token punctuation">]</span><span class="token comment"># kubectl explain pods.metadata</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br><span class="line-number">64</span><br><span class="line-number">65</span><br><span class="line-number">66</span><br><span class="line-number">67</span><br><span class="line-number">68</span><br><span class="line-number">69</span><br><span class="line-number">70</span><br><span class="line-number">71</span><br><span class="line-number">72</span><br><span class="line-number">73</span><br><span class="line-number">74</span><br><span class="line-number">75</span><br><span class="line-number">76</span><br><span class="line-number">77</span><br><span class="line-number">78</span><br><span class="line-number">79</span><br><span class="line-number">80</span><br><span class="line-number">81</span><br><span class="line-number">82</span><br><span class="line-number">83</span><br><span class="line-number">84</span><br><span class="line-number">85</span><br><span class="line-number">86</span><br><span class="line-number">87</span><br><span class="line-number">88</span><br><span class="line-number">89</span><br><span class="line-number">90</span><br><span class="line-number">91</span><br><span class="line-number">92</span><br><span class="line-number">93</span><br><span class="line-number">94</span><br><span class="line-number">95</span><br><span class="line-number">96</span><br><span class="line-number">97</span><br><span class="line-number">98</span><br><span class="line-number">99</span><br><span class="line-number">100</span><br><span class="line-number">101</span><br><span class="line-number">102</span><br><span class="line-number">103</span><br></div></div><h3 id="_2-3-2、手动定义一个pod-一个pod运行多个容器"><a href="#_2-3-2、手动定义一个pod-一个pod运行多个容器" class="header-anchor">#</a> 2.3.2、手动定义一个Pod（一个pod运行多个容器）</h3> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code><span class="token number">1</span>、手动写一个pod资源配置文件
+basic<span class="token punctuation">]</span><span class="token comment"># cat pod-demo-2.yaml</span>
+<span class="token comment">#pod所属的群组</span>
+apiVersion: v1
+<span class="token comment">#资源类型为pod</span>
+kind: Pod
+<span class="token comment">#元数据</span>
+metadata:
+  <span class="token comment">#pod名称</span>
+  name: pod-demo
+  <span class="token comment">#pod所属的名称空间,如果不指定可在apply时使用-n选项</span>
+  namespace: prod
+<span class="token comment">#定义pod的属性</span>
+spec:
+  <span class="token comment">#容器</span>
+  containers:
+  <span class="token comment">#第一个容器的名称</span>
+  - name: myapp
+  <span class="token comment">#这个容器使用的镜像文件</span>
+    image: ikubernetes/myapp:v1
+    imagePullPolicy: IfNotPresent   <span class="token comment"># 总是去互联网上拖最新的</span>
+  <span class="token comment">#第二个容器的名称</span>
+  - name: bbox
+    image: busybox:latest
+    imagePullPolicy: IfNotPresent
+    <span class="token comment">#定义这个容器启动运行的命令</span>
+    command: <span class="token punctuation">[</span><span class="token string">&quot;/bin/sh&quot;</span>,<span class="token string">&quot;-c&quot;</span>,<span class="token string">&quot;sleep 86400&quot;</span><span class="token punctuation">]</span>
+    <span class="token comment"># kubectl explain pods.spec.containers.command</span>
+ 
+ 
+<span class="token comment"># 也可以换种command写法</span>
+    command:
+    - /bin/sh
+    - -c
+    - <span class="token string">&quot;sleep 86400&quot;</span>
+ 
+ 
+ 
+<span class="token number">2</span>、使用aply声明式对象创建pod
+    basic<span class="token punctuation">]</span><span class="token comment"># kubectl apply -f pod-demo-2.yaml</span>
+        pod/pod-demo created
+ 
+<span class="token number">3</span>、查看指定的名称空间下的pod
+    basic<span class="token punctuation">]</span><span class="token comment"># kubectl get pods -n prod</span>
+        NAME       READY   STATUS    RESTARTS   AGE
+        pod-demo   <span class="token number">2</span>/2     Running   <span class="token number">0</span>          72s
+ 
+<span class="token number">4</span>、查看运行的pod的详细信息
+basic<span class="token punctuation">]</span><span class="token comment"># kubectl get pods -n prod -o yaml</span>
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: <span class="token operator">|</span>
+        <span class="token punctuation">{</span><span class="token string">&quot;apiVersion&quot;</span><span class="token builtin class-name">:</span><span class="token string">&quot;v1&quot;</span>,<span class="token string">&quot;kind&quot;</span><span class="token builtin class-name">:</span><span class="token string">&quot;Pod&quot;</span>,<span class="token string">&quot;metadata&quot;</span>:<span class="token punctuation">{</span><span class="token string">&quot;annotations&quot;</span>:<span class="token punctuation">{</span><span class="token punctuation">}</span>,<span class="token string">&quot;name&quot;</span><span class="token builtin class-name">:</span><span class="token string">&quot;pod-demo&quot;</span>,<span class="token string">&quot;namespace&quot;</span><span class="token builtin class-name">:</span><span class="token string">&quot;prod&quot;</span><span class="token punctuation">}</span>,<span class="token string">&quot;spec&quot;</span>:<span class="token punctuation">{</span><span class="token string">&quot;containers&quot;</span>:<span class="token punctuation">[</span><span class="token punctuation">{</span><span class="token string">&quot;image&quot;</span><span class="token builtin class-name">:</span><span class="token string">&quot;ikubernetes/myapp:v1&quot;</span>,<span class="token string">&quot;imagePullPolicy&quot;</span><span class="token builtin class-name">:</span><span class="token string">&quot;IfNotPresent&quot;</span>,<span class="token string">&quot;name&quot;</span><span class="token builtin class-name">:</span><span class="token string">&quot;myapp&quot;</span><span class="token punctuation">}</span>,<span class="token punctuation">{</span><span class="token string">&quot;command&quot;</span>:<span class="token punctuation">[</span><span class="token string">&quot;/bin/sh&quot;</span>,<span class="token string">&quot;-c&quot;</span>,<span class="token string">&quot;sleep 86400&quot;</span><span class="token punctuation">]</span>,<span class="token string">&quot;image&quot;</span><span class="token builtin class-name">:</span><span class="token string">&quot;busybox:latest&quot;</span>,<span class="token string">&quot;imagePullPolicy&quot;</span><span class="token builtin class-name">:</span><span class="token string">&quot;IfNotPresent&quot;</span>,<span class="token string">&quot;name&quot;</span><span class="token builtin class-name">:</span><span class="token string">&quot;bbox&quot;</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">}</span>
+    creationTimestamp: <span class="token string">&quot;2020-02-18T14:32:32Z&quot;</span>
+    name: pod-demo
+    namespace: prod
+    resourceVersion: <span class="token string">&quot;417615&quot;</span>
+    selfLink: /api/v1/namespaces/prod/pods/pod-demo
+    uid: f453f403-cb5d-4636-bfdb-9711a7120cad
+  spec:
+    containers:
+    - image: ikubernetes/myapp:v1
+      imagePullPolicy: IfNotPresent
+      name: myapp
+      resources: <span class="token punctuation">{</span><span class="token punctuation">}</span>
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: default-token-hs4w4
+        readOnly: <span class="token boolean">true</span>
+    - command:
+      - /bin/sh
+      - -c
+      - <span class="token function">sleep</span> <span class="token number">86400</span>
+      image: busybox:latest
+      imagePullPolicy: IfNotPresent
+      name: bbox
+      resources: <span class="token punctuation">{</span><span class="token punctuation">}</span>
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: default-token-hs4w4
+        readOnly: <span class="token boolean">true</span>
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: <span class="token boolean">true</span>
+    nodeName: <span class="token number">192.168</span>.1.51
+    priority: <span class="token number">0</span>
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext: <span class="token punctuation">{</span><span class="token punctuation">}</span>
+    serviceAccount: default
+    serviceAccountName: default
+    terminationGracePeriodSeconds: <span class="token number">30</span>
+    tolerations:
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: <span class="token number">300</span>
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: <span class="token number">300</span>
+    volumes:
+    - name: default-token-hs4w4
+      secret:
+        defaultMode: <span class="token number">420</span>
+        secretName: default-token-hs4w4
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: <span class="token string">&quot;2020-02-18T14:32:32Z&quot;</span>
+      status: <span class="token string">&quot;True&quot;</span>
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: <span class="token string">&quot;2020-02-18T14:32:50Z&quot;</span>
+      status: <span class="token string">&quot;True&quot;</span>
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: <span class="token string">&quot;2020-02-18T14:32:50Z&quot;</span>
+      status: <span class="token string">&quot;True&quot;</span>
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: <span class="token string">&quot;2020-02-18T14:32:32Z&quot;</span>
+      status: <span class="token string">&quot;True&quot;</span>
+      type: PodScheduled
+    containerStatuses:
+    - containerID: docker://917912c11e895b6d6f21d0d3316e474b6e3789db990f70ae12d45b84744d2a30
+      image: busybox:latest
+      imageID: docker-pullable://busybox@sha256:6915be4043561d64e0ab0f8f098dc2ac48e077fe23f488ac24b665166898115a
+      lastState: <span class="token punctuation">{</span><span class="token punctuation">}</span>
+      name: bbox
+      ready: <span class="token boolean">true</span>
+      restartCount: <span class="token number">0</span>
+      started: <span class="token boolean">true</span>
+      state:
+        running:
+          startedAt: <span class="token string">&quot;2020-02-18T14:32:49Z&quot;</span>
+    - containerID: docker://8dccb799765fdf915cb20bc6d92b24f0f200d95587ebd00fc4da3ac1879e8a38
+      image: ikubernetes/myapp:v1
+      imageID: docker-pullable://ikubernetes/myapp@sha256:9c3dc30b5219788b2b8a4b065f548b922a34479577befb54b03330999d30d513
+      lastState: <span class="token punctuation">{</span><span class="token punctuation">}</span>
+      name: myapp
+      ready: <span class="token boolean">true</span>
+      restartCount: <span class="token number">0</span>
+      started: <span class="token boolean">true</span>
+      state:
+        running:
+          startedAt: <span class="token string">&quot;2020-02-18T14:32:33Z&quot;</span>
+    hostIP: <span class="token number">192.168</span>.1.51
+    phase: Running
+    podIP: <span class="token number">192.168</span>.1.81
+    podIPs:
+    - ip: <span class="token number">192.168</span>.1.81
+    qosClass: BestEffort
+    startTime: <span class="token string">&quot;2020-02-18T14:32:32Z&quot;</span>
+kind: List
+metadata:
+  resourceVersion: <span class="token string">&quot;&quot;</span>
+  selfLink: <span class="token string">&quot;&quot;</span>
+ 
+ 
+<span class="token number">5</span>、删除此前使用YAML资源配置文件删除此pod
+    basic<span class="token punctuation">]</span><span class="token comment"># kubectl delete -f hostname.yaml</span>
+        pod <span class="token string">&quot;mypod&quot;</span> deleted
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br><span class="line-number">64</span><br><span class="line-number">65</span><br><span class="line-number">66</span><br><span class="line-number">67</span><br><span class="line-number">68</span><br><span class="line-number">69</span><br><span class="line-number">70</span><br><span class="line-number">71</span><br><span class="line-number">72</span><br><span class="line-number">73</span><br><span class="line-number">74</span><br><span class="line-number">75</span><br><span class="line-number">76</span><br><span class="line-number">77</span><br><span class="line-number">78</span><br><span class="line-number">79</span><br><span class="line-number">80</span><br><span class="line-number">81</span><br><span class="line-number">82</span><br><span class="line-number">83</span><br><span class="line-number">84</span><br><span class="line-number">85</span><br><span class="line-number">86</span><br><span class="line-number">87</span><br><span class="line-number">88</span><br><span class="line-number">89</span><br><span class="line-number">90</span><br><span class="line-number">91</span><br><span class="line-number">92</span><br><span class="line-number">93</span><br><span class="line-number">94</span><br><span class="line-number">95</span><br><span class="line-number">96</span><br><span class="line-number">97</span><br><span class="line-number">98</span><br><span class="line-number">99</span><br><span class="line-number">100</span><br><span class="line-number">101</span><br><span class="line-number">102</span><br><span class="line-number">103</span><br><span class="line-number">104</span><br><span class="line-number">105</span><br><span class="line-number">106</span><br><span class="line-number">107</span><br><span class="line-number">108</span><br><span class="line-number">109</span><br><span class="line-number">110</span><br><span class="line-number">111</span><br><span class="line-number">112</span><br><span class="line-number">113</span><br><span class="line-number">114</span><br><span class="line-number">115</span><br><span class="line-number">116</span><br><span class="line-number">117</span><br><span class="line-number">118</span><br><span class="line-number">119</span><br><span class="line-number">120</span><br><span class="line-number">121</span><br><span class="line-number">122</span><br><span class="line-number">123</span><br><span class="line-number">124</span><br><span class="line-number">125</span><br><span class="line-number">126</span><br><span class="line-number">127</span><br><span class="line-number">128</span><br><span class="line-number">129</span><br><span class="line-number">130</span><br><span class="line-number">131</span><br><span class="line-number">132</span><br><span class="line-number">133</span><br><span class="line-number">134</span><br><span class="line-number">135</span><br><span class="line-number">136</span><br><span class="line-number">137</span><br><span class="line-number">138</span><br><span class="line-number">139</span><br><span class="line-number">140</span><br><span class="line-number">141</span><br><span class="line-number">142</span><br><span class="line-number">143</span><br><span class="line-number">144</span><br><span class="line-number">145</span><br><span class="line-number">146</span><br><span class="line-number">147</span><br><span class="line-number">148</span><br><span class="line-number">149</span><br><span class="line-number">150</span><br><span class="line-number">151</span><br><span class="line-number">152</span><br><span class="line-number">153</span><br><span class="line-number">154</span><br><span class="line-number">155</span><br><span class="line-number">156</span><br><span class="line-number">157</span><br><span class="line-number">158</span><br><span class="line-number">159</span><br><span class="line-number">160</span><br><span class="line-number">161</span><br><span class="line-number">162</span><br><span class="line-number">163</span><br><span class="line-number">164</span><br><span class="line-number">165</span><br><span class="line-number">166</span><br><span class="line-number">167</span><br><span class="line-number">168</span><br><span class="line-number">169</span><br><span class="line-number">170</span><br></div></div><h2 id="_2-4、kubectl-exec-连接"><a href="#_2-4、kubectl-exec-连接" class="header-anchor">#</a> 2.4、kubectl exec 连接</h2> <h3 id="_2-4-1、kubectl-exec-连接进行pod的容器的交互式接口"><a href="#_2-4-1、kubectl-exec-连接进行pod的容器的交互式接口" class="header-anchor">#</a> 2.4.1、kubectl exec 连接进行pod的容器的交互式接口</h3> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code><span class="token number">1</span>、查看kubectl exec帮助
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl exec -h</span>
+    Usage:
+         kubectl <span class="token builtin class-name">exec</span> <span class="token punctuation">(</span>POD <span class="token operator">|</span> TYPE/NAME<span class="token punctuation">)</span> <span class="token punctuation">[</span>-c CONTAINER<span class="token punctuation">]</span> <span class="token punctuation">[</span>flags<span class="token punctuation">]</span> -- COMMAND <span class="token punctuation">[</span>args<span class="token punctuation">..</span>.<span class="token punctuation">]</span> <span class="token punctuation">[</span>options<span class="token punctuation">]</span>
+ 
+<span class="token number">2</span>、指定连入时指定哪个名称空间下的Pod资源下的容器的名称
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl exec pod-demo -c bbox -n prod -it -- /bin/sh</span>
+    / <span class="token comment">#</span>
+ 
+<span class="token number">3</span>、同一Pod中容器共享同一网络名称空间
+    / <span class="token comment"># netstat -tnl</span>
+    Active Internet connections <span class="token punctuation">(</span>only servers<span class="token punctuation">)</span>
+    Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+    tcp        <span class="token number">0</span>      <span class="token number">0</span> <span class="token number">0.0</span>.0.0:80              <span class="token number">0.0</span>.0.0:*               LISTEN     
+    / <span class="token comment"># ip a</span>
+    <span class="token number">1</span>: lo: <span class="token operator">&lt;</span>LOOPBACK,UP,LOWER_UP<span class="token operator">&gt;</span> mtu <span class="token number">65536</span> qdisc noqueue qlen <span class="token number">1000</span>
+        link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+        inet <span class="token number">127.0</span>.0.1/8 scope <span class="token function">host</span> lo
+           valid_lft forever preferred_lft forever
+    <span class="token number">3</span>: eth0@if7: <span class="token operator">&lt;</span>BROADCAST,MULTICAST,UP,LOWER_UP,M-DOWN<span class="token operator">&gt;</span> mtu <span class="token number">1454</span> qdisc noqueue
+        link/ether 9a:2a:38:8d:6b:c1 brd ff:ff:ff:ff:ff:ff
+        inet <span class="token number">192.168</span>.1.81/32 brd <span class="token number">192.168</span>.1.81 scope global eth0
+           valid_lft forever preferred_lft forever
+    / <span class="token comment"># wget -O - -q  192.168.1.81</span>
+        Hello MyApp <span class="token operator">|</span> Version: v1 <span class="token operator">|</span> <span class="token operator">&lt;</span>a <span class="token assign-left variable">href</span><span class="token operator">=</span><span class="token string">&quot;hostname.html&quot;</span><span class="token operator">&gt;</span>Pod Name<span class="token operator">&lt;</span>/a<span class="token operator">&gt;</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br></div></div><h2 id="_2-5、kubectl-logs-查看pod日志"><a href="#_2-5、kubectl-logs-查看pod日志" class="header-anchor">#</a> 2.5、kubectl logs 查看pod日志</h2> <h3 id="_2-5-1、kubectl-logs-查看pod中容器的日志信息"><a href="#_2-5-1、kubectl-logs-查看pod中容器的日志信息" class="header-anchor">#</a> 2.5.1、kubectl logs 查看pod中容器的日志信息</h3> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code><span class="token number">1</span>、查看命令的使用帮助
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl logs -h</span>
+    Usage:
+        kubectl logs <span class="token punctuation">[</span>-f<span class="token punctuation">]</span> <span class="token punctuation">[</span>-p<span class="token punctuation">]</span> <span class="token punctuation">(</span>POD <span class="token operator">|</span> TYPE/NAME<span class="token punctuation">)</span> <span class="token punctuation">[</span>-c CONTAINER<span class="token punctuation">]</span> <span class="token punctuation">[</span>options<span class="token punctuation">]</span>
+ 
+ 
+ 
+<span class="token number">2</span>、查看指定哪个名称空间下的Pod资源下的容器的名称的日志
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl logs pod-demo -n prod -c myapp</span>
+        <span class="token number">192.168</span>.1.81 - - <span class="token punctuation">[</span><span class="token number">18</span>/Feb/2020:14:44:44 +0000<span class="token punctuation">]</span> <span class="token string">&quot;GET / HTTP/1.1&quot;</span> <span class="token number">200</span> <span class="token number">65</span> <span class="token string">&quot;-&quot;</span> <span class="token string">&quot;Wget&quot;</span> <span class="token string">&quot;-&quot;</span>
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl logs pod-demo -n prod -c bbox</span>
+ 
+<span class="token number">3</span>、如果pod中仅有一个容器则仅需要指定pod查看日志即可
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl get pods</span>
+        NAME                            READY   STATUS    RESTARTS   AGE
+        myapp-5c6976696c-8kpqh          <span class="token number">1</span>/1     Running   <span class="token number">0</span>          29h
+ 
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl logs myapp-5c6976696c-8kpqh</span>
+        <span class="token number">192.168</span>.1.177 - - <span class="token punctuation">[</span><span class="token number">17</span>/Feb/2020:08:58:58 +0000<span class="token punctuation">]</span> <span class="token string">&quot;GET / HTTP/1.1&quot;</span> <span class="token number">200</span> <span class="token number">65</span> <span class="token string">&quot;-&quot;</span> <span class="token string">&quot;curl/7.29.0&quot;</span> <span class="token string">&quot;-&quot;</span>
+        <span class="token number">192.168</span>.1.177 - - <span class="token punctuation">[</span><span class="token number">17</span>/Feb/2020:08:59:27 +0000<span class="token punctuation">]</span> <span class="token string">&quot;GET /hostname.html HTTP/1.1&quot;</span> <span class="token number">200</span> <span class="token number">23</span> <span class="token string">&quot;-&quot;</span> <span class="token string">&quot;curl/7.29.0&quot;</span> <span class="token string">&quot;-&quot;</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br></div></div><h2 id="_2-6、pod网络"><a href="#_2-6、pod网络" class="header-anchor">#</a> 2.6、Pod网络</h2> <h3 id="_2-6-1、运行一个pod使用共享宿主机的网络-pods-spec-hostnetwork"><a href="#_2-6-1、运行一个pod使用共享宿主机的网络-pods-spec-hostnetwork" class="header-anchor">#</a> 2.6.1、运行一个pod使用共享宿主机的网络(pods.spec.hostNetwork)</h3> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code><span class="token number">1</span>、手动写一个pod资源配置文件
+basic<span class="token punctuation">]</span><span class="token comment"># cat hostname.yaml</span>
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mypod
+  namespace: default
+spec:
+  containers:
+  - name: myapp
+    image: ikubernetes/myapp:v1
+<span class="token comment">#开启共享宿主机网络端口</span>
+  hostNetwork: <span class="token boolean">true</span>
+ 
+ 
+<span class="token number">2</span>、使用aply声明式对象创建pod
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl apply -f mainfests/basic/hostname.yaml</span>
+        pod/mypod created
+ 
+ 
+<span class="token number">3</span>、验证此pod是否运行宿主机网络 （pod资源的地址就时node节点的地址即监听宿主机的名称空间）
+    basic<span class="token punctuation">]</span><span class="token comment"># kubectl get pods -o wide</span>
+        NAME                            READY   STATUS    RESTARTS   AGE   IP              NODE            NOMINATED NODE   READINESS GATES
+        mypod                           <span class="token number">1</span>/1     Running   <span class="token number">0</span>          40s   <span class="token number">192.168</span>.1.185   <span class="token number">192.168</span>.1.185   <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>           <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>
+ 
+ basic<span class="token punctuation">]</span><span class="token comment"># curl  192.168.1.185</span>
+    Hello MyApp <span class="token operator">|</span> Version: v1 <span class="token operator">|</span> <span class="token operator">&lt;</span>a <span class="token assign-left variable">href</span><span class="token operator">=</span><span class="token string">&quot;hostname.html&quot;</span><span class="token operator">&gt;</span>Pod Name<span class="token operator">&lt;</span>/a<span class="token operator">&gt;</span>
+ basic<span class="token punctuation">]</span><span class="token comment"># curl  192.168.1.185/hostname.html</span>
+    k8s.node2    <span class="token comment"># 这里的主机名为宿主机名名称</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br></div></div><h3 id="_2-6-2、pods-spec-containers-ports指定容器端口暴漏-仅绑定容器运行的一个宿主机的地址即单一端口映射"><a href="#_2-6-2、pods-spec-containers-ports指定容器端口暴漏-仅绑定容器运行的一个宿主机的地址即单一端口映射" class="header-anchor">#</a> 2.6.2、pods.spec.containers.ports指定容器端口暴漏（仅绑定容器运行的一个宿主机的地址即单一端口映射）</h3> <ul><li>containerPort ：容器的端口 （仅表示Node所在的节点上，打开此端口）</li> <li>hostPort ： 宿主机端口，可以使得容器的端口和宿主机的端口建立映射关系（DNET）</li></ul> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code><span class="token number">1</span>、删除此前使用YAML资源配置文件删除此pod
+    basic<span class="token punctuation">]</span><span class="token comment"># kubectl delete -f hostname.yaml</span>
+        pod <span class="token string">&quot;mypod&quot;</span> deleted
+ 
+<span class="token number">2</span>、重新配置YAML资源配置
+basic<span class="token punctuation">]</span><span class="token comment"># cat hostname.yaml</span>
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mypod
+  namespace: default
+spec:
+  containers:
+  - name: myapp
+    image: ikubernetes/myapp:v1
+    <span class="token comment">#定义容器的端口暴漏信息</span>
+    ports:
+        <span class="token comment">#协议</span>
+    - protocol: TCP
+        <span class="token comment">#容器内部端口</span>
+      containerPort: <span class="token number">80</span>
+        <span class="token comment">#可以给此端口设置一个名称，后期可以使用名称引用</span>
+      name: httpd
+        <span class="token comment">#映射宿主机的端口</span>
+      hostPort: <span class="token number">8080</span>
+ 
+<span class="token number">3</span>、使用资源配置文件创建pod
+    basic<span class="token punctuation">]</span><span class="token comment"># kubectl apply -f hostname.yaml</span>
+        pod/mypod created
+ 
+<span class="token number">4</span>、查看创建的pod信息并访问
+    basic<span class="token punctuation">]</span><span class="token comment"># kubectl get pods -o wide</span>
+        mypod                           <span class="token number">1</span>/1     Running   <span class="token number">0</span>          32s   <span class="token number">192.168</span>.1.226   <span class="token number">192.168</span>.1.185   <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>           <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>
+     
+<span class="token number">5</span>、访问运行pod的宿主机节点的映射端口就可以访问到容器的80
+    basic<span class="token punctuation">]</span><span class="token comment"># 192.168.1.185:8080</span>
+    Hello MyApp <span class="token operator">|</span> Version: v1 <span class="token operator">|</span> <span class="token operator">&lt;</span>a <span class="token assign-left variable">href</span><span class="token operator">=</span><span class="token string">&quot;hostname.html&quot;</span><span class="token operator">&gt;</span>Pod Name<span class="token operator">&lt;</span>/a<span class="token operator">&gt;</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br></div></div><h2 id="问题思考"><a href="#问题思考" class="header-anchor">#</a> 问题思考</h2> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code><span class="token comment"># 问题思考：运行一个pods,地址在10.244.0.0/16网络中，如何让集群外部进行访问？</span>
+    <span class="token number">1</span>、Service <span class="token builtin class-name">:</span> NodePort类型的Service， 通过集群中各个主机节点都打开同一个端口，把用户的请求映射给Pods，使其任何节点的这个端口都可以访问到此Pods，端口是随机的一般在30000~32767范围。（kube-proxy生成对应的iptable及Lvs规则实现的）
+    <span class="token number">2</span>、hostPort <span class="token builtin class-name">:</span> Pods一定是运行在集群中的某一个节点上的，所以，Pods运行在哪个节点上，就使用哪个节点的端口访问，其它未运行Pods的节点不可以访问，即单一端口映射。
+    <span class="token number">3</span>、hostNetwork <span class="token builtin class-name">:</span> pod资源的地址就时node节点的地址即监听宿主机的名称空间，Pods直接使用节点的网络，仅通过此运行Pods的节点进行访问其Pods监听的端口，其它未运行Pods的节点不可以访问。
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br></div></div></div></section> <footer class="page-edit"><!----> <!----></footer> <!----> <div class="comments-wrapper"><!----></div> <ul class="side-bar sub-sidebar-wrapper" style="width:12rem;" data-v-cb1513f6><li class="level-2" data-v-cb1513f6><a href="/views/Native/Kubernetes/Kubernetes_Basic/04-K8S%20Basic-Pod%E8%B5%84%E6%BA%90%E6%B8%85%E5%8D%95%E9%85%8D%E7%BD%AE%E5%9F%BA%E7%A1%80%EF%BC%88%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4%E3%80%81Pod%E7%BD%91%E7%BB%9C%EF%BC%89.html#_1-1、资源对象的配置格式" class="sidebar-link reco-side-_1-1、资源对象的配置格式" data-v-cb1513f6>1.1、资源对象的配置格式</a></li><li class="level-2" data-v-cb1513f6><a href="/views/Native/Kubernetes/Kubernetes_Basic/04-K8S%20Basic-Pod%E8%B5%84%E6%BA%90%E6%B8%85%E5%8D%95%E9%85%8D%E7%BD%AE%E5%9F%BA%E7%A1%80%EF%BC%88%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4%E3%80%81Pod%E7%BD%91%E7%BB%9C%EF%BC%89.html#_1-2、和解循环-reconciliation-loop" class="sidebar-link reco-side-_1-2、和解循环-reconciliation-loop" data-v-cb1513f6>1.2、和解循环（Reconciliation Loop）</a></li><li class="level-2" data-v-cb1513f6><a href="/views/Native/Kubernetes/Kubernetes_Basic/04-K8S%20Basic-Pod%E8%B5%84%E6%BA%90%E6%B8%85%E5%8D%95%E9%85%8D%E7%BD%AE%E5%9F%BA%E7%A1%80%EF%BC%88%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4%E3%80%81Pod%E7%BD%91%E7%BB%9C%EF%BC%89.html#_1-3、管理资源对象" class="sidebar-link reco-side-_1-3、管理资源对象" data-v-cb1513f6>1.3、管理资源对象</a></li><li class="level-2" data-v-cb1513f6><a href="/views/Native/Kubernetes/Kubernetes_Basic/04-K8S%20Basic-Pod%E8%B5%84%E6%BA%90%E6%B8%85%E5%8D%95%E9%85%8D%E7%BD%AE%E5%9F%BA%E7%A1%80%EF%BC%88%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4%E3%80%81Pod%E7%BD%91%E7%BB%9C%EF%BC%89.html#_1-4、k8s资源对象管理形式" class="sidebar-link reco-side-_1-4、k8s资源对象管理形式" data-v-cb1513f6>1.4、K8s资源对象管理形式</a></li><li class="level-2" data-v-cb1513f6><a href="/views/Native/Kubernetes/Kubernetes_Basic/04-K8S%20Basic-Pod%E8%B5%84%E6%BA%90%E6%B8%85%E5%8D%95%E9%85%8D%E7%BD%AE%E5%9F%BA%E7%A1%80%EF%BC%88%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4%E3%80%81Pod%E7%BD%91%E7%BB%9C%EF%BC%89.html#_2-1、kubernetes资源配置对象官方手册" class="sidebar-link reco-side-_2-1、kubernetes资源配置对象官方手册" data-v-cb1513f6>2.1、kubernetes资源配置对象官方手册</a></li><li class="level-2" data-v-cb1513f6><a href="/views/Native/Kubernetes/Kubernetes_Basic/04-K8S%20Basic-Pod%E8%B5%84%E6%BA%90%E6%B8%85%E5%8D%95%E9%85%8D%E7%BD%AE%E5%9F%BA%E7%A1%80%EF%BC%88%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4%E3%80%81Pod%E7%BD%91%E7%BB%9C%EF%BC%89.html#_2-2、namespace资源yaml格式资源配置清单创建" class="sidebar-link reco-side-_2-2、namespace资源yaml格式资源配置清单创建" data-v-cb1513f6>2.2、NameSpace资源YAML格式资源配置清单创建</a></li><li class="level-2" data-v-cb1513f6><a href="/views/Native/Kubernetes/Kubernetes_Basic/04-K8S%20Basic-Pod%E8%B5%84%E6%BA%90%E6%B8%85%E5%8D%95%E9%85%8D%E7%BD%AE%E5%9F%BA%E7%A1%80%EF%BC%88%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4%E3%80%81Pod%E7%BD%91%E7%BB%9C%EF%BC%89.html#_2-3、pod资源yaml格式资源配置清单创建-无控制器控制-自主式pod" class="sidebar-link reco-side-_2-3、pod资源yaml格式资源配置清单创建-无控制器控制-自主式pod" data-v-cb1513f6>2.3、Pod资源YAML格式资源配置清单创建（无控制器控制-自主式Pod）</a></li><li class="level-3" data-v-cb1513f6><a href="/views/Native/Kubernetes/Kubernetes_Basic/04-K8S%20Basic-Pod%E8%B5%84%E6%BA%90%E6%B8%85%E5%8D%95%E9%85%8D%E7%BD%AE%E5%9F%BA%E7%A1%80%EF%BC%88%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4%E3%80%81Pod%E7%BD%91%E7%BB%9C%EF%BC%89.html#_2-3-1、使用模板导出方式定义pod" class="sidebar-link reco-side-_2-3-1、使用模板导出方式定义pod" data-v-cb1513f6>2.3.1、使用模板导出方式定义Pod</a></li><li class="level-3" data-v-cb1513f6><a href="/views/Native/Kubernetes/Kubernetes_Basic/04-K8S%20Basic-Pod%E8%B5%84%E6%BA%90%E6%B8%85%E5%8D%95%E9%85%8D%E7%BD%AE%E5%9F%BA%E7%A1%80%EF%BC%88%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4%E3%80%81Pod%E7%BD%91%E7%BB%9C%EF%BC%89.html#_2-3-2、手动定义一个pod-一个pod运行多个容器" class="sidebar-link reco-side-_2-3-2、手动定义一个pod-一个pod运行多个容器" data-v-cb1513f6>2.3.2、手动定义一个Pod（一个pod运行多个容器）</a></li><li class="level-2" data-v-cb1513f6><a href="/views/Native/Kubernetes/Kubernetes_Basic/04-K8S%20Basic-Pod%E8%B5%84%E6%BA%90%E6%B8%85%E5%8D%95%E9%85%8D%E7%BD%AE%E5%9F%BA%E7%A1%80%EF%BC%88%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4%E3%80%81Pod%E7%BD%91%E7%BB%9C%EF%BC%89.html#_2-4、kubectl-exec-连接" class="sidebar-link reco-side-_2-4、kubectl-exec-连接" data-v-cb1513f6>2.4、kubectl exec 连接</a></li><li class="level-3" data-v-cb1513f6><a href="/views/Native/Kubernetes/Kubernetes_Basic/04-K8S%20Basic-Pod%E8%B5%84%E6%BA%90%E6%B8%85%E5%8D%95%E9%85%8D%E7%BD%AE%E5%9F%BA%E7%A1%80%EF%BC%88%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4%E3%80%81Pod%E7%BD%91%E7%BB%9C%EF%BC%89.html#_2-4-1、kubectl-exec-连接进行pod的容器的交互式接口" class="sidebar-link reco-side-_2-4-1、kubectl-exec-连接进行pod的容器的交互式接口" data-v-cb1513f6>2.4.1、kubectl exec 连接进行pod的容器的交互式接口</a></li><li class="level-2" data-v-cb1513f6><a href="/views/Native/Kubernetes/Kubernetes_Basic/04-K8S%20Basic-Pod%E8%B5%84%E6%BA%90%E6%B8%85%E5%8D%95%E9%85%8D%E7%BD%AE%E5%9F%BA%E7%A1%80%EF%BC%88%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4%E3%80%81Pod%E7%BD%91%E7%BB%9C%EF%BC%89.html#_2-5、kubectl-logs-查看pod日志" class="sidebar-link reco-side-_2-5、kubectl-logs-查看pod日志" data-v-cb1513f6>2.5、kubectl logs 查看pod日志</a></li><li class="level-3" data-v-cb1513f6><a href="/views/Native/Kubernetes/Kubernetes_Basic/04-K8S%20Basic-Pod%E8%B5%84%E6%BA%90%E6%B8%85%E5%8D%95%E9%85%8D%E7%BD%AE%E5%9F%BA%E7%A1%80%EF%BC%88%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4%E3%80%81Pod%E7%BD%91%E7%BB%9C%EF%BC%89.html#_2-5-1、kubectl-logs-查看pod中容器的日志信息" class="sidebar-link reco-side-_2-5-1、kubectl-logs-查看pod中容器的日志信息" data-v-cb1513f6>2.5.1、kubectl logs 查看pod中容器的日志信息</a></li><li class="level-2" data-v-cb1513f6><a href="/views/Native/Kubernetes/Kubernetes_Basic/04-K8S%20Basic-Pod%E8%B5%84%E6%BA%90%E6%B8%85%E5%8D%95%E9%85%8D%E7%BD%AE%E5%9F%BA%E7%A1%80%EF%BC%88%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4%E3%80%81Pod%E7%BD%91%E7%BB%9C%EF%BC%89.html#_2-6、pod网络" class="sidebar-link reco-side-_2-6、pod网络" data-v-cb1513f6>2.6、Pod网络</a></li><li class="level-3" data-v-cb1513f6><a href="/views/Native/Kubernetes/Kubernetes_Basic/04-K8S%20Basic-Pod%E8%B5%84%E6%BA%90%E6%B8%85%E5%8D%95%E9%85%8D%E7%BD%AE%E5%9F%BA%E7%A1%80%EF%BC%88%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4%E3%80%81Pod%E7%BD%91%E7%BB%9C%EF%BC%89.html#_2-6-1、运行一个pod使用共享宿主机的网络-pods-spec-hostnetwork" class="sidebar-link reco-side-_2-6-1、运行一个pod使用共享宿主机的网络-pods-spec-hostnetwork" data-v-cb1513f6>2.6.1、运行一个pod使用共享宿主机的网络(pods.spec.hostNetwork)</a></li><li class="level-3" data-v-cb1513f6><a href="/views/Native/Kubernetes/Kubernetes_Basic/04-K8S%20Basic-Pod%E8%B5%84%E6%BA%90%E6%B8%85%E5%8D%95%E9%85%8D%E7%BD%AE%E5%9F%BA%E7%A1%80%EF%BC%88%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4%E3%80%81Pod%E7%BD%91%E7%BB%9C%EF%BC%89.html#_2-6-2、pods-spec-containers-ports指定容器端口暴漏-仅绑定容器运行的一个宿主机的地址即单一端口映射" class="sidebar-link reco-side-_2-6-2、pods-spec-containers-ports指定容器端口暴漏-仅绑定容器运行的一个宿主机的地址即单一端口映射" data-v-cb1513f6>2.6.2、pods.spec.containers.ports指定容器端口暴漏（仅绑定容器运行的一个宿主机的地址即单一端口映射）</a></li><li class="level-2" data-v-cb1513f6><a href="/views/Native/Kubernetes/Kubernetes_Basic/04-K8S%20Basic-Pod%E8%B5%84%E6%BA%90%E6%B8%85%E5%8D%95%E9%85%8D%E7%BD%AE%E5%9F%BA%E7%A1%80%EF%BC%88%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4%E3%80%81Pod%E7%BD%91%E7%BB%9C%EF%BC%89.html#问题思考" class="sidebar-link reco-side-问题思考" data-v-cb1513f6>问题思考</a></li></ul></main> <!----></div></div></div></div><div class="global-ui"><div class="back-to-ceiling" style="right:1rem;bottom:6rem;width:2.5rem;height:2.5rem;border-radius:.25rem;line-height:2.5rem;display:none;" data-v-c6073ba8 data-v-c6073ba8><svg t="1574745035067" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5404" class="icon" data-v-c6073ba8><path d="M526.60727968 10.90185116a27.675 27.675 0 0 0-29.21455937 0c-131.36607665 82.28402758-218.69155461 228.01873535-218.69155402 394.07834331a462.20625001 462.20625001 0 0 0 5.36959153 69.94390903c1.00431239 6.55289093-0.34802892 13.13561351-3.76865779 18.80351572-32.63518765 54.11355614-51.75690182 118.55860487-51.7569018 187.94566865a371.06718723 371.06718723 0 0 0 11.50484808 91.98906777c6.53300375 25.50556257 41.68394495 28.14064038 52.69160883 4.22606766 17.37162448-37.73630017 42.14135425-72.50938081 72.80769204-103.21549295 2.18761121 3.04276886 4.15646224 6.24463696 6.40373557 9.22774369a1871.4375 1871.4375 0 0 0 140.04691725 5.34970492 1866.36093723 1866.36093723 0 0 0 140.04691723-5.34970492c2.24727335-2.98310674 4.21612437-6.18497483 6.3937923-9.2178004 30.66633723 30.70611158 55.4360664 65.4791928 72.80769147 103.21549355 11.00766384 23.91457269 46.15860503 21.27949489 52.69160879-4.22606768a371.15156223 371.15156223 0 0 0 11.514792-91.99901164c0-69.36717486-19.13165746-133.82216804-51.75690182-187.92578088-3.42062944-5.66790279-4.76302748-12.26056868-3.76865837-18.80351632a462.20625001 462.20625001 0 0 0 5.36959269-69.943909c-0.00994388-166.08943902-87.32547796-311.81420293-218.6915546-394.09823051zM605.93803103 357.87693858a93.93749974 93.93749974 0 1 1-187.89594924 6.1e-7 93.93749974 93.93749974 0 0 1 187.89594924-6.1e-7z" p-id="5405" data-v-c6073ba8></path><path d="M429.50777625 765.63860547C429.50777625 803.39355007 466.44236686 1000.39046097 512.00932183 1000.39046097c45.56695499 0 82.4922232-197.00623328 82.5015456-234.7518555 0-37.75494459-36.9345906-68.35043303-82.4922232-68.34111062-45.57627738-0.00932239-82.52019037 30.59548842-82.51086798 68.34111062z" p-id="5406" data-v-c6073ba8></path></svg></div><!----><div class="kanbanniang" data-v-5775ee02><div class="banniang-container" style="display:;" data-v-5775ee02><div class="messageBox" style="right:68px;bottom:190px;display:none;" data-v-5775ee02>
+      我是Brains,欢迎你的关注 
+    </div> <div class="operation" style="right:90px;bottom:40px;display:;" data-v-5775ee02><i class="kbnfont kbn-ban-home ban-home" data-v-5775ee02></i> <i class="kbnfont kbn-ban-message message" data-v-5775ee02></i> <i class="kbnfont kbn-ban-close close" data-v-5775ee02></i> <a target="_blank" href="https://vuepress-theme-reco.recoluan.com/views/plugins/kanbanniang.html" data-v-5775ee02><i class="kbnfont kbn-ban-info info" data-v-5775ee02></i></a> <i class="kbnfont kbn-ban-theme skin" style="display:;" data-v-5775ee02></i></div> <canvas id="banniang" width="200px" height="250" class="live2d" style="right:90px;bottom:-20px;opacity:0.9;" data-v-5775ee02></canvas></div> <div class="showBanNiang" style="display:none;" data-v-5775ee02>
+    看板娘
+  </div></div><canvas id="vuepress-canvas-cursor"></canvas><!----></div></div>
+    <script src="/assets/js/app.cd5fa041.js" defer></script><script src="/assets/js/3.ee7e7098.js" defer></script><script src="/assets/js/1.277d6ebc.js" defer></script><script src="/assets/js/34.4ff3296a.js" defer></script>
+  </body>
+</html>

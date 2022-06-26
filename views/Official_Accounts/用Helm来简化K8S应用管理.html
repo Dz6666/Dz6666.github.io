@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>用Helm来简化K8S应用管理 | SRE运维充电站</title>
+    <meta name="generator" content="VuePress 1.9.7">
+    <link rel="icon" href="/images/favicon.svg">
+    <script>var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?668842dc21c1b8f215b000531ec8f69e";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();</script>
+    <meta name="description" content="这个杀手不太冷">
+    <meta name="baidu_union_verify" content="a0036ccf0b657813fb236f80f376c429">
+    <meta name="Keywords" content="Devops代哲,SRE运维充电站,pyenv.cc,Brains">
+    <meta name="author" content="Devops代哲,SRE运维充电站,pyenv.cc,Brains">
+    
+    <link rel="preload" href="/assets/css/0.styles.938d6ff2.css" as="style"><link rel="preload" href="/assets/js/app.cd5fa041.js" as="script"><link rel="preload" href="/assets/js/3.ee7e7098.js" as="script"><link rel="preload" href="/assets/js/1.277d6ebc.js" as="script"><link rel="preload" href="/assets/js/44.00d176ef.js" as="script"><link rel="prefetch" href="/assets/js/10.d3b54896.js"><link rel="prefetch" href="/assets/js/11.f4bb5601.js"><link rel="prefetch" href="/assets/js/12.ed610cd8.js"><link rel="prefetch" href="/assets/js/13.3a9eb8fa.js"><link rel="prefetch" href="/assets/js/14.b6ae182d.js"><link rel="prefetch" href="/assets/js/15.db6f82c2.js"><link rel="prefetch" href="/assets/js/16.3d5e10b6.js"><link rel="prefetch" href="/assets/js/17.471efd1e.js"><link rel="prefetch" href="/assets/js/18.832fe344.js"><link rel="prefetch" href="/assets/js/19.b59cbfac.js"><link rel="prefetch" href="/assets/js/20.472c4b66.js"><link rel="prefetch" href="/assets/js/21.800f456d.js"><link rel="prefetch" href="/assets/js/22.ffd207bc.js"><link rel="prefetch" href="/assets/js/23.323321ef.js"><link rel="prefetch" href="/assets/js/24.b9a5f746.js"><link rel="prefetch" href="/assets/js/25.60904ca4.js"><link rel="prefetch" href="/assets/js/26.fad8d09c.js"><link rel="prefetch" href="/assets/js/27.aaaa8f8c.js"><link rel="prefetch" href="/assets/js/28.d65a84c8.js"><link rel="prefetch" href="/assets/js/29.ce7bd2fb.js"><link rel="prefetch" href="/assets/js/30.f2c39de0.js"><link rel="prefetch" href="/assets/js/31.f02ef496.js"><link rel="prefetch" href="/assets/js/32.0889c36c.js"><link rel="prefetch" href="/assets/js/33.7b2efadd.js"><link rel="prefetch" href="/assets/js/34.4ff3296a.js"><link rel="prefetch" href="/assets/js/35.6b05b4ad.js"><link rel="prefetch" href="/assets/js/36.4322a33f.js"><link rel="prefetch" href="/assets/js/37.73e5620d.js"><link rel="prefetch" href="/assets/js/38.6e6461a9.js"><link rel="prefetch" href="/assets/js/39.0b0071eb.js"><link rel="prefetch" href="/assets/js/4.6d9bb9fb.js"><link rel="prefetch" href="/assets/js/40.692bdf78.js"><link rel="prefetch" href="/assets/js/41.66cfe668.js"><link rel="prefetch" href="/assets/js/42.1b912be2.js"><link rel="prefetch" href="/assets/js/43.116e6cb6.js"><link rel="prefetch" href="/assets/js/45.06d1d798.js"><link rel="prefetch" href="/assets/js/46.43bfeb5c.js"><link rel="prefetch" href="/assets/js/47.735867da.js"><link rel="prefetch" href="/assets/js/48.12a1df49.js"><link rel="prefetch" href="/assets/js/5.99213a31.js"><link rel="prefetch" href="/assets/js/6.7a0b7b07.js"><link rel="prefetch" href="/assets/js/7.356b6533.js"><link rel="prefetch" href="/assets/js/8.9f6a6c22.js"><link rel="prefetch" href="/assets/js/9.832ff77d.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.938d6ff2.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container no-sidebar" data-v-130b300a><div data-v-130b300a><div class="password-shadow password-wrapper-out" style="display:none;" data-v-25ba6db2 data-v-130b300a data-v-130b300a><h3 class="title" data-v-25ba6db2 data-v-25ba6db2>SRE运维充电站</h3> <p class="description" data-v-25ba6db2 data-v-25ba6db2>这个杀手不太冷</p> <label id="box" class="inputBox" data-v-25ba6db2 data-v-25ba6db2><input type="password" value="" data-v-25ba6db2> <span data-v-25ba6db2>Konck! Knock!</span> <button data-v-25ba6db2>OK</button></label> <div class="footer" data-v-25ba6db2 data-v-25ba6db2><span data-v-25ba6db2><i class="iconfont reco-theme" data-v-25ba6db2></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-25ba6db2>vuePress-theme-reco</a></span> <span data-v-25ba6db2><i class="iconfont reco-copyright" data-v-25ba6db2></i> <a data-v-25ba6db2><span data-v-25ba6db2>Brains</span>
+            
+          <!---->
+          2022
+        </a></span></div></div> <div class="hide" data-v-130b300a><header class="navbar" data-v-130b300a><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><img src="/images/favicon.svg" alt="SRE运维充电站" class="logo"> <span class="site-name">SRE运维充电站</span></a> <div class="links"><div class="color-picker"><a class="color-button"><i class="iconfont reco-color"></i></a> <div class="color-picker-menu" style="display:none;"><div class="mode-options"><h4 class="title">Choose mode</h4> <ul class="color-mode-options"><li class="dark">dark</li><li class="auto active">auto</li><li class="light">light</li></ul></div></div></div> <div class="search-box"><i class="iconfont reco-search"></i> <input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link"><i class="iconfont reco-home"></i>
+  主页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-category"></i>
+      分类
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/categories/HTML/" class="nav-link"><i class="undefined"></i>
+  HTML
+</a></li><li class="dropdown-item"><!----> <a href="/categories/JavaScript/" class="nav-link"><i class="undefined"></i>
+  JavaScript
+</a></li><li class="dropdown-item"><!----> <a href="/categories/CSS/" class="nav-link"><i class="undefined"></i>
+  CSS
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Go/" class="nav-link"><i class="undefined"></i>
+  Go
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Docker/" class="nav-link"><i class="undefined"></i>
+  Docker
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Kubernetes/" class="nav-link"><i class="undefined"></i>
+  Kubernetes
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Monitoring/" class="nav-link"><i class="undefined"></i>
+  Monitoring
+</a></li><li class="dropdown-item"><!----> <a href="/categories/ServiceMesh/" class="nav-link"><i class="undefined"></i>
+  ServiceMesh
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Vue/" class="nav-link"><i class="undefined"></i>
+  Vue
+</a></li></ul></div></div><div class="nav-item"><a href="/tag/" class="nav-link"><i class="iconfont reco-tag"></i>
+  标签
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont icon-tools"></i>
+      工具箱
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="https://www.uupoop.com/" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="undefined"></i>
+  在线PS
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://cowtransfer.com/" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="undefined"></i>
+  奶牛快传
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://www.tiobe.com/tiobe-index/" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="undefined"></i>
+  编程语言排行榜
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div></div><div class="nav-item"><a href="/timeline/" class="nav-link"><i class="iconfont reco-date"></i>
+  时间线
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-message"></i>
+      关于
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/views/About/resume.html" class="nav-link"><i class="iconfont reco-document"></i>
+  简历
+</a></li><li class="dropdown-item"><!----> <a href="https://blog.csdn.net/weixin_41989934" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-csdn"></i>
+  CSDN
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://github.com/Dz6666" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-github"></i>
+  GitHub
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://gitee.com/Dz6666" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-mayun"></i>
+  Gitee
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div></div> <!----></nav></div></header> <div class="sidebar-mask" data-v-130b300a></div> <aside class="sidebar" data-v-130b300a><div class="personal-info-wrapper" data-v-39576ba9 data-v-130b300a><img src="/images/head_portrait.svg" alt="author-avatar" class="personal-img" data-v-39576ba9> <h3 class="name" data-v-39576ba9>
+    Brains
+  </h3> <div class="num" data-v-39576ba9><div data-v-39576ba9><h3 data-v-39576ba9>30</h3> <h6 data-v-39576ba9>Articles</h6></div> <div data-v-39576ba9><h3 data-v-39576ba9>16</h3> <h6 data-v-39576ba9>Tags</h6></div></div> <ul class="social-links" data-v-39576ba9></ul> <hr data-v-39576ba9></div> <nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link"><i class="iconfont reco-home"></i>
+  主页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-category"></i>
+      分类
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/categories/HTML/" class="nav-link"><i class="undefined"></i>
+  HTML
+</a></li><li class="dropdown-item"><!----> <a href="/categories/JavaScript/" class="nav-link"><i class="undefined"></i>
+  JavaScript
+</a></li><li class="dropdown-item"><!----> <a href="/categories/CSS/" class="nav-link"><i class="undefined"></i>
+  CSS
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Go/" class="nav-link"><i class="undefined"></i>
+  Go
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Docker/" class="nav-link"><i class="undefined"></i>
+  Docker
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Kubernetes/" class="nav-link"><i class="undefined"></i>
+  Kubernetes
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Monitoring/" class="nav-link"><i class="undefined"></i>
+  Monitoring
+</a></li><li class="dropdown-item"><!----> <a href="/categories/ServiceMesh/" class="nav-link"><i class="undefined"></i>
+  ServiceMesh
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Vue/" class="nav-link"><i class="undefined"></i>
+  Vue
+</a></li></ul></div></div><div class="nav-item"><a href="/tag/" class="nav-link"><i class="iconfont reco-tag"></i>
+  标签
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont icon-tools"></i>
+      工具箱
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="https://www.uupoop.com/" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="undefined"></i>
+  在线PS
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://cowtransfer.com/" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="undefined"></i>
+  奶牛快传
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://www.tiobe.com/tiobe-index/" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="undefined"></i>
+  编程语言排行榜
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div></div><div class="nav-item"><a href="/timeline/" class="nav-link"><i class="iconfont reco-date"></i>
+  时间线
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-message"></i>
+      关于
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/views/About/resume.html" class="nav-link"><i class="iconfont reco-document"></i>
+  简历
+</a></li><li class="dropdown-item"><!----> <a href="https://blog.csdn.net/weixin_41989934" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-csdn"></i>
+  CSDN
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://github.com/Dz6666" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-github"></i>
+  GitHub
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://gitee.com/Dz6666" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-mayun"></i>
+  Gitee
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div></div> <!----></nav> <!----> </aside> <div class="password-shadow password-wrapper-in" style="display:none;" data-v-25ba6db2 data-v-130b300a><h3 class="title" data-v-25ba6db2 data-v-25ba6db2>用Helm来简化K8S应用管理</h3> <!----> <label id="box" class="inputBox" data-v-25ba6db2 data-v-25ba6db2><input type="password" value="" data-v-25ba6db2> <span data-v-25ba6db2>Konck! Knock!</span> <button data-v-25ba6db2>OK</button></label> <div class="footer" data-v-25ba6db2 data-v-25ba6db2><span data-v-25ba6db2><i class="iconfont reco-theme" data-v-25ba6db2></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-25ba6db2>vuePress-theme-reco</a></span> <span data-v-25ba6db2><i class="iconfont reco-copyright" data-v-25ba6db2></i> <a data-v-25ba6db2><span data-v-25ba6db2>Brains</span>
+            
+          <!---->
+          2022
+        </a></span></div></div> <div data-v-130b300a><main class="page"><section><div class="page-title"><h1 class="title">用Helm来简化K8S应用管理</h1> <div data-v-f875f3fc><i class="iconfont reco-account" data-v-f875f3fc><span data-v-f875f3fc>Brains</span></i> <i class="iconfont reco-date" data-v-f875f3fc><span data-v-f875f3fc>3/16/2022</span></i> <i class="iconfont reco-eye" data-v-f875f3fc><span id="/views/Official_Accounts/%E7%94%A8Helm%E6%9D%A5%E7%AE%80%E5%8C%96K8S%E5%BA%94%E7%94%A8%E7%AE%A1%E7%90%86.html" data-flag-title="Your Article Title" class="leancloud-visitors" data-v-f875f3fc><a class="leancloud-visitors-count" style="font-size:.9rem;font-weight:normal;color:#999;"></a></span></i> <i class="tags iconfont reco-tag" data-v-f875f3fc><span class="tag-item" data-v-f875f3fc>Helm</span></i></div></div> <div class="theme-reco-content content__default"><div class="custom-block tip"><p class="title"></p><p><img src="https://atlas.pingcode.com/files/public/623adc7edf5f451e93d005d3" alt="image.png"></p></div> <p></p><div class="table-of-contents"><ul><li><a href="#一、什么是helm">一、什么是Helm</a></li><li><a href="#二、helm带来的便捷">二、Helm带来的便捷</a></li><li><a href="#三、-helm-工作原理及架构演变">三、 Helm 工作原理及架构演变</a><ul><li><a href="#_3-1、工作原理">3.1、工作原理</a></li><li><a href="#_3-2、架构演变">3.2、架构演变</a></li></ul></li><li><a href="#五、helm-组件及相关术语">五、Helm 组件及相关术语</a></li><li><a href="#六、helm常用命令">六、Helm常用命令</a></li><li><a href="#七、推荐仓库">七、推荐仓库</a></li><li><a href="#八、charts">八、Charts</a><ul><li><a href="#_8-1、目录结构">8.1、目录结构</a></li><li><a href="#_8-2、构建一个无状态应用模版charts">8.2、构建一个无状态应用模版charts</a></li></ul></li></ul></div><p></p> <blockquote><p>参考文档 ：</p> <p>https://helm.sh/docs/</p> <p>https://github.com/helm/helm</p></blockquote> <h2 id="一、什么是helm"><a href="#一、什么是helm" class="header-anchor">#</a> 一、什么是Helm</h2> <ul><li>Helm是Kubernetes的包管理器，类似于Python的pip centos的yum,主要用来管理 Charts。</li> <li>Helm Chart是用来封装Kubernetes原生应用程序的一系列YAML文件。可以在你部署应用的时候自定义应用程序的一些Metadata，以便于应用程序的分发。对于应用发布者而言，可以通过Helm打包应用、管理应用依赖关系、管理应用版本并发布应用到软件仓库。</li></ul> <h2 id="二、helm带来的便捷"><a href="#二、helm带来的便捷" class="header-anchor">#</a> 二、Helm带来的便捷</h2> <ul><li>我们日常在K8S中部署可用应用时，需要涉及到很多的K8S资源的共同协作(Controller、Service、Configmap、Secret、RBAC、PV、PVC、Ingress等一系列资源)，这些资源过于分散，不方便管理以及定义方式的局限性，直接提供kubectl来管理和生效YAML配置创建可用应用，让人头疼，不便于维护。</li> <li>在部署一个应用，会遇到哪些问题：
+<ul><li>如何统一管理、配置和更新这些分散的k8s的应用资源文件；</li> <li>如何分发和复用应用模板；</li> <li>如何将应用的一系列资源当做一个软件包管理；</li></ul></li> <li>对于使用者而言，使用Helm后不用需要编写复杂的应用部署文件，可以以简单的方式在K8S上查找、安装、升级、回滚、卸载应用程序；</li></ul> <h2 id="三、-helm-工作原理及架构演变"><a href="#三、-helm-工作原理及架构演变" class="header-anchor">#</a> 三、 Helm 工作原理及架构演变</h2> <h3 id="_3-1、工作原理"><a href="#_3-1、工作原理" class="header-anchor">#</a> 3.1、工作原理</h3> <p><img src="https://atlas.pingcode.com/files/public/623aced1919926508797e9d1" alt="image.png"></p> <p>Chart Install 过程</p> <ul><li>Helm 从指定的目录或者 TAR 文件中解析出 Chart 结构信息。</li> <li>Heml 将指定的 Chart 结构和 Values 信息通过 gRPC 传递给 Tiller。</li> <li>Tiller 根据 Chart 和 Values 生成一个 Release。</li> <li>Tiller 根据 Release 发送给 Kubernetes 用于生成 Release。</li></ul> <p>Chart Update 过程</p> <ul><li>Helm 从指定的目录或者 TAR 文件中解析出 Chart 结构信息。</li> <li>Helm 将需要更新的 Release 的名称、Chart结构和 Values 信息传递给 Tiller。</li> <li>Tiller 生成 Release 并更新指定名称的 Release 和 History。</li> <li>Tiller 将 Release 发送给 Kubernetes 用于更新 Release。</li></ul> <p>Chart Rollback 过程</p> <ul><li>Helm 将要回滚的 Release 的名称传递给 Tiller。</li> <li>Tiller 根据 Release 的名称查找 History。</li> <li>Tiller 从 History 中获取上一个 Release。</li> <li>Tiller 将上一个 Release 发送给 Kubernetes 用于替换当前 Release。</li></ul> <h3 id="_3-2、架构演变"><a href="#_3-2、架构演变" class="header-anchor">#</a> 3.2、架构演变</h3> <ul><li>在2019 年 11 月 4 日，Helm 社区 repo 中提供 安全审计报告 ， Helm v3 中的访问控制与 Helm v2 中的访问控制发生变更；
+<ul><li>移除 Tiller</li> <li>支持将 Chart 推送至 Docker 镜像仓库中</li> <li>使用JSONSchema验证chart values</li> <li>给helm charts添加test了，通过helm test命令 针对部署的应用跑tests</li> <li>部署时release name必须指定，helm2时可自动随机生成</li> <li>删除时无须再使用 –purge</li> <li>为了更好地协调其他包管理者的措辞 Helm CLI 个别更名；helm delete更名为helm uninstall，helm inspect更名为helm show，helm fetch更名为helm pull</li> <li>不再需要requirements.yaml, 依赖关系是直接在chart.yaml中定义</li> <li>移除了用于本地临时搭建 Chart Repository的 helm serve 命令</li></ul></li></ul> <p><img src="https://atlas.pingcode.com/files/public/623acea3919926508797e9cf" alt="image.png"></p> <p><img src="https://atlas.pingcode.com/files/public/623acd33838833c660d4cd0a" alt="image.png"></p> <h2 id="五、helm-组件及相关术语"><a href="#五、helm-组件及相关术语" class="header-anchor">#</a> 五、Helm 组件及相关术语</h2> <ul><li>Helm : 命令行下的客户端工具,主要用于 K8S 应用程序 Chart 的创建、打包、发布以及创建和管理本地和远程的 Chart 仓库。</li> <li>Chart：Helm 包，采用 TAR 格式。其中包含了运行一个应用所需要的镜像、依赖和资源定义等，还可能包含 Kubernetes 集群中的服务定义，类似 Homebrew 中的 formula、APT 的 dpkg 或者 Yum 的 rpm 文件。</li> <li>Release：在 Kubernetes 集群上运行的 Chart 的一个实例。在同一个集群上，一个 Chart 可以安装很多次。每次安装都会创建一个新的 release。每次安装都会生成自己的 Release，会有自己的 Release 名称。</li> <li>Repository：用于发布和存储 Chart 的存储库。</li> <li>Tiller : （v2版本）Helm 的服务端。Tiller 负责接收 Helm 的请求，与 k8s 的 apiserver 交互，根据chart 来生成一个 release 并管理 release。</li></ul> <h2 id="六、helm常用命令"><a href="#六、helm常用命令" class="header-anchor">#</a> 六、Helm常用命令</h2> <table><thead><tr><th style="text-align:left;"></th> <th></th></tr></thead> <tbody><tr><td style="text-align:left;">命令</td> <td>描述</td></tr> <tr><td style="text-align:left;">create</td> <td>创建一个chart并指定名字</td></tr> <tr><td style="text-align:left;">dependency</td> <td>管理chart依赖</td></tr> <tr><td style="text-align:left;">get</td> <td>下载一个release。可用子命令：all、hooks、manifest、notes、values</td></tr> <tr><td style="text-align:left;">history</td> <td>获取release历史</td></tr> <tr><td style="text-align:left;">install</td> <td>安装一个chart</td></tr> <tr><td style="text-align:left;">list</td> <td>列出release</td></tr> <tr><td style="text-align:left;">package</td> <td>将chart目录打包到chart存档文件中</td></tr> <tr><td style="text-align:left;">pull</td> <td>从远程仓库中下载chart并解压到本地 # helm pull stable/mysql --untar</td></tr> <tr><td style="text-align:left;">repo</td> <td>添加，列出，移除，更新和索引chart仓库。可用子命令：add、index、list、remove、update</td></tr> <tr><td style="text-align:left;">rollback</td> <td>从之前版本回滚</td></tr> <tr><td style="text-align:left;">search</td> <td>根据关键字搜索chart。可用子命令：hub、repo</td></tr> <tr><td style="text-align:left;">show</td> <td>查看chart详细信息。可用子命令：all、chart、readme、values</td></tr> <tr><td style="text-align:left;">status</td> <td>显示已命名版本的状态</td></tr> <tr><td style="text-align:left;">template</td> <td>本地呈现模板</td></tr> <tr><td style="text-align:left;">uninstall</td> <td>卸载一个release</td></tr> <tr><td style="text-align:left;">upgrade</td> <td>更新一个release</td></tr> <tr><td style="text-align:left;">version</td> <td>查看helm客户端版本</td></tr></tbody></table> <h2 id="七、推荐仓库"><a href="#七、推荐仓库" class="header-anchor">#</a> 七、推荐仓库</h2> <ul><li>难免需要安装一些三方的基础服务，常用仓库如下 ：
+<ul><li>bitnami官方地址：  https://bitnami.com/</li> <li>微软仓库 ： http://mirror.azure.cn/kubernetes/charts/</li> <li>阿里云仓库 ： https://kubernetes.oss-cn-hangzhou.aliyuncs.com/charts</li> <li>官方仓库 ： https://hub.kubeapps.com/charts/incubator</li> <li>elasticsearch ： https://helm.elastic.co</li></ul></li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>添加微软仓库为 stable
+$ helm repo add stable http://mirror.azure.cn/kubernetes/charts
+&quot;stable&quot; has been added to your repositories
+ 
+添加阿里云仓库为 aliyun
+$ helm repo add aliyun https://kubernetes.oss-cn-hangzhou.aliyuncs.com/charts 
+&quot;aliyun&quot; has been added to your repositories
+
+查看本地已添加的仓库
+$ helm repo list 
+NAME    URL                                                   
+stable  http://mirror.azure.cn/kubernetes/charts              
+aliyun  https://kubernetes.oss-cn-hangzhou.aliyuncs.com/charts
+
+查看仓库所有的包
+$ helm search repo stable
+
+移除仓库
+$ helm repo remove stable
+
+列出仓库中相关的包
+$ helm search repo mysql
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br></div></div><p></p> <h2 id="八、charts"><a href="#八、charts" class="header-anchor">#</a> 八、Charts</h2> <h3 id="_8-1、目录结构"><a href="#_8-1、目录结构" class="header-anchor">#</a> 8.1、目录结构</h3> <div class="language- line-numbers-mode"><pre class="language-text"><code>demochart/
+├── charts                          # 目录用于存放所依赖的子chart
+├── Chart.yaml                      # 描述这个 Chart 的相关信息、包括名字、描述信息、版本等
+├── templates                       # 模板目录，通常会使用values.yaml配置内容进行填充，板引擎渲染此目录的文件后Tiller将渲染得到的结果 提交给Kubernetes创建响应的对象
+│   ├── deployment.yaml             # deployment 控制器的 Go 模板文件
+│   ├── _helpers.tpl                # 模板助手文件，定义的值可在模板中使用
+│   ├── ingress.yaml                # ingress 的模板文件 
+│   ├── NOTES.txt                   # Chart 部署到集群后的一些信息，例如：如何使用、列出缺省值，可以理解为帮助文档
+│   ├── serviceaccount.yaml
+│   ├── service.yaml                # service 的 Go 模板文件
+└── values.yaml                     # 模板的值文件，这些值会在安装时应用到 GO 模板生成部署文件
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br></div></div><h3 id="_8-2、构建一个无状态应用模版charts"><a href="#_8-2、构建一个无状态应用模版charts" class="header-anchor">#</a> 8.2、构建一个无状态应用模版charts</h3> <blockquote><p>部分常用语法说明 ： http://masterminds.github.io/sprig/strings.html</p></blockquote> <ul><li>目录结构</li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>$ tree demochart/
+demochart/
+├── charts
+├── Chart.yaml
+├── templates                   
+│   ├── deployment.yaml  
+└── values.yaml
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br></div></div><ul><li>Chart.yaml</li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>apiVersion: v2
+name: demochart
+description: A Helm chart for Kubernetes, The author is Daizhe
+type: application
+version: 0.1.0
+appVersion: 1.16.0
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br></div></div><ul><li>templates/deployment.yaml</li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>$ vim templates/deployment.yaml 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: deployment
+  name: {{ .Values.Name }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: deployment
+  template:
+    metadata:
+      labels:
+        app: deployment
+    spec:
+      containers:
+      - image: {{ .Values.image }}
+        name: nginx
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br></div></div><ul><li>values.yaml</li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>Name: demo-deploy-nginx
+replicas: 1
+image: nginx:latest
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br></div></div><ul><li>install 安装</li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>$ helm install nginx-dep demochart/ --dry-run
+$ helm install nginx-dep demochart/
+$ helm list
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br></div></div><ul><li>upgrade 升级</li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>$ helm upgrade -f values.yaml nginx-dep demochart
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br></div></div><ul><li>rollback 回滚</li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>$ helm history nginx-dep
+$ helm rollback nginx-dep 1
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br></div></div><p></p></div></section> <footer class="page-edit"><!----> <!----></footer> <!----> <div class="comments-wrapper"><!----></div> <ul class="side-bar sub-sidebar-wrapper" style="width:12rem;" data-v-cb1513f6><li class="level-2" data-v-cb1513f6><a href="/views/Official_Accounts/%E7%94%A8Helm%E6%9D%A5%E7%AE%80%E5%8C%96K8S%E5%BA%94%E7%94%A8%E7%AE%A1%E7%90%86.html#一、什么是helm" class="sidebar-link reco-side-一、什么是helm" data-v-cb1513f6>一、什么是Helm</a></li><li class="level-2" data-v-cb1513f6><a href="/views/Official_Accounts/%E7%94%A8Helm%E6%9D%A5%E7%AE%80%E5%8C%96K8S%E5%BA%94%E7%94%A8%E7%AE%A1%E7%90%86.html#二、helm带来的便捷" class="sidebar-link reco-side-二、helm带来的便捷" data-v-cb1513f6>二、Helm带来的便捷</a></li><li class="level-2" data-v-cb1513f6><a href="/views/Official_Accounts/%E7%94%A8Helm%E6%9D%A5%E7%AE%80%E5%8C%96K8S%E5%BA%94%E7%94%A8%E7%AE%A1%E7%90%86.html#三、-helm-工作原理及架构演变" class="sidebar-link reco-side-三、-helm-工作原理及架构演变" data-v-cb1513f6>三、 Helm 工作原理及架构演变</a></li><li class="level-3" data-v-cb1513f6><a href="/views/Official_Accounts/%E7%94%A8Helm%E6%9D%A5%E7%AE%80%E5%8C%96K8S%E5%BA%94%E7%94%A8%E7%AE%A1%E7%90%86.html#_3-1、工作原理" class="sidebar-link reco-side-_3-1、工作原理" data-v-cb1513f6>3.1、工作原理</a></li><li class="level-3" data-v-cb1513f6><a href="/views/Official_Accounts/%E7%94%A8Helm%E6%9D%A5%E7%AE%80%E5%8C%96K8S%E5%BA%94%E7%94%A8%E7%AE%A1%E7%90%86.html#_3-2、架构演变" class="sidebar-link reco-side-_3-2、架构演变" data-v-cb1513f6>3.2、架构演变</a></li><li class="level-2" data-v-cb1513f6><a href="/views/Official_Accounts/%E7%94%A8Helm%E6%9D%A5%E7%AE%80%E5%8C%96K8S%E5%BA%94%E7%94%A8%E7%AE%A1%E7%90%86.html#五、helm-组件及相关术语" class="sidebar-link reco-side-五、helm-组件及相关术语" data-v-cb1513f6>五、Helm 组件及相关术语</a></li><li class="level-2" data-v-cb1513f6><a href="/views/Official_Accounts/%E7%94%A8Helm%E6%9D%A5%E7%AE%80%E5%8C%96K8S%E5%BA%94%E7%94%A8%E7%AE%A1%E7%90%86.html#六、helm常用命令" class="sidebar-link reco-side-六、helm常用命令" data-v-cb1513f6>六、Helm常用命令</a></li><li class="level-2" data-v-cb1513f6><a href="/views/Official_Accounts/%E7%94%A8Helm%E6%9D%A5%E7%AE%80%E5%8C%96K8S%E5%BA%94%E7%94%A8%E7%AE%A1%E7%90%86.html#七、推荐仓库" class="sidebar-link reco-side-七、推荐仓库" data-v-cb1513f6>七、推荐仓库</a></li><li class="level-2" data-v-cb1513f6><a href="/views/Official_Accounts/%E7%94%A8Helm%E6%9D%A5%E7%AE%80%E5%8C%96K8S%E5%BA%94%E7%94%A8%E7%AE%A1%E7%90%86.html#八、charts" class="sidebar-link reco-side-八、charts" data-v-cb1513f6>八、Charts</a></li><li class="level-3" data-v-cb1513f6><a href="/views/Official_Accounts/%E7%94%A8Helm%E6%9D%A5%E7%AE%80%E5%8C%96K8S%E5%BA%94%E7%94%A8%E7%AE%A1%E7%90%86.html#_8-1、目录结构" class="sidebar-link reco-side-_8-1、目录结构" data-v-cb1513f6>8.1、目录结构</a></li><li class="level-3" data-v-cb1513f6><a href="/views/Official_Accounts/%E7%94%A8Helm%E6%9D%A5%E7%AE%80%E5%8C%96K8S%E5%BA%94%E7%94%A8%E7%AE%A1%E7%90%86.html#_8-2、构建一个无状态应用模版charts" class="sidebar-link reco-side-_8-2、构建一个无状态应用模版charts" data-v-cb1513f6>8.2、构建一个无状态应用模版charts</a></li></ul></main> <!----></div></div></div></div><div class="global-ui"><div class="back-to-ceiling" style="right:1rem;bottom:6rem;width:2.5rem;height:2.5rem;border-radius:.25rem;line-height:2.5rem;display:none;" data-v-c6073ba8 data-v-c6073ba8><svg t="1574745035067" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5404" class="icon" data-v-c6073ba8><path d="M526.60727968 10.90185116a27.675 27.675 0 0 0-29.21455937 0c-131.36607665 82.28402758-218.69155461 228.01873535-218.69155402 394.07834331a462.20625001 462.20625001 0 0 0 5.36959153 69.94390903c1.00431239 6.55289093-0.34802892 13.13561351-3.76865779 18.80351572-32.63518765 54.11355614-51.75690182 118.55860487-51.7569018 187.94566865a371.06718723 371.06718723 0 0 0 11.50484808 91.98906777c6.53300375 25.50556257 41.68394495 28.14064038 52.69160883 4.22606766 17.37162448-37.73630017 42.14135425-72.50938081 72.80769204-103.21549295 2.18761121 3.04276886 4.15646224 6.24463696 6.40373557 9.22774369a1871.4375 1871.4375 0 0 0 140.04691725 5.34970492 1866.36093723 1866.36093723 0 0 0 140.04691723-5.34970492c2.24727335-2.98310674 4.21612437-6.18497483 6.3937923-9.2178004 30.66633723 30.70611158 55.4360664 65.4791928 72.80769147 103.21549355 11.00766384 23.91457269 46.15860503 21.27949489 52.69160879-4.22606768a371.15156223 371.15156223 0 0 0 11.514792-91.99901164c0-69.36717486-19.13165746-133.82216804-51.75690182-187.92578088-3.42062944-5.66790279-4.76302748-12.26056868-3.76865837-18.80351632a462.20625001 462.20625001 0 0 0 5.36959269-69.943909c-0.00994388-166.08943902-87.32547796-311.81420293-218.6915546-394.09823051zM605.93803103 357.87693858a93.93749974 93.93749974 0 1 1-187.89594924 6.1e-7 93.93749974 93.93749974 0 0 1 187.89594924-6.1e-7z" p-id="5405" data-v-c6073ba8></path><path d="M429.50777625 765.63860547C429.50777625 803.39355007 466.44236686 1000.39046097 512.00932183 1000.39046097c45.56695499 0 82.4922232-197.00623328 82.5015456-234.7518555 0-37.75494459-36.9345906-68.35043303-82.4922232-68.34111062-45.57627738-0.00932239-82.52019037 30.59548842-82.51086798 68.34111062z" p-id="5406" data-v-c6073ba8></path></svg></div><!----><div class="kanbanniang" data-v-5775ee02><div class="banniang-container" style="display:;" data-v-5775ee02><div class="messageBox" style="right:68px;bottom:190px;display:none;" data-v-5775ee02>
+      我是Brains,欢迎你的关注 
+    </div> <div class="operation" style="right:90px;bottom:40px;display:;" data-v-5775ee02><i class="kbnfont kbn-ban-home ban-home" data-v-5775ee02></i> <i class="kbnfont kbn-ban-message message" data-v-5775ee02></i> <i class="kbnfont kbn-ban-close close" data-v-5775ee02></i> <a target="_blank" href="https://vuepress-theme-reco.recoluan.com/views/plugins/kanbanniang.html" data-v-5775ee02><i class="kbnfont kbn-ban-info info" data-v-5775ee02></i></a> <i class="kbnfont kbn-ban-theme skin" style="display:;" data-v-5775ee02></i></div> <canvas id="banniang" width="200px" height="250" class="live2d" style="right:90px;bottom:-20px;opacity:0.9;" data-v-5775ee02></canvas></div> <div class="showBanNiang" style="display:none;" data-v-5775ee02>
+    看板娘
+  </div></div><canvas id="vuepress-canvas-cursor"></canvas><!----></div></div>
+    <script src="/assets/js/app.cd5fa041.js" defer></script><script src="/assets/js/3.ee7e7098.js" defer></script><script src="/assets/js/1.277d6ebc.js" defer></script><script src="/assets/js/44.00d176ef.js" defer></script>
+  </body>
+</html>

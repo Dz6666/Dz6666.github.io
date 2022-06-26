@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Sidecar及流量拦截机制-下 | SRE运维充电站</title>
+    <meta name="generator" content="VuePress 1.9.7">
+    <link rel="icon" href="/images/favicon.svg">
+    <script>var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?668842dc21c1b8f215b000531ec8f69e";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();</script>
+    <meta name="description" content="这个杀手不太冷">
+    <meta name="baidu_union_verify" content="a0036ccf0b657813fb236f80f376c429">
+    <meta name="Keywords" content="Devops代哲,SRE运维充电站,pyenv.cc,Brains">
+    <meta name="author" content="Devops代哲,SRE运维充电站,pyenv.cc,Brains">
+    
+    <link rel="preload" href="/assets/css/0.styles.938d6ff2.css" as="style"><link rel="preload" href="/assets/js/app.cd5fa041.js" as="script"><link rel="preload" href="/assets/js/3.ee7e7098.js" as="script"><link rel="preload" href="/assets/js/1.277d6ebc.js" as="script"><link rel="preload" href="/assets/js/39.0b0071eb.js" as="script"><link rel="prefetch" href="/assets/js/10.d3b54896.js"><link rel="prefetch" href="/assets/js/11.f4bb5601.js"><link rel="prefetch" href="/assets/js/12.ed610cd8.js"><link rel="prefetch" href="/assets/js/13.3a9eb8fa.js"><link rel="prefetch" href="/assets/js/14.b6ae182d.js"><link rel="prefetch" href="/assets/js/15.db6f82c2.js"><link rel="prefetch" href="/assets/js/16.3d5e10b6.js"><link rel="prefetch" href="/assets/js/17.471efd1e.js"><link rel="prefetch" href="/assets/js/18.832fe344.js"><link rel="prefetch" href="/assets/js/19.b59cbfac.js"><link rel="prefetch" href="/assets/js/20.472c4b66.js"><link rel="prefetch" href="/assets/js/21.800f456d.js"><link rel="prefetch" href="/assets/js/22.ffd207bc.js"><link rel="prefetch" href="/assets/js/23.323321ef.js"><link rel="prefetch" href="/assets/js/24.b9a5f746.js"><link rel="prefetch" href="/assets/js/25.60904ca4.js"><link rel="prefetch" href="/assets/js/26.fad8d09c.js"><link rel="prefetch" href="/assets/js/27.aaaa8f8c.js"><link rel="prefetch" href="/assets/js/28.d65a84c8.js"><link rel="prefetch" href="/assets/js/29.ce7bd2fb.js"><link rel="prefetch" href="/assets/js/30.f2c39de0.js"><link rel="prefetch" href="/assets/js/31.f02ef496.js"><link rel="prefetch" href="/assets/js/32.0889c36c.js"><link rel="prefetch" href="/assets/js/33.7b2efadd.js"><link rel="prefetch" href="/assets/js/34.4ff3296a.js"><link rel="prefetch" href="/assets/js/35.6b05b4ad.js"><link rel="prefetch" href="/assets/js/36.4322a33f.js"><link rel="prefetch" href="/assets/js/37.73e5620d.js"><link rel="prefetch" href="/assets/js/38.6e6461a9.js"><link rel="prefetch" href="/assets/js/4.6d9bb9fb.js"><link rel="prefetch" href="/assets/js/40.692bdf78.js"><link rel="prefetch" href="/assets/js/41.66cfe668.js"><link rel="prefetch" href="/assets/js/42.1b912be2.js"><link rel="prefetch" href="/assets/js/43.116e6cb6.js"><link rel="prefetch" href="/assets/js/44.00d176ef.js"><link rel="prefetch" href="/assets/js/45.06d1d798.js"><link rel="prefetch" href="/assets/js/46.43bfeb5c.js"><link rel="prefetch" href="/assets/js/47.735867da.js"><link rel="prefetch" href="/assets/js/48.12a1df49.js"><link rel="prefetch" href="/assets/js/5.99213a31.js"><link rel="prefetch" href="/assets/js/6.7a0b7b07.js"><link rel="prefetch" href="/assets/js/7.356b6533.js"><link rel="prefetch" href="/assets/js/8.9f6a6c22.js"><link rel="prefetch" href="/assets/js/9.832ff77d.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.938d6ff2.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container no-sidebar" data-v-130b300a><div data-v-130b300a><div class="password-shadow password-wrapper-out" style="display:none;" data-v-25ba6db2 data-v-130b300a data-v-130b300a><h3 class="title" data-v-25ba6db2 data-v-25ba6db2>SRE运维充电站</h3> <p class="description" data-v-25ba6db2 data-v-25ba6db2>这个杀手不太冷</p> <label id="box" class="inputBox" data-v-25ba6db2 data-v-25ba6db2><input type="password" value="" data-v-25ba6db2> <span data-v-25ba6db2>Konck! Knock!</span> <button data-v-25ba6db2>OK</button></label> <div class="footer" data-v-25ba6db2 data-v-25ba6db2><span data-v-25ba6db2><i class="iconfont reco-theme" data-v-25ba6db2></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-25ba6db2>vuePress-theme-reco</a></span> <span data-v-25ba6db2><i class="iconfont reco-copyright" data-v-25ba6db2></i> <a data-v-25ba6db2><span data-v-25ba6db2>Brains</span>
+            
+          <!---->
+          2022
+        </a></span></div></div> <div class="hide" data-v-130b300a><header class="navbar" data-v-130b300a><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><img src="/images/favicon.svg" alt="SRE运维充电站" class="logo"> <span class="site-name">SRE运维充电站</span></a> <div class="links"><div class="color-picker"><a class="color-button"><i class="iconfont reco-color"></i></a> <div class="color-picker-menu" style="display:none;"><div class="mode-options"><h4 class="title">Choose mode</h4> <ul class="color-mode-options"><li class="dark">dark</li><li class="auto active">auto</li><li class="light">light</li></ul></div></div></div> <div class="search-box"><i class="iconfont reco-search"></i> <input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link"><i class="iconfont reco-home"></i>
+  主页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-category"></i>
+      分类
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/categories/HTML/" class="nav-link"><i class="undefined"></i>
+  HTML
+</a></li><li class="dropdown-item"><!----> <a href="/categories/JavaScript/" class="nav-link"><i class="undefined"></i>
+  JavaScript
+</a></li><li class="dropdown-item"><!----> <a href="/categories/CSS/" class="nav-link"><i class="undefined"></i>
+  CSS
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Go/" class="nav-link"><i class="undefined"></i>
+  Go
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Docker/" class="nav-link"><i class="undefined"></i>
+  Docker
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Kubernetes/" class="nav-link"><i class="undefined"></i>
+  Kubernetes
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Monitoring/" class="nav-link"><i class="undefined"></i>
+  Monitoring
+</a></li><li class="dropdown-item"><!----> <a href="/categories/ServiceMesh/" class="nav-link"><i class="undefined"></i>
+  ServiceMesh
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Vue/" class="nav-link"><i class="undefined"></i>
+  Vue
+</a></li></ul></div></div><div class="nav-item"><a href="/tag/" class="nav-link"><i class="iconfont reco-tag"></i>
+  标签
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont icon-tools"></i>
+      工具箱
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="https://www.uupoop.com/" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="undefined"></i>
+  在线PS
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://cowtransfer.com/" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="undefined"></i>
+  奶牛快传
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://www.tiobe.com/tiobe-index/" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="undefined"></i>
+  编程语言排行榜
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div></div><div class="nav-item"><a href="/timeline/" class="nav-link"><i class="iconfont reco-date"></i>
+  时间线
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-message"></i>
+      关于
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/views/About/resume.html" class="nav-link"><i class="iconfont reco-document"></i>
+  简历
+</a></li><li class="dropdown-item"><!----> <a href="https://blog.csdn.net/weixin_41989934" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-csdn"></i>
+  CSDN
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://github.com/Dz6666" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-github"></i>
+  GitHub
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://gitee.com/Dz6666" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-mayun"></i>
+  Gitee
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div></div> <!----></nav></div></header> <div class="sidebar-mask" data-v-130b300a></div> <aside class="sidebar" data-v-130b300a><div class="personal-info-wrapper" data-v-39576ba9 data-v-130b300a><img src="/images/head_portrait.svg" alt="author-avatar" class="personal-img" data-v-39576ba9> <h3 class="name" data-v-39576ba9>
+    Brains
+  </h3> <div class="num" data-v-39576ba9><div data-v-39576ba9><h3 data-v-39576ba9>30</h3> <h6 data-v-39576ba9>Articles</h6></div> <div data-v-39576ba9><h3 data-v-39576ba9>16</h3> <h6 data-v-39576ba9>Tags</h6></div></div> <ul class="social-links" data-v-39576ba9></ul> <hr data-v-39576ba9></div> <nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link"><i class="iconfont reco-home"></i>
+  主页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-category"></i>
+      分类
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/categories/HTML/" class="nav-link"><i class="undefined"></i>
+  HTML
+</a></li><li class="dropdown-item"><!----> <a href="/categories/JavaScript/" class="nav-link"><i class="undefined"></i>
+  JavaScript
+</a></li><li class="dropdown-item"><!----> <a href="/categories/CSS/" class="nav-link"><i class="undefined"></i>
+  CSS
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Go/" class="nav-link"><i class="undefined"></i>
+  Go
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Docker/" class="nav-link"><i class="undefined"></i>
+  Docker
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Kubernetes/" class="nav-link"><i class="undefined"></i>
+  Kubernetes
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Monitoring/" class="nav-link"><i class="undefined"></i>
+  Monitoring
+</a></li><li class="dropdown-item"><!----> <a href="/categories/ServiceMesh/" class="nav-link"><i class="undefined"></i>
+  ServiceMesh
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Vue/" class="nav-link"><i class="undefined"></i>
+  Vue
+</a></li></ul></div></div><div class="nav-item"><a href="/tag/" class="nav-link"><i class="iconfont reco-tag"></i>
+  标签
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont icon-tools"></i>
+      工具箱
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="https://www.uupoop.com/" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="undefined"></i>
+  在线PS
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://cowtransfer.com/" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="undefined"></i>
+  奶牛快传
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://www.tiobe.com/tiobe-index/" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="undefined"></i>
+  编程语言排行榜
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div></div><div class="nav-item"><a href="/timeline/" class="nav-link"><i class="iconfont reco-date"></i>
+  时间线
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-message"></i>
+      关于
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/views/About/resume.html" class="nav-link"><i class="iconfont reco-document"></i>
+  简历
+</a></li><li class="dropdown-item"><!----> <a href="https://blog.csdn.net/weixin_41989934" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-csdn"></i>
+  CSDN
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://github.com/Dz6666" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-github"></i>
+  GitHub
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://gitee.com/Dz6666" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-mayun"></i>
+  Gitee
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div></div> <!----></nav> <!----> </aside> <div class="password-shadow password-wrapper-in" style="display:none;" data-v-25ba6db2 data-v-130b300a><h3 class="title" data-v-25ba6db2 data-v-25ba6db2>Sidecar及流量拦截机制-下</h3> <!----> <label id="box" class="inputBox" data-v-25ba6db2 data-v-25ba6db2><input type="password" value="" data-v-25ba6db2> <span data-v-25ba6db2>Konck! Knock!</span> <button data-v-25ba6db2>OK</button></label> <div class="footer" data-v-25ba6db2 data-v-25ba6db2><span data-v-25ba6db2><i class="iconfont reco-theme" data-v-25ba6db2></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-25ba6db2>vuePress-theme-reco</a></span> <span data-v-25ba6db2><i class="iconfont reco-copyright" data-v-25ba6db2></i> <a data-v-25ba6db2><span data-v-25ba6db2>Brains</span>
+            
+          <!---->
+          2022
+        </a></span></div></div> <div data-v-130b300a><main class="page"><section><div class="page-title"><h1 class="title">Sidecar及流量拦截机制-下</h1> <div data-v-f875f3fc><i class="iconfont reco-account" data-v-f875f3fc><span data-v-f875f3fc>Brains</span></i> <i class="iconfont reco-date" data-v-f875f3fc><span data-v-f875f3fc>3/17/2022</span></i> <i class="iconfont reco-eye" data-v-f875f3fc><span id="/views/Official_Accounts/Sidecar%E5%8F%8A%E6%B5%81%E9%87%8F%E6%8B%A6%E6%88%AA%E6%9C%BA%E5%88%B6-%E4%B8%8B.html" data-flag-title="Your Article Title" class="leancloud-visitors" data-v-f875f3fc><a class="leancloud-visitors-count" style="font-size:.9rem;font-weight:normal;color:#999;"></a></span></i> <i class="tags iconfont reco-tag" data-v-f875f3fc><span class="tag-item" data-v-f875f3fc>Istio</span></i></div></div> <div class="theme-reco-content content__default"><div class="custom-block tip"><p class="title"></p><p><img src="https://atlas.pingcode.com/files/public/62374c3d0768d614e2cbff90" alt="image.png"></p></div> <p></p><div class="table-of-contents"><ul><li><a href="#一、sidecar-cr">一、Sidecar CR</a><ul><li><a href="#_7-1、sidecar配置">7.1、Sidecar配置</a></li><li><a href="#_7-2、sidecar配置示例">7.2、Sidecar配置示例</a></li><li><a href="#_7-2-2、sidecar配置示例-定义可被访问的出站服务">7.2.2、Sidecar配置示例 - 定义可被访问的出站服务</a></li></ul></li></ul></div><p></p> <p><img src="https://img-blog.csdnimg.cn/img_convert/a876ce53880f048106d1ffedd8ae71a2.png" alt="⭐️关注我 ，一起探索更多知识！⭐️"></p> <p><a href="https://mp.weixin.qq.com/s?__biz=Mzg3NzY0NjY5OQ==&amp;mid=2247484127&amp;idx=1&amp;sn=d819cfded9102b9a16d8a58070d75ac7&amp;chksm=cf1e84dbf8690dcde5d2c47d4073b0a0aaa79b57521a845b2d387fb063bab8ab4e6cad991754#rd" target="_blank" rel="noopener noreferrer">ServiceMesh基本概念<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></p> <p><a href="https://mp.weixin.qq.com/s?__biz=Mzg3NzY0NjY5OQ==&amp;mid=2247484137&amp;idx=1&amp;sn=65fbe4f279521a4d0de75692719b7475&amp;chksm=cf1e84edf8690dfb9c6adf7788c77613e1f3776b47547a281860f627f2ea5077f7ef8cb97a45#rd" target="_blank" rel="noopener noreferrer">手把手教你部署istio控制平面<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></p> <p><a href="https://mp.weixin.qq.com/s?__biz=Mzg3NzY0NjY5OQ==&amp;mid=2247484163&amp;idx=1&amp;sn=d0d4eaab73dc8e950e46a789e4f40fb3&amp;chksm=cf1e8507f8690c112fb75c5b99558eb15e4e8de9bf89e166bcd15304c74f7b55bedb97c8b77e&amp;token=414749856&amp;lang=zh_CN#rd" target="_blank" rel="noopener noreferrer">四个案例让你掌握istio网格功能<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></p> <p><a href="https://mp.weixin.qq.com/s?__biz=Mzg3NzY0NjY5OQ==&amp;mid=2247484245&amp;idx=1&amp;sn=859b0808beebc3fe660bc398ce4ffc68&amp;chksm=cf1e8551f8690c47d435732e654890c105644d57d5175c01f74f892d0a6cdcb23db120c3c1bd#rd" target="_blank" rel="noopener noreferrer">VirtualService实现Istio高级流量治理<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></p> <p><a href="http://mp.weixin.qq.com/s?__biz=Mzg3NzY0NjY5OQ==&amp;mid=2247484270&amp;idx=1&amp;sn=bce9568d5782b15bf718257ade445918&amp;chksm=cf1e856af8690c7cffce92758098cebf68e15759859e54ec040e9bc26b79afe250fda320b44b&amp;token=729952560&amp;lang=zh_CN#rd" target="_blank" rel="noopener noreferrer">DestinationRule实现Istio集群高级配置<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></p> <p><a href="https://mp.weixin.qq.com/s?__biz=Mzg3NzY0NjY5OQ==&amp;mid=2247484296&amp;idx=1&amp;sn=e21a7f2e4eb6ddac513f14afb9fcfef8&amp;chksm=cf1e858cf8690c9ae0703833ed3568a28c5c6f38ffc7954efd67f692bdbbfaab2b1e9589d66c#rd" target="_blank" rel="noopener noreferrer">Sidecar及流量拦截机制-上<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></p> <h2 id="一、sidecar-cr"><a href="#一、sidecar-cr" class="header-anchor">#</a> 一、Sidecar CR</h2> <ul><li><p>由于在网格当中每一个以任何一个Pod为视角的该istio proxy 都会配置了到达该网格内任何服务的 Egress Listener的相关配置，因此可能会带来以下的问题 ：</p> <ul><li>导致任何一个Pod对应的 istio proxy 配置信息量过大，而且可能更多的目标服务并不能正常访问到，并且微服务架构中本身一个需要联系的服务并不会很多；</li> <li>所以我们需要配置特定的一组Pod中的istio-proxy上可用的Listener的专用CR；</li></ul></li> <li><p>Sidecar CR</p> <ul><li>默认情况下，istio会配置每一个Sidecar Envoy能够与同一网格内所有的workload实例通信，并且能够在与其代理的workload相关的所有端口上接收流量；</li> <li>从实际通信需求来说，网格内的每个workload未必需要同当前网格内的所有其它workload通信，于是，sidecar CR提供了为 sidecar Envoy 微调其用于 workload间通信时支持的端口集和协议等配置的方式；</li> <li>另外，转发来自其代理的 workload实例的出向流量时，Sidecar CR资源对象还能够限制Sidecar Envoy可以访问的外部服务集；</li></ul></li> <li><p>Sidecar CR的生效机制</p> <ul><li>Sidecar CR通过 workloadSelector字段挑选同一名称空间中的一个或多个 workload实例来应用其提供的配置；</li> <li>对于未提供workloadSelector字段Sidecar资源，其配置将应用于同一名称空间下中的所有workload实例(默认)；</li> <li>namespace中同时存在带有workloadSelector字段以及为附带此字段的Sidecar资源对象时，workload实例将优先应用带有此字段的Sidecar对象；</li> <li>每个namespace中仅应该提供一个未附带workloadSelector字段的Sidecar资源，否则其配置结果将难以确定；</li> <li>另外，每个workload也应该仅应用一个带有workloadSelector字段的Sidecar资源，否则其行为同样难以明确；</li></ul></li></ul> <h3 id="_7-1、sidecar配置"><a href="#_7-1、sidecar配置" class="header-anchor">#</a> 7.1、Sidecar配置</h3> <ul><li>outboundTrafficPolicy - mode - (REGISTRY_ONLY|ALLOW_ANY)</li> <li>IstioIngressListener (并非创建ingress listener，而是用来生成filter chain match条件的)</li> <li>IstioEgressListener (port和bind则是用来定义 egress listener，并且使用hosts指明主机头来适配的流量)
+<ul><li>captureMode : 流量捕获、拦截机制
+<ul><li>DEFAULT : 默认</li> <li>IPTABLES : iptables</li> <li>NODE : 不拦截，直接向后发送</li></ul></li></ul></li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>root@native:~# kubectl explain sidecar.spec
+KIND:     Sidecar
+VERSION:  networking.istio.io/v1beta1
+
+RESOURCE: spec &lt;Object&gt;
+
+DESCRIPTION:
+     Configuration affecting network reachability of a sidecar. See more details
+     at: https://istio.io/docs/reference/config/networking/sidecar.html
+
+FIELDS:
+   # 配置出站方向的侦听器
+   egress    &lt;[]Object&gt;
+   # 配置入站方向的侦听器
+   ingress    &lt;[]Object&gt;
+
+   # 对于所有的出站方向的侦听器，没能匹配到与之相对应请求的目标相关联流量时，可以使用outboundTrafficPolicy来定义出向请求的处理方式(ALLOW_ANY | REGISTRY_ONLY)
+   outboundTrafficPolicy    &lt;Object&gt;
+     Configuration for the outbound traffic policy.
+
+   # workloadSelector 是否存在决定定义的此策略是针对一组还是一部分Pod生效
+   workloadSelector    &lt;Object&gt;
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br></div></div><h3 id="_7-2、sidecar配置示例"><a href="#_7-2、sidecar配置示例" class="header-anchor">#</a> 7.2、Sidecar配置示例</h3> <h4 id="_7-2-1、环境准备"><a href="#_7-2-1、环境准备" class="header-anchor">#</a> 7.2.1、环境准备</h4> <p><img src="https://atlas.pingcode.com/files/public/6237489c56ba176c0d89cfde" alt="image.png"></p> <div class="language- line-numbers-mode"><pre class="language-text"><code>1、部署demoapp v10
+# cat 01-demoapp-v10/deploy-demoapp.yaml
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: demoappv10
+    version: v1.0
+  name: demoappv10
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 3
+  selector:
+    matchLabels:
+      app: demoapp
+      version: v1.0
+  template:
+    metadata:
+      labels:
+        app: demoapp
+        version: v1.0
+    spec:
+      containers:
+      - image: registry.cn-wulanchabu.aliyuncs.com/daizhe/demoapp:v1.0
+        imagePullPolicy: IfNotPresent
+        name: demoapp
+        env:
+        - name: &quot;PORT&quot;
+          value: &quot;8080&quot;
+        ports:
+        - containerPort: 8080
+          name: web
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 50m
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: demoappv10
+spec:
+  ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: demoapp
+    version: v1.0
+  type: ClusterIP
+---
+
+2、部署demoapp v11
+# cat 02-demoapp-v11/deploy-demoapp-v11.yaml
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: demoappv11
+    version: v1.1
+  name: demoappv11
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 2
+  selector:
+    matchLabels:
+      app: demoapp
+      version: v1.1
+  template:
+    metadata:
+      labels:
+        app: demoapp
+        version: v1.1
+    spec:
+      containers:
+      - image: registry.cn-wulanchabu.aliyuncs.com/daizhe/demoapp:v1.1
+        imagePullPolicy: IfNotPresent
+        name: demoapp
+        env:
+        - name: &quot;PORT&quot;
+          value: &quot;8080&quot;
+        ports:
+        - containerPort: 8080
+          name: web
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 50m
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: demoappv11
+spec:
+  ports:
+    - name: http-8080
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: demoapp
+    version: v1.1
+  type: ClusterIP
+---
+
+3、部署proxy
+# cat 02-demoapp-v11/deploy-proxy.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: proxy
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  selector:
+    matchLabels:
+      app: proxy
+  template:
+    metadata:
+      labels:
+        app: proxy
+    spec:
+      containers:
+        - env:
+          - name: PROXYURL
+            value: http://demoapp:8080
+          image: registry.cn-wulanchabu.aliyuncs.com/daizhe/proxy:v0.1.1
+          imagePullPolicy: IfNotPresent
+          name: proxy
+          ports:
+            - containerPort: 8080
+              name: web
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 50m
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: proxy
+spec:
+  ports:
+    - name: http-80
+      port: 80
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: proxy
+---
+
+4、定义匹配到demoapp v10 和 v11 的service （v10和v11各自的service可以不定义）
+# cat 02-demoapp-v11/service-demoapp.yaml
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: demoapp
+spec:
+  ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: demoapp
+  type: ClusterIP
+---
+
+5、创建定义的demoapp subset 子集
+# cat 03-demoapp-subset/virutalservice-demoapp.yaml
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: demoapp
+spec:
+  hosts:
+  - demoapp
+  http:
+  - name: canary
+    match:
+    - uri:
+        prefix: /canary
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        host: demoapp
+        subset: v11
+  - name: default
+    route:
+    - destination:
+        host: demoapp
+        subset: v10
+
+# cat 03-demoapp-subset/destinationrule-demoapp.yaml
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: demoapp
+spec:
+  host: demoapp
+  subsets:
+  - name: v10
+    labels:
+      version: v1.0
+  - name: v11
+    labels:
+      version: v1.1
+
+6、开放proxy 使用gateway暴露proxy服务
+# cat  04-proxy-gateway/virtualservice-proxy.yaml
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: proxy
+spec:
+  hosts:
+  - &quot;fe.toptops.top&quot;                     # 对应于gateways/proxy-gateway
+  gateways:
+  - istio-system/proxy-gateway       # 相关定义仅应用于Ingress Gateway上
+  #- mesh
+  http:
+  - name: default
+    route:
+    - destination:
+        host: proxy
+# cat  04-proxy-gateway/gateway-proxy.yaml
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: proxy-gateway
+  namespace: istio-system        # 要指定为ingress gateway pod所在名称空间
+spec:
+  selector:
+    app: istio-ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - &quot;fe.toptops.top&quot;
+
+7、创建demoapp 调度策略
+# cat  06-weight-based-routing/virtualservice-demoapp.yaml
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: demoapp
+spec:
+  hosts:
+  - demoapp
+  http:
+  - name: weight-based-routing
+    route:
+    - destination:
+        host: demoapp
+        subset: v10
+      weight: 90
+    - destination:
+        host: demoapp
+        subset: v11
+      weight: 10
+
+# kubectl get gateway -n istio-system
+NAME              AGE
+grafana-gateway   8d
+kiali-gateway     8d
+proxy-gateway     29s
+
+# kubectl get vs
+NAME      GATEWAYS                         HOSTS                AGE
+demoapp                                    [&quot;demoapp&quot;]          110s
+proxy     [&quot;istio-system/proxy-gateway&quot;]   [&quot;fe.toptops.top&quot;]   42s
+
+# kubectl get dr
+NAME      HOST      AGE
+demoapp   demoapp   80s
+
+# kubectl delete svc demoappv10 demoappv11
+service &quot;demoappv10&quot; deleted
+service &quot;demoappv11&quot; deleted
+
+# 以下Service一定会在网格中生成对应的 Listener、VirtualHost、Route、Destination
+# kubectl get svc
+NAME         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+demoapp      ClusterIP   10.100.75.191    &lt;none&gt;        8080/TCP   87m
+kubernetes   ClusterIP   10.100.0.1       &lt;none&gt;        443/TCP    8d
+proxy        ClusterIP   10.100.154.127   &lt;none&gt;        80/TCP     7d12h
+
+8、访问测试(网格内启动客户端进行访问测试)
+# kubectl run client --image=registry.cn-wulanchabu.aliyuncs.com/daizhe/admin-box -it --rm --restart=Never --command -- /bin/sh
+If you don't see a command prompt, try pressing enter.
+
+root@native:~# kubectl get pods
+NAME                          READY   STATUS    RESTARTS   AGE
+client                        2/2     Running   0          93s
+demoappv10-6ff964cbff-84kqr   2/2     Running   0          7d12h
+demoappv10-6ff964cbff-ngpr9   2/2     Running   0          7d12h
+demoappv10-6ff964cbff-t6mxd   2/2     Running   0          7d12h
+demoappv11-7984f579f5-8m7ng   2/2     Running   0          92m
+demoappv11-7984f579f5-mx9kf   2/2     Running   0          92m
+proxy-6b567ff76f-kf852        2/2     Running   0          92m
+
+# 需要注意的是 ：在网格当中运行应用程序是应该会显式使用两个标签 ，app和version 并且每个Pod必须要隶属于某个Service，很显然client两个条件都没有满足，所有并没有遵循网格服务的使用规范，但这里的client仅作为客户端测试使用；
+root@client # curl localhost:15000/listeners
+6a8a0b6e-c652-4edd-b5b1-3d210fb0a8ae::0.0.0.0:15090
+316502d0-d131-4ea6-87f3-e7df91014c00::0.0.0.0:15021
+10.100.146.158_15443::10.100.146.158:15443
+10.100.0.1_443::10.100.0.1:443
+10.100.0.2_53::10.100.0.2:53
+10.100.146.158_443::10.100.146.158:443
+10.100.146.158_31400::10.100.146.158:31400
+10.100.136.102_443::10.100.136.102:443
+10.100.136.102_15012::10.100.136.102:15012
+10.100.167.188_443::10.100.167.188:443
+10.100.166.70_3000::10.100.166.70:3000
+0.0.0.0_15010::0.0.0.0:15010
+0.0.0.0_15014::0.0.0.0:15014
+0.0.0.0_20001::0.0.0.0:20001
+10.100.0.2_9153::10.100.0.2:9153
+0.0.0.0_9411::0.0.0.0:9411
+0.0.0.0_9090::0.0.0.0:9090
+0.0.0.0_16685::0.0.0.0:16685
+0.0.0.0_8080::0.0.0.0:8080
+0.0.0.0_80::0.0.0.0:80
+10.100.22.254_14268::10.100.22.254:14268
+10.100.22.254_14250::10.100.22.254:14250
+10.100.146.158_15021::10.100.146.158:15021
+virtualOutbound::0.0.0.0:15001
+virtualInbound::0.0.0.0:15006
+
+root@native:~# istioctl proxy-config  listeners client
+root@native:~# kubectl exec -it client -c istio-proxy -- pilot-agent request GET /listeners
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br><span class="line-number">64</span><br><span class="line-number">65</span><br><span class="line-number">66</span><br><span class="line-number">67</span><br><span class="line-number">68</span><br><span class="line-number">69</span><br><span class="line-number">70</span><br><span class="line-number">71</span><br><span class="line-number">72</span><br><span class="line-number">73</span><br><span class="line-number">74</span><br><span class="line-number">75</span><br><span class="line-number">76</span><br><span class="line-number">77</span><br><span class="line-number">78</span><br><span class="line-number">79</span><br><span class="line-number">80</span><br><span class="line-number">81</span><br><span class="line-number">82</span><br><span class="line-number">83</span><br><span class="line-number">84</span><br><span class="line-number">85</span><br><span class="line-number">86</span><br><span class="line-number">87</span><br><span class="line-number">88</span><br><span class="line-number">89</span><br><span class="line-number">90</span><br><span class="line-number">91</span><br><span class="line-number">92</span><br><span class="line-number">93</span><br><span class="line-number">94</span><br><span class="line-number">95</span><br><span class="line-number">96</span><br><span class="line-number">97</span><br><span class="line-number">98</span><br><span class="line-number">99</span><br><span class="line-number">100</span><br><span class="line-number">101</span><br><span class="line-number">102</span><br><span class="line-number">103</span><br><span class="line-number">104</span><br><span class="line-number">105</span><br><span class="line-number">106</span><br><span class="line-number">107</span><br><span class="line-number">108</span><br><span class="line-number">109</span><br><span class="line-number">110</span><br><span class="line-number">111</span><br><span class="line-number">112</span><br><span class="line-number">113</span><br><span class="line-number">114</span><br><span class="line-number">115</span><br><span class="line-number">116</span><br><span class="line-number">117</span><br><span class="line-number">118</span><br><span class="line-number">119</span><br><span class="line-number">120</span><br><span class="line-number">121</span><br><span class="line-number">122</span><br><span class="line-number">123</span><br><span class="line-number">124</span><br><span class="line-number">125</span><br><span class="line-number">126</span><br><span class="line-number">127</span><br><span class="line-number">128</span><br><span class="line-number">129</span><br><span class="line-number">130</span><br><span class="line-number">131</span><br><span class="line-number">132</span><br><span class="line-number">133</span><br><span class="line-number">134</span><br><span class="line-number">135</span><br><span class="line-number">136</span><br><span class="line-number">137</span><br><span class="line-number">138</span><br><span class="line-number">139</span><br><span class="line-number">140</span><br><span class="line-number">141</span><br><span class="line-number">142</span><br><span class="line-number">143</span><br><span class="line-number">144</span><br><span class="line-number">145</span><br><span class="line-number">146</span><br><span class="line-number">147</span><br><span class="line-number">148</span><br><span class="line-number">149</span><br><span class="line-number">150</span><br><span class="line-number">151</span><br><span class="line-number">152</span><br><span class="line-number">153</span><br><span class="line-number">154</span><br><span class="line-number">155</span><br><span class="line-number">156</span><br><span class="line-number">157</span><br><span class="line-number">158</span><br><span class="line-number">159</span><br><span class="line-number">160</span><br><span class="line-number">161</span><br><span class="line-number">162</span><br><span class="line-number">163</span><br><span class="line-number">164</span><br><span class="line-number">165</span><br><span class="line-number">166</span><br><span class="line-number">167</span><br><span class="line-number">168</span><br><span class="line-number">169</span><br><span class="line-number">170</span><br><span class="line-number">171</span><br><span class="line-number">172</span><br><span class="line-number">173</span><br><span class="line-number">174</span><br><span class="line-number">175</span><br><span class="line-number">176</span><br><span class="line-number">177</span><br><span class="line-number">178</span><br><span class="line-number">179</span><br><span class="line-number">180</span><br><span class="line-number">181</span><br><span class="line-number">182</span><br><span class="line-number">183</span><br><span class="line-number">184</span><br><span class="line-number">185</span><br><span class="line-number">186</span><br><span class="line-number">187</span><br><span class="line-number">188</span><br><span class="line-number">189</span><br><span class="line-number">190</span><br><span class="line-number">191</span><br><span class="line-number">192</span><br><span class="line-number">193</span><br><span class="line-number">194</span><br><span class="line-number">195</span><br><span class="line-number">196</span><br><span class="line-number">197</span><br><span class="line-number">198</span><br><span class="line-number">199</span><br><span class="line-number">200</span><br><span class="line-number">201</span><br><span class="line-number">202</span><br><span class="line-number">203</span><br><span class="line-number">204</span><br><span class="line-number">205</span><br><span class="line-number">206</span><br><span class="line-number">207</span><br><span class="line-number">208</span><br><span class="line-number">209</span><br><span class="line-number">210</span><br><span class="line-number">211</span><br><span class="line-number">212</span><br><span class="line-number">213</span><br><span class="line-number">214</span><br><span class="line-number">215</span><br><span class="line-number">216</span><br><span class="line-number">217</span><br><span class="line-number">218</span><br><span class="line-number">219</span><br><span class="line-number">220</span><br><span class="line-number">221</span><br><span class="line-number">222</span><br><span class="line-number">223</span><br><span class="line-number">224</span><br><span class="line-number">225</span><br><span class="line-number">226</span><br><span class="line-number">227</span><br><span class="line-number">228</span><br><span class="line-number">229</span><br><span class="line-number">230</span><br><span class="line-number">231</span><br><span class="line-number">232</span><br><span class="line-number">233</span><br><span class="line-number">234</span><br><span class="line-number">235</span><br><span class="line-number">236</span><br><span class="line-number">237</span><br><span class="line-number">238</span><br><span class="line-number">239</span><br><span class="line-number">240</span><br><span class="line-number">241</span><br><span class="line-number">242</span><br><span class="line-number">243</span><br><span class="line-number">244</span><br><span class="line-number">245</span><br><span class="line-number">246</span><br><span class="line-number">247</span><br><span class="line-number">248</span><br><span class="line-number">249</span><br><span class="line-number">250</span><br><span class="line-number">251</span><br><span class="line-number">252</span><br><span class="line-number">253</span><br><span class="line-number">254</span><br><span class="line-number">255</span><br><span class="line-number">256</span><br><span class="line-number">257</span><br><span class="line-number">258</span><br><span class="line-number">259</span><br><span class="line-number">260</span><br><span class="line-number">261</span><br><span class="line-number">262</span><br><span class="line-number">263</span><br><span class="line-number">264</span><br><span class="line-number">265</span><br><span class="line-number">266</span><br><span class="line-number">267</span><br><span class="line-number">268</span><br><span class="line-number">269</span><br><span class="line-number">270</span><br><span class="line-number">271</span><br><span class="line-number">272</span><br><span class="line-number">273</span><br><span class="line-number">274</span><br><span class="line-number">275</span><br><span class="line-number">276</span><br><span class="line-number">277</span><br><span class="line-number">278</span><br><span class="line-number">279</span><br><span class="line-number">280</span><br><span class="line-number">281</span><br><span class="line-number">282</span><br><span class="line-number">283</span><br><span class="line-number">284</span><br><span class="line-number">285</span><br><span class="line-number">286</span><br><span class="line-number">287</span><br><span class="line-number">288</span><br><span class="line-number">289</span><br><span class="line-number">290</span><br><span class="line-number">291</span><br><span class="line-number">292</span><br><span class="line-number">293</span><br><span class="line-number">294</span><br><span class="line-number">295</span><br><span class="line-number">296</span><br><span class="line-number">297</span><br><span class="line-number">298</span><br><span class="line-number">299</span><br><span class="line-number">300</span><br><span class="line-number">301</span><br><span class="line-number">302</span><br><span class="line-number">303</span><br><span class="line-number">304</span><br><span class="line-number">305</span><br><span class="line-number">306</span><br><span class="line-number">307</span><br><span class="line-number">308</span><br><span class="line-number">309</span><br><span class="line-number">310</span><br><span class="line-number">311</span><br><span class="line-number">312</span><br><span class="line-number">313</span><br><span class="line-number">314</span><br><span class="line-number">315</span><br><span class="line-number">316</span><br><span class="line-number">317</span><br><span class="line-number">318</span><br><span class="line-number">319</span><br><span class="line-number">320</span><br><span class="line-number">321</span><br><span class="line-number">322</span><br><span class="line-number">323</span><br><span class="line-number">324</span><br><span class="line-number">325</span><br><span class="line-number">326</span><br><span class="line-number">327</span><br><span class="line-number">328</span><br><span class="line-number">329</span><br><span class="line-number">330</span><br><span class="line-number">331</span><br><span class="line-number">332</span><br><span class="line-number">333</span><br><span class="line-number">334</span><br><span class="line-number">335</span><br><span class="line-number">336</span><br><span class="line-number">337</span><br><span class="line-number">338</span><br></div></div><p></p> <h3 id="_7-2-2、sidecar配置示例-定义可被访问的出站服务"><a href="#_7-2-2、sidecar配置示例-定义可被访问的出站服务" class="header-anchor">#</a> 7.2.2、Sidecar配置示例 - 定义可被访问的出站服务</h3> <h4 id="_7-2-2-1、outboundtrafficpolicy-registry-only-丢弃"><a href="#_7-2-2-1、outboundtrafficpolicy-registry-only-丢弃" class="header-anchor">#</a> 7.2.2.1、outboundTrafficPolicy : REGISTRY_ONLY 丢弃</h4> <div class="language- line-numbers-mode"><pre class="language-text"><code>1、创建sidecar
+# kubectl get pods --show-labels
+NAME                          READY   STATUS    RESTARTS   AGE     LABELS
+client                        2/2     Running   0          21m     run=client,security.istio.io/tlsMode=istio,service.istio.io/canonical-name=client,service.istio.io/canonical-revision=latest
+
+# cat  sidecar-demo.yaml
+apiVersion: networking.istio.io/v1beta1
+kind: Sidecar
+metadata:
+  name: client
+  namespace: default
+spec:
+  # 定义workload实例
+  workloadSelector:
+    # 标签匹配的Pod run=client
+    labels:
+      run: client
+  # 若不存在可接收转发报文的Listener，流量直接丢弃
+  outboundTrafficPolicy:
+    mode: REGISTRY_ONLY
+  # 定义出站侦听器
+  egress:
+  # 定义允许所匹配的实例所访问的服务，仅client允许访问demoapp的HTTP协议的8080端口
+  - port:
+      number: 8080
+      protocol: HTTP
+      name: demoapp
+    # 当前名称空间下可以使用所有名称
+    hosts:
+    - &quot;./*&quot;
+
+# kubectl apply -f sidecar-demo.yaml
+sidecar.networking.istio.io/client created
+# kubectl get sidecar
+NAME     AGE
+client   6s
+
+2、验证client之上可用的侦听器，已经被急剧压缩
+root@client # curl localhost:15000/listeners
+6a8a0b6e-c652-4edd-b5b1-3d210fb0a8ae::0.0.0.0:15090
+316502d0-d131-4ea6-87f3-e7df91014c00::0.0.0.0:15021
+0.0.0.0_8080::0.0.0.0:8080
+virtualOutbound::0.0.0.0:15001
+virtualInbound::0.0.0.0:15006
+
+3、访问测试，此时只能访问demoapp service 8080端口
+root@client # curl demoapp:8080
+iKubernetes demoapp v1.0 !! ClientIP: 127.0.0.6, ServerName: demoappv10-6ff964cbff-ngpr9, ServerIP: 10.220.158.84!
+root@client # curl proxy:80
+curl: (56) Recv failure: Connection reset by peer
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br></div></div><p></p> <h4 id="_7-2-2-2、outboundtrafficpolicy-allow-any-透传"><a href="#_7-2-2-2、outboundtrafficpolicy-allow-any-透传" class="header-anchor">#</a> 7.2.2.2、outboundTrafficPolicy : ALLOW_ANY 透传</h4> <div class="language- line-numbers-mode"><pre class="language-text"><code>1、创建sidecar
+# kubectl get pods --show-labels
+NAME                          READY   STATUS    RESTARTS   AGE     LABELS
+client                        2/2     Running   0          21m     run=client,security.istio.io/tlsMode=istio,service.istio.io/canonical-name=client,service.istio.io/canonical-revision=latest
+
+# cat  sidecar-demo.yaml
+apiVersion: networking.istio.io/v1beta1
+kind: Sidecar
+metadata:
+  name: client
+  namespace: default
+spec:
+  # 定义workload实例
+  workloadSelector:
+    # 标签匹配的Pod run=client
+    labels:
+      run: client
+  # 若不存在可接收转发报文的Listener，流量透传
+  outboundTrafficPolicy:
+    # mode: REGISTRY_ONLY
+    mode: ALLOW_ANY
+  # 定义出站侦听器
+  egress:
+  # 定义允许所匹配的实例所访问的服务，仅client允许访问demoapp的HTTP协议的8080端口
+  - port:
+      number: 8080
+      protocol: HTTP
+      name: demoapp
+    # 当前名称空间下可以使用所有名称
+    hosts:
+    - &quot;./*&quot;
+
+# kubectl apply -f sidecar-demo.yaml
+sidecar.networking.istio.io/client created
+# kubectl get sidecar
+NAME     AGE
+client   6s
+
+2、验证client之上可用的侦听器，已经被急剧压缩
+root@client # curl localhost:15000/listeners
+6a8a0b6e-c652-4edd-b5b1-3d210fb0a8ae::0.0.0.0:15090
+316502d0-d131-4ea6-87f3-e7df91014c00::0.0.0.0:15021
+0.0.0.0_8080::0.0.0.0:8080
+virtualOutbound::0.0.0.0:15001
+virtualInbound::0.0.0.0:15006
+
+3、访问测试，虽然指定定义了client出向demoapp出站侦听器，但是由于设置的若不存在可接收转发报文的Listener，流量透传，所以也可以透传达到proxy；
+root@client # curl demoapp:8080
+iKubernetes demoapp v1.0 !! ClientIP: 127.0.0.6, ServerName: demoappv10-6ff964cbff-84kqr, ServerIP: 10.220.158.81!
+root@client # curl proxy:80
+Proxying value: iKubernetes demoapp v1.0 !! ClientIP: 127.0.0.6, ServerName: demoappv10-6ff964cbff-84kqr, ServerIP: 10.220.158.81!
+ - Took 63 milliseconds.
+
+root@client # while true; do curl proxy:80; curl demoapp:8080; sleep 0.$RANDOM; done
+...
+...
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br></div></div><p></p> <ul><li>kiali graph能够根据流量实时进行图形绘制 (访问proxy是透传)</li></ul> <p><img src="https://atlas.pingcode.com/files/public/623749df0768d614e2cbff8b" alt="image.png"></p> <p><img src="https://atlas.pingcode.com/files/public/623749ea0768d614e2cbff8c" alt="image.png"></p> <p></p></div></section> <footer class="page-edit"><!----> <!----></footer> <!----> <div class="comments-wrapper"><!----></div> <ul class="side-bar sub-sidebar-wrapper" style="width:12rem;" data-v-cb1513f6><li class="level-2" data-v-cb1513f6><a href="/views/Official_Accounts/Sidecar%E5%8F%8A%E6%B5%81%E9%87%8F%E6%8B%A6%E6%88%AA%E6%9C%BA%E5%88%B6-%E4%B8%8B.html#一、sidecar-cr" class="sidebar-link reco-side-一、sidecar-cr" data-v-cb1513f6>一、Sidecar CR</a></li><li class="level-3" data-v-cb1513f6><a href="/views/Official_Accounts/Sidecar%E5%8F%8A%E6%B5%81%E9%87%8F%E6%8B%A6%E6%88%AA%E6%9C%BA%E5%88%B6-%E4%B8%8B.html#_7-1、sidecar配置" class="sidebar-link reco-side-_7-1、sidecar配置" data-v-cb1513f6>7.1、Sidecar配置</a></li><li class="level-3" data-v-cb1513f6><a href="/views/Official_Accounts/Sidecar%E5%8F%8A%E6%B5%81%E9%87%8F%E6%8B%A6%E6%88%AA%E6%9C%BA%E5%88%B6-%E4%B8%8B.html#_7-2、sidecar配置示例" class="sidebar-link reco-side-_7-2、sidecar配置示例" data-v-cb1513f6>7.2、Sidecar配置示例</a></li><li class="level-3" data-v-cb1513f6><a href="/views/Official_Accounts/Sidecar%E5%8F%8A%E6%B5%81%E9%87%8F%E6%8B%A6%E6%88%AA%E6%9C%BA%E5%88%B6-%E4%B8%8B.html#_7-2-2、sidecar配置示例-定义可被访问的出站服务" class="sidebar-link reco-side-_7-2-2、sidecar配置示例-定义可被访问的出站服务" data-v-cb1513f6>7.2.2、Sidecar配置示例 - 定义可被访问的出站服务</a></li></ul></main> <!----></div></div></div></div><div class="global-ui"><div class="back-to-ceiling" style="right:1rem;bottom:6rem;width:2.5rem;height:2.5rem;border-radius:.25rem;line-height:2.5rem;display:none;" data-v-c6073ba8 data-v-c6073ba8><svg t="1574745035067" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5404" class="icon" data-v-c6073ba8><path d="M526.60727968 10.90185116a27.675 27.675 0 0 0-29.21455937 0c-131.36607665 82.28402758-218.69155461 228.01873535-218.69155402 394.07834331a462.20625001 462.20625001 0 0 0 5.36959153 69.94390903c1.00431239 6.55289093-0.34802892 13.13561351-3.76865779 18.80351572-32.63518765 54.11355614-51.75690182 118.55860487-51.7569018 187.94566865a371.06718723 371.06718723 0 0 0 11.50484808 91.98906777c6.53300375 25.50556257 41.68394495 28.14064038 52.69160883 4.22606766 17.37162448-37.73630017 42.14135425-72.50938081 72.80769204-103.21549295 2.18761121 3.04276886 4.15646224 6.24463696 6.40373557 9.22774369a1871.4375 1871.4375 0 0 0 140.04691725 5.34970492 1866.36093723 1866.36093723 0 0 0 140.04691723-5.34970492c2.24727335-2.98310674 4.21612437-6.18497483 6.3937923-9.2178004 30.66633723 30.70611158 55.4360664 65.4791928 72.80769147 103.21549355 11.00766384 23.91457269 46.15860503 21.27949489 52.69160879-4.22606768a371.15156223 371.15156223 0 0 0 11.514792-91.99901164c0-69.36717486-19.13165746-133.82216804-51.75690182-187.92578088-3.42062944-5.66790279-4.76302748-12.26056868-3.76865837-18.80351632a462.20625001 462.20625001 0 0 0 5.36959269-69.943909c-0.00994388-166.08943902-87.32547796-311.81420293-218.6915546-394.09823051zM605.93803103 357.87693858a93.93749974 93.93749974 0 1 1-187.89594924 6.1e-7 93.93749974 93.93749974 0 0 1 187.89594924-6.1e-7z" p-id="5405" data-v-c6073ba8></path><path d="M429.50777625 765.63860547C429.50777625 803.39355007 466.44236686 1000.39046097 512.00932183 1000.39046097c45.56695499 0 82.4922232-197.00623328 82.5015456-234.7518555 0-37.75494459-36.9345906-68.35043303-82.4922232-68.34111062-45.57627738-0.00932239-82.52019037 30.59548842-82.51086798 68.34111062z" p-id="5406" data-v-c6073ba8></path></svg></div><!----><div class="kanbanniang" data-v-5775ee02><div class="banniang-container" style="display:;" data-v-5775ee02><div class="messageBox" style="right:68px;bottom:190px;display:none;" data-v-5775ee02>
+      我是Brains,欢迎你的关注 
+    </div> <div class="operation" style="right:90px;bottom:40px;display:;" data-v-5775ee02><i class="kbnfont kbn-ban-home ban-home" data-v-5775ee02></i> <i class="kbnfont kbn-ban-message message" data-v-5775ee02></i> <i class="kbnfont kbn-ban-close close" data-v-5775ee02></i> <a target="_blank" href="https://vuepress-theme-reco.recoluan.com/views/plugins/kanbanniang.html" data-v-5775ee02><i class="kbnfont kbn-ban-info info" data-v-5775ee02></i></a> <i class="kbnfont kbn-ban-theme skin" style="display:;" data-v-5775ee02></i></div> <canvas id="banniang" width="200px" height="250" class="live2d" style="right:90px;bottom:-20px;opacity:0.9;" data-v-5775ee02></canvas></div> <div class="showBanNiang" style="display:none;" data-v-5775ee02>
+    看板娘
+  </div></div><canvas id="vuepress-canvas-cursor"></canvas><!----></div></div>
+    <script src="/assets/js/app.cd5fa041.js" defer></script><script src="/assets/js/3.ee7e7098.js" defer></script><script src="/assets/js/1.277d6ebc.js" defer></script><script src="/assets/js/39.0b0071eb.js" defer></script>
+  </body>
+</html>

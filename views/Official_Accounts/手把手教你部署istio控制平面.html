@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>手把手教你部署istio控制平面 | SRE运维充电站</title>
+    <meta name="generator" content="VuePress 1.9.7">
+    <link rel="icon" href="/images/favicon.svg">
+    <script>var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?668842dc21c1b8f215b000531ec8f69e";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();</script>
+    <meta name="description" content="这个杀手不太冷">
+    <meta name="baidu_union_verify" content="a0036ccf0b657813fb236f80f376c429">
+    <meta name="Keywords" content="Devops代哲,SRE运维充电站,pyenv.cc,Brains">
+    <meta name="author" content="Devops代哲,SRE运维充电站,pyenv.cc,Brains">
+    
+    <link rel="preload" href="/assets/css/0.styles.938d6ff2.css" as="style"><link rel="preload" href="/assets/js/app.cd5fa041.js" as="script"><link rel="preload" href="/assets/js/3.ee7e7098.js" as="script"><link rel="preload" href="/assets/js/1.277d6ebc.js" as="script"><link rel="preload" href="/assets/js/43.116e6cb6.js" as="script"><link rel="prefetch" href="/assets/js/10.d3b54896.js"><link rel="prefetch" href="/assets/js/11.f4bb5601.js"><link rel="prefetch" href="/assets/js/12.ed610cd8.js"><link rel="prefetch" href="/assets/js/13.3a9eb8fa.js"><link rel="prefetch" href="/assets/js/14.b6ae182d.js"><link rel="prefetch" href="/assets/js/15.db6f82c2.js"><link rel="prefetch" href="/assets/js/16.3d5e10b6.js"><link rel="prefetch" href="/assets/js/17.471efd1e.js"><link rel="prefetch" href="/assets/js/18.832fe344.js"><link rel="prefetch" href="/assets/js/19.b59cbfac.js"><link rel="prefetch" href="/assets/js/20.472c4b66.js"><link rel="prefetch" href="/assets/js/21.800f456d.js"><link rel="prefetch" href="/assets/js/22.ffd207bc.js"><link rel="prefetch" href="/assets/js/23.323321ef.js"><link rel="prefetch" href="/assets/js/24.b9a5f746.js"><link rel="prefetch" href="/assets/js/25.60904ca4.js"><link rel="prefetch" href="/assets/js/26.fad8d09c.js"><link rel="prefetch" href="/assets/js/27.aaaa8f8c.js"><link rel="prefetch" href="/assets/js/28.d65a84c8.js"><link rel="prefetch" href="/assets/js/29.ce7bd2fb.js"><link rel="prefetch" href="/assets/js/30.f2c39de0.js"><link rel="prefetch" href="/assets/js/31.f02ef496.js"><link rel="prefetch" href="/assets/js/32.0889c36c.js"><link rel="prefetch" href="/assets/js/33.7b2efadd.js"><link rel="prefetch" href="/assets/js/34.4ff3296a.js"><link rel="prefetch" href="/assets/js/35.6b05b4ad.js"><link rel="prefetch" href="/assets/js/36.4322a33f.js"><link rel="prefetch" href="/assets/js/37.73e5620d.js"><link rel="prefetch" href="/assets/js/38.6e6461a9.js"><link rel="prefetch" href="/assets/js/39.0b0071eb.js"><link rel="prefetch" href="/assets/js/4.6d9bb9fb.js"><link rel="prefetch" href="/assets/js/40.692bdf78.js"><link rel="prefetch" href="/assets/js/41.66cfe668.js"><link rel="prefetch" href="/assets/js/42.1b912be2.js"><link rel="prefetch" href="/assets/js/44.00d176ef.js"><link rel="prefetch" href="/assets/js/45.06d1d798.js"><link rel="prefetch" href="/assets/js/46.43bfeb5c.js"><link rel="prefetch" href="/assets/js/47.735867da.js"><link rel="prefetch" href="/assets/js/48.12a1df49.js"><link rel="prefetch" href="/assets/js/5.99213a31.js"><link rel="prefetch" href="/assets/js/6.7a0b7b07.js"><link rel="prefetch" href="/assets/js/7.356b6533.js"><link rel="prefetch" href="/assets/js/8.9f6a6c22.js"><link rel="prefetch" href="/assets/js/9.832ff77d.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.938d6ff2.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container no-sidebar" data-v-130b300a><div data-v-130b300a><div class="password-shadow password-wrapper-out" style="display:none;" data-v-25ba6db2 data-v-130b300a data-v-130b300a><h3 class="title" data-v-25ba6db2 data-v-25ba6db2>SRE运维充电站</h3> <p class="description" data-v-25ba6db2 data-v-25ba6db2>这个杀手不太冷</p> <label id="box" class="inputBox" data-v-25ba6db2 data-v-25ba6db2><input type="password" value="" data-v-25ba6db2> <span data-v-25ba6db2>Konck! Knock!</span> <button data-v-25ba6db2>OK</button></label> <div class="footer" data-v-25ba6db2 data-v-25ba6db2><span data-v-25ba6db2><i class="iconfont reco-theme" data-v-25ba6db2></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-25ba6db2>vuePress-theme-reco</a></span> <span data-v-25ba6db2><i class="iconfont reco-copyright" data-v-25ba6db2></i> <a data-v-25ba6db2><span data-v-25ba6db2>Brains</span>
+            
+          <!---->
+          2022
+        </a></span></div></div> <div class="hide" data-v-130b300a><header class="navbar" data-v-130b300a><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><img src="/images/favicon.svg" alt="SRE运维充电站" class="logo"> <span class="site-name">SRE运维充电站</span></a> <div class="links"><div class="color-picker"><a class="color-button"><i class="iconfont reco-color"></i></a> <div class="color-picker-menu" style="display:none;"><div class="mode-options"><h4 class="title">Choose mode</h4> <ul class="color-mode-options"><li class="dark">dark</li><li class="auto active">auto</li><li class="light">light</li></ul></div></div></div> <div class="search-box"><i class="iconfont reco-search"></i> <input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link"><i class="iconfont reco-home"></i>
+  主页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-category"></i>
+      分类
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/categories/HTML/" class="nav-link"><i class="undefined"></i>
+  HTML
+</a></li><li class="dropdown-item"><!----> <a href="/categories/JavaScript/" class="nav-link"><i class="undefined"></i>
+  JavaScript
+</a></li><li class="dropdown-item"><!----> <a href="/categories/CSS/" class="nav-link"><i class="undefined"></i>
+  CSS
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Go/" class="nav-link"><i class="undefined"></i>
+  Go
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Docker/" class="nav-link"><i class="undefined"></i>
+  Docker
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Kubernetes/" class="nav-link"><i class="undefined"></i>
+  Kubernetes
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Monitoring/" class="nav-link"><i class="undefined"></i>
+  Monitoring
+</a></li><li class="dropdown-item"><!----> <a href="/categories/ServiceMesh/" class="nav-link"><i class="undefined"></i>
+  ServiceMesh
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Vue/" class="nav-link"><i class="undefined"></i>
+  Vue
+</a></li></ul></div></div><div class="nav-item"><a href="/tag/" class="nav-link"><i class="iconfont reco-tag"></i>
+  标签
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont icon-tools"></i>
+      工具箱
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="https://www.uupoop.com/" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="undefined"></i>
+  在线PS
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://cowtransfer.com/" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="undefined"></i>
+  奶牛快传
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://www.tiobe.com/tiobe-index/" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="undefined"></i>
+  编程语言排行榜
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div></div><div class="nav-item"><a href="/timeline/" class="nav-link"><i class="iconfont reco-date"></i>
+  时间线
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-message"></i>
+      关于
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/views/About/resume.html" class="nav-link"><i class="iconfont reco-document"></i>
+  简历
+</a></li><li class="dropdown-item"><!----> <a href="https://blog.csdn.net/weixin_41989934" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-csdn"></i>
+  CSDN
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://github.com/Dz6666" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-github"></i>
+  GitHub
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://gitee.com/Dz6666" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-mayun"></i>
+  Gitee
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div></div> <!----></nav></div></header> <div class="sidebar-mask" data-v-130b300a></div> <aside class="sidebar" data-v-130b300a><div class="personal-info-wrapper" data-v-39576ba9 data-v-130b300a><img src="/images/head_portrait.svg" alt="author-avatar" class="personal-img" data-v-39576ba9> <h3 class="name" data-v-39576ba9>
+    Brains
+  </h3> <div class="num" data-v-39576ba9><div data-v-39576ba9><h3 data-v-39576ba9>30</h3> <h6 data-v-39576ba9>Articles</h6></div> <div data-v-39576ba9><h3 data-v-39576ba9>16</h3> <h6 data-v-39576ba9>Tags</h6></div></div> <ul class="social-links" data-v-39576ba9></ul> <hr data-v-39576ba9></div> <nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link"><i class="iconfont reco-home"></i>
+  主页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-category"></i>
+      分类
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/categories/HTML/" class="nav-link"><i class="undefined"></i>
+  HTML
+</a></li><li class="dropdown-item"><!----> <a href="/categories/JavaScript/" class="nav-link"><i class="undefined"></i>
+  JavaScript
+</a></li><li class="dropdown-item"><!----> <a href="/categories/CSS/" class="nav-link"><i class="undefined"></i>
+  CSS
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Go/" class="nav-link"><i class="undefined"></i>
+  Go
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Docker/" class="nav-link"><i class="undefined"></i>
+  Docker
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Kubernetes/" class="nav-link"><i class="undefined"></i>
+  Kubernetes
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Monitoring/" class="nav-link"><i class="undefined"></i>
+  Monitoring
+</a></li><li class="dropdown-item"><!----> <a href="/categories/ServiceMesh/" class="nav-link"><i class="undefined"></i>
+  ServiceMesh
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Vue/" class="nav-link"><i class="undefined"></i>
+  Vue
+</a></li></ul></div></div><div class="nav-item"><a href="/tag/" class="nav-link"><i class="iconfont reco-tag"></i>
+  标签
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont icon-tools"></i>
+      工具箱
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="https://www.uupoop.com/" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="undefined"></i>
+  在线PS
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://cowtransfer.com/" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="undefined"></i>
+  奶牛快传
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://www.tiobe.com/tiobe-index/" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="undefined"></i>
+  编程语言排行榜
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div></div><div class="nav-item"><a href="/timeline/" class="nav-link"><i class="iconfont reco-date"></i>
+  时间线
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-message"></i>
+      关于
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/views/About/resume.html" class="nav-link"><i class="iconfont reco-document"></i>
+  简历
+</a></li><li class="dropdown-item"><!----> <a href="https://blog.csdn.net/weixin_41989934" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-csdn"></i>
+  CSDN
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://github.com/Dz6666" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-github"></i>
+  GitHub
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://gitee.com/Dz6666" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-mayun"></i>
+  Gitee
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div></div> <!----></nav> <!----> </aside> <div class="password-shadow password-wrapper-in" style="display:none;" data-v-25ba6db2 data-v-130b300a><h3 class="title" data-v-25ba6db2 data-v-25ba6db2>手把手教你部署istio控制平面</h3> <!----> <label id="box" class="inputBox" data-v-25ba6db2 data-v-25ba6db2><input type="password" value="" data-v-25ba6db2> <span data-v-25ba6db2>Konck! Knock!</span> <button data-v-25ba6db2>OK</button></label> <div class="footer" data-v-25ba6db2 data-v-25ba6db2><span data-v-25ba6db2><i class="iconfont reco-theme" data-v-25ba6db2></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-25ba6db2>vuePress-theme-reco</a></span> <span data-v-25ba6db2><i class="iconfont reco-copyright" data-v-25ba6db2></i> <a data-v-25ba6db2><span data-v-25ba6db2>Brains</span>
+            
+          <!---->
+          2022
+        </a></span></div></div> <div data-v-130b300a><main class="page"><section><div class="page-title"><h1 class="title">手把手教你部署istio控制平面</h1> <div data-v-f875f3fc><i class="iconfont reco-account" data-v-f875f3fc><span data-v-f875f3fc>Brains</span></i> <i class="iconfont reco-date" data-v-f875f3fc><span data-v-f875f3fc>3/15/2022</span></i> <i class="iconfont reco-eye" data-v-f875f3fc><span id="/views/Official_Accounts/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E9%83%A8%E7%BD%B2istio%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2.html" data-flag-title="Your Article Title" class="leancloud-visitors" data-v-f875f3fc><a class="leancloud-visitors-count" style="font-size:.9rem;font-weight:normal;color:#999;"></a></span></i> <i class="tags iconfont reco-tag" data-v-f875f3fc><span class="tag-item" data-v-f875f3fc>Istio</span></i></div></div> <div class="theme-reco-content content__default"><div class="custom-block tip"><p class="title"></p><p><img src="https://atlas.pingcode.com/files/public/6231b167274edad1ad534662" alt="image.png"></p></div> <p></p><div class="table-of-contents"><ul><li><a href="#一、部署istio控制平面">一、部署Istio控制平面</a><ul><li><a href="#_1-1、三种部署方法介绍">1.1、三种部署方法介绍</a></li><li><a href="#_1-2、istio内置的部署档案-共8种-以下是常用的6种">1.2、Istio内置的部署档案(共8种，以下是常用的6种)</a></li><li><a href="#_1-3、istio-operator-api各配置段说明">1.3、Istio Operator API各配置段说明</a></li><li><a href="#_1-4、使用istioctl-快速部署istio">1.4、使用istioctl 快速部署Istio</a></li><li><a href="#_1-5、卸载istio">1.5、卸载Istio</a></li></ul></li></ul></div><p></p> <blockquote><p>istio官方手册 ：https://istio.io/latest/docs/setup/getting-started/</p></blockquote> <h2 id="一、部署istio控制平面"><a href="#一、部署istio控制平面" class="header-anchor">#</a> 一、部署Istio控制平面</h2> <h3 id="_1-1、三种部署方法介绍"><a href="#_1-1、三种部署方法介绍" class="header-anchor">#</a> 1.1、三种部署方法介绍</h3> <ul><li>部署方法
+<ul><li>istioctl
+<ul><li>Istio的专用管理工具，支持定制控制平面及数据平面；</li> <li>通过命令行的选项支持完整的 IstioOperator API;</li> <li>命令行各选项可用于单独设置、以及接收包含IstioOperator自定义资源(CR)的yaml文件；
+<ul><li>部署完 istio后会在 k8s中生成很多 CR(自定义资源)，会有一种资源叫 install istio的所属群组。所以其实IstioOperator 就是 install istio一个专门的API；</li></ul></li></ul></li> <li>Istio Operator
+<ul><li>Istio 相关的自定义资源(CR) 的专门控制器，负责自动维护由CR定义的资源对象；</li> <li>管理员根据需要定义相应的CR配置文件，提交至Kubernetes API Server后，即可由Opterator完成相应的操作；</li></ul></li> <li>Helm
+<ul><li>基于特定的Charts，可以由helm安装Istio；</li> <li>目前处于Alpha阶段；</li></ul></li></ul></li> <li>提示
+<ul><li>各部署工具依赖的前提条件会有所不同，使用前，需要分别按照其实际要求事先进行准备；</li> <li>各工具的部署操作，最终都要转换为kubernetes的资源配置文件，并创建于集群上；</li></ul></li></ul> <h3 id="_1-2、istio内置的部署档案-共8种-以下是常用的6种"><a href="#_1-2、istio内置的部署档案-共8种-以下是常用的6种" class="header-anchor">#</a> 1.2、Istio内置的部署档案(共8种，以下是常用的6种)</h3> <ul><li>istio 提供了内置配置文件(配置档案)用于快速部署；
+<ul><li>default : 根据IstioOperator API 的默认设置启用相关组件，适用于生产环境；</li> <li>demo : 会部署较多的组件，仅在演示istio功能，适合运行Bookinfo一类的应用程序；</li> <li>minimal : 类似于default profile ，但仅部署控制平面组件；</li> <li>remote : 用于配置共享 Control Plane 的多集群环境；</li> <li>empty : 不部署任何组件，通常帮助用于在自定义profile时生成基础配置信息；</li> <li>preview : 包含预览性配置的profile，用于探索istio的新功能，但不保证稳定，安全性和性能；</li></ul></li> <li>配置档案
+<ul><li>各配置档案，事实上是 IstioOperator API内置的特定CR格式的配置文件；
+<ul><li>CR 名称 ： istiooperators</li> <li>所属的资源群组 ： install.istio.io/v1alpha1</li></ul></li> <li>因此，各配置档案也是该资源类型下的资源对象的定义；</li></ul></li> <li>了解内置的配置档案</li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>~# istioctl profile list
+~# istioctl profile dump [PROFILE]
+
+例如打印default档案的资源配置信息
+~# istioctl profile dump default
+--config-path 选项可用于仅打印执行的配置段
+~# istioctl profile diff PROFILE1 PROFILE2
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br></div></div><ul><li>内置的各 profile默认启用的组件会有所不同；</li></ul> <p><img src="https://atlas.pingcode.com/files/public/61e3f150bd79bf3f3cdb25c9" alt="image.png"></p> <h3 id="_1-3、istio-operator-api各配置段说明"><a href="#_1-3、istio-operator-api各配置段说明" class="header-anchor">#</a> 1.3、Istio Operator API各配置段说明</h3> <ul><li><p>IstioOperator API 主要包括以下几个配置段；</p> <ul><li>components : 组件配置参数</li> <li>hub : 获取各组件镜像的仓库，默认为 &quot;docker.io/istio&quot;</li> <li>meshConfig : 网格(数据平面) 相关的配置参数</li> <li>values : 传递给Chart 的各参数值</li></ul></li> <li><p>IstioOperator API 中定义的组件</p> <ul><li>base</li> <li>pilot</li> <li>ingressGateway</li> <li>egressGateway</li> <li>cni</li> <li>istioRemote</li></ul></li> <li><p>以下配置段中的各参数，均可在istioctl命令中使用
+--set选项进行独立设置；例如，部署时为default配置档案启用的 debug 日志功能，可以使用以下命令；</p></li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>~$ istioctl install --set profile=default --set values.global.logging.level=debug
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br></div></div><h3 id="_1-4、使用istioctl-快速部署istio"><a href="#_1-4、使用istioctl-快速部署istio" class="header-anchor">#</a> 1.4、使用istioctl 快速部署Istio</h3> <div class="language- line-numbers-mode"><pre class="language-text"><code>1、Download Istio
+root@native01:~# cd /usr/local &amp;&amp; curl -L https://istio.io/downloadIstio | sh -
+
+root@native01:/usr/local# ln -sv istio-1.12.1 istio
+'istio' -&gt; 'istio-1.12.1'
+
+2、增加PATH
+root@native01:/usr/local# cat /etc/profile
+# Istio
+ISTIOPATH=&quot;/usr/local/istio&quot;
+PATH=$ISTIOPATH/bin:$PATH
+
+3、查看内置PROFILE档案
+root@native01:~/istio# istioctl profile list
+Istio configuration profiles:
+    default
+    demo
+    empty
+    external
+    minimal
+    openshift
+    preview
+    remote
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br></div></div><h3 id="_1-5、卸载istio"><a href="#_1-5、卸载istio" class="header-anchor">#</a> 1.5、卸载Istio</h3> <ul><li>使用istioctl命令卸载Istio
+<ul><li>命令：istioctl experimental uninstall</li></ul></li> <li>卸载方法
+<ul><li>卸载指定的控制平面
+<ul><li>卸载指定文件中定义的控制平面
+<ul><li>$ istioctl x uninstall -f</li></ul></li> <li>卸载指定的Revision
+<ul><li>$ istioctl x uninstall --revision</li></ul></li> <li>基于安装时的选项生成配置信息后经由kubectl命令删除
+<ul><li>$ istioctl manifest generate  | kubectl delete -f -</li></ul></li> <li>清除集群上部署的所有控制平面
+<ul><li>$ istioctl x uninstall --purge</li></ul></li></ul></li></ul></li> <li>提示：控制平面的名称空间默认并不会删除，如果确认不再需要时，需自行进行删除操作;</li></ul></div></section> <footer class="page-edit"><!----> <!----></footer> <!----> <div class="comments-wrapper"><!----></div> <ul class="side-bar sub-sidebar-wrapper" style="width:12rem;" data-v-cb1513f6><li class="level-2" data-v-cb1513f6><a href="/views/Official_Accounts/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E9%83%A8%E7%BD%B2istio%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2.html#一、部署istio控制平面" class="sidebar-link reco-side-一、部署istio控制平面" data-v-cb1513f6>一、部署Istio控制平面</a></li><li class="level-3" data-v-cb1513f6><a href="/views/Official_Accounts/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E9%83%A8%E7%BD%B2istio%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2.html#_1-1、三种部署方法介绍" class="sidebar-link reco-side-_1-1、三种部署方法介绍" data-v-cb1513f6>1.1、三种部署方法介绍</a></li><li class="level-3" data-v-cb1513f6><a href="/views/Official_Accounts/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E9%83%A8%E7%BD%B2istio%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2.html#_1-2、istio内置的部署档案-共8种-以下是常用的6种" class="sidebar-link reco-side-_1-2、istio内置的部署档案-共8种-以下是常用的6种" data-v-cb1513f6>1.2、Istio内置的部署档案(共8种，以下是常用的6种)</a></li><li class="level-3" data-v-cb1513f6><a href="/views/Official_Accounts/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E9%83%A8%E7%BD%B2istio%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2.html#_1-3、istio-operator-api各配置段说明" class="sidebar-link reco-side-_1-3、istio-operator-api各配置段说明" data-v-cb1513f6>1.3、Istio Operator API各配置段说明</a></li><li class="level-3" data-v-cb1513f6><a href="/views/Official_Accounts/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E9%83%A8%E7%BD%B2istio%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2.html#_1-4、使用istioctl-快速部署istio" class="sidebar-link reco-side-_1-4、使用istioctl-快速部署istio" data-v-cb1513f6>1.4、使用istioctl 快速部署Istio</a></li><li class="level-3" data-v-cb1513f6><a href="/views/Official_Accounts/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E9%83%A8%E7%BD%B2istio%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2.html#_1-5、卸载istio" class="sidebar-link reco-side-_1-5、卸载istio" data-v-cb1513f6>1.5、卸载Istio</a></li></ul></main> <!----></div></div></div></div><div class="global-ui"><div class="back-to-ceiling" style="right:1rem;bottom:6rem;width:2.5rem;height:2.5rem;border-radius:.25rem;line-height:2.5rem;display:none;" data-v-c6073ba8 data-v-c6073ba8><svg t="1574745035067" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5404" class="icon" data-v-c6073ba8><path d="M526.60727968 10.90185116a27.675 27.675 0 0 0-29.21455937 0c-131.36607665 82.28402758-218.69155461 228.01873535-218.69155402 394.07834331a462.20625001 462.20625001 0 0 0 5.36959153 69.94390903c1.00431239 6.55289093-0.34802892 13.13561351-3.76865779 18.80351572-32.63518765 54.11355614-51.75690182 118.55860487-51.7569018 187.94566865a371.06718723 371.06718723 0 0 0 11.50484808 91.98906777c6.53300375 25.50556257 41.68394495 28.14064038 52.69160883 4.22606766 17.37162448-37.73630017 42.14135425-72.50938081 72.80769204-103.21549295 2.18761121 3.04276886 4.15646224 6.24463696 6.40373557 9.22774369a1871.4375 1871.4375 0 0 0 140.04691725 5.34970492 1866.36093723 1866.36093723 0 0 0 140.04691723-5.34970492c2.24727335-2.98310674 4.21612437-6.18497483 6.3937923-9.2178004 30.66633723 30.70611158 55.4360664 65.4791928 72.80769147 103.21549355 11.00766384 23.91457269 46.15860503 21.27949489 52.69160879-4.22606768a371.15156223 371.15156223 0 0 0 11.514792-91.99901164c0-69.36717486-19.13165746-133.82216804-51.75690182-187.92578088-3.42062944-5.66790279-4.76302748-12.26056868-3.76865837-18.80351632a462.20625001 462.20625001 0 0 0 5.36959269-69.943909c-0.00994388-166.08943902-87.32547796-311.81420293-218.6915546-394.09823051zM605.93803103 357.87693858a93.93749974 93.93749974 0 1 1-187.89594924 6.1e-7 93.93749974 93.93749974 0 0 1 187.89594924-6.1e-7z" p-id="5405" data-v-c6073ba8></path><path d="M429.50777625 765.63860547C429.50777625 803.39355007 466.44236686 1000.39046097 512.00932183 1000.39046097c45.56695499 0 82.4922232-197.00623328 82.5015456-234.7518555 0-37.75494459-36.9345906-68.35043303-82.4922232-68.34111062-45.57627738-0.00932239-82.52019037 30.59548842-82.51086798 68.34111062z" p-id="5406" data-v-c6073ba8></path></svg></div><!----><div class="kanbanniang" data-v-5775ee02><div class="banniang-container" style="display:;" data-v-5775ee02><div class="messageBox" style="right:68px;bottom:190px;display:none;" data-v-5775ee02>
+      我是Brains,欢迎你的关注 
+    </div> <div class="operation" style="right:90px;bottom:40px;display:;" data-v-5775ee02><i class="kbnfont kbn-ban-home ban-home" data-v-5775ee02></i> <i class="kbnfont kbn-ban-message message" data-v-5775ee02></i> <i class="kbnfont kbn-ban-close close" data-v-5775ee02></i> <a target="_blank" href="https://vuepress-theme-reco.recoluan.com/views/plugins/kanbanniang.html" data-v-5775ee02><i class="kbnfont kbn-ban-info info" data-v-5775ee02></i></a> <i class="kbnfont kbn-ban-theme skin" style="display:;" data-v-5775ee02></i></div> <canvas id="banniang" width="200px" height="250" class="live2d" style="right:90px;bottom:-20px;opacity:0.9;" data-v-5775ee02></canvas></div> <div class="showBanNiang" style="display:none;" data-v-5775ee02>
+    看板娘
+  </div></div><canvas id="vuepress-canvas-cursor"></canvas><!----></div></div>
+    <script src="/assets/js/app.cd5fa041.js" defer></script><script src="/assets/js/3.ee7e7098.js" defer></script><script src="/assets/js/1.277d6ebc.js" defer></script><script src="/assets/js/43.116e6cb6.js" defer></script>
+  </body>
+</html>

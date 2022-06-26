@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>03-K8S Basic-kubernetes应用快速入门 | SRE运维充电站</title>
+    <meta name="generator" content="VuePress 1.9.7">
+    <link rel="icon" href="/images/favicon.svg">
+    <script>var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?668842dc21c1b8f215b000531ec8f69e";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();</script>
+    <meta name="description" content="这个杀手不太冷">
+    <meta name="baidu_union_verify" content="a0036ccf0b657813fb236f80f376c429">
+    <meta name="Keywords" content="Devops代哲,SRE运维充电站,pyenv.cc,Brains">
+    <meta name="author" content="Devops代哲,SRE运维充电站,pyenv.cc,Brains">
+    
+    <link rel="preload" href="/assets/css/0.styles.938d6ff2.css" as="style"><link rel="preload" href="/assets/js/app.cd5fa041.js" as="script"><link rel="preload" href="/assets/js/3.ee7e7098.js" as="script"><link rel="preload" href="/assets/js/1.277d6ebc.js" as="script"><link rel="preload" href="/assets/js/33.7b2efadd.js" as="script"><link rel="prefetch" href="/assets/js/10.d3b54896.js"><link rel="prefetch" href="/assets/js/11.f4bb5601.js"><link rel="prefetch" href="/assets/js/12.ed610cd8.js"><link rel="prefetch" href="/assets/js/13.3a9eb8fa.js"><link rel="prefetch" href="/assets/js/14.b6ae182d.js"><link rel="prefetch" href="/assets/js/15.db6f82c2.js"><link rel="prefetch" href="/assets/js/16.3d5e10b6.js"><link rel="prefetch" href="/assets/js/17.471efd1e.js"><link rel="prefetch" href="/assets/js/18.832fe344.js"><link rel="prefetch" href="/assets/js/19.b59cbfac.js"><link rel="prefetch" href="/assets/js/20.472c4b66.js"><link rel="prefetch" href="/assets/js/21.800f456d.js"><link rel="prefetch" href="/assets/js/22.ffd207bc.js"><link rel="prefetch" href="/assets/js/23.323321ef.js"><link rel="prefetch" href="/assets/js/24.b9a5f746.js"><link rel="prefetch" href="/assets/js/25.60904ca4.js"><link rel="prefetch" href="/assets/js/26.fad8d09c.js"><link rel="prefetch" href="/assets/js/27.aaaa8f8c.js"><link rel="prefetch" href="/assets/js/28.d65a84c8.js"><link rel="prefetch" href="/assets/js/29.ce7bd2fb.js"><link rel="prefetch" href="/assets/js/30.f2c39de0.js"><link rel="prefetch" href="/assets/js/31.f02ef496.js"><link rel="prefetch" href="/assets/js/32.0889c36c.js"><link rel="prefetch" href="/assets/js/34.4ff3296a.js"><link rel="prefetch" href="/assets/js/35.6b05b4ad.js"><link rel="prefetch" href="/assets/js/36.4322a33f.js"><link rel="prefetch" href="/assets/js/37.73e5620d.js"><link rel="prefetch" href="/assets/js/38.6e6461a9.js"><link rel="prefetch" href="/assets/js/39.0b0071eb.js"><link rel="prefetch" href="/assets/js/4.6d9bb9fb.js"><link rel="prefetch" href="/assets/js/40.692bdf78.js"><link rel="prefetch" href="/assets/js/41.66cfe668.js"><link rel="prefetch" href="/assets/js/42.1b912be2.js"><link rel="prefetch" href="/assets/js/43.116e6cb6.js"><link rel="prefetch" href="/assets/js/44.00d176ef.js"><link rel="prefetch" href="/assets/js/45.06d1d798.js"><link rel="prefetch" href="/assets/js/46.43bfeb5c.js"><link rel="prefetch" href="/assets/js/47.735867da.js"><link rel="prefetch" href="/assets/js/48.12a1df49.js"><link rel="prefetch" href="/assets/js/5.99213a31.js"><link rel="prefetch" href="/assets/js/6.7a0b7b07.js"><link rel="prefetch" href="/assets/js/7.356b6533.js"><link rel="prefetch" href="/assets/js/8.9f6a6c22.js"><link rel="prefetch" href="/assets/js/9.832ff77d.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.938d6ff2.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container no-sidebar" data-v-130b300a><div data-v-130b300a><div class="password-shadow password-wrapper-out" style="display:none;" data-v-25ba6db2 data-v-130b300a data-v-130b300a><h3 class="title" data-v-25ba6db2 data-v-25ba6db2>SRE运维充电站</h3> <p class="description" data-v-25ba6db2 data-v-25ba6db2>这个杀手不太冷</p> <label id="box" class="inputBox" data-v-25ba6db2 data-v-25ba6db2><input type="password" value="" data-v-25ba6db2> <span data-v-25ba6db2>Konck! Knock!</span> <button data-v-25ba6db2>OK</button></label> <div class="footer" data-v-25ba6db2 data-v-25ba6db2><span data-v-25ba6db2><i class="iconfont reco-theme" data-v-25ba6db2></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-25ba6db2>vuePress-theme-reco</a></span> <span data-v-25ba6db2><i class="iconfont reco-copyright" data-v-25ba6db2></i> <a data-v-25ba6db2><span data-v-25ba6db2>Brains</span>
+            
+          <!---->
+          2022
+        </a></span></div></div> <div class="hide" data-v-130b300a><header class="navbar" data-v-130b300a><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><img src="/images/favicon.svg" alt="SRE运维充电站" class="logo"> <span class="site-name">SRE运维充电站</span></a> <div class="links"><div class="color-picker"><a class="color-button"><i class="iconfont reco-color"></i></a> <div class="color-picker-menu" style="display:none;"><div class="mode-options"><h4 class="title">Choose mode</h4> <ul class="color-mode-options"><li class="dark">dark</li><li class="auto active">auto</li><li class="light">light</li></ul></div></div></div> <div class="search-box"><i class="iconfont reco-search"></i> <input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link"><i class="iconfont reco-home"></i>
+  主页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-category"></i>
+      分类
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/categories/HTML/" class="nav-link"><i class="undefined"></i>
+  HTML
+</a></li><li class="dropdown-item"><!----> <a href="/categories/JavaScript/" class="nav-link"><i class="undefined"></i>
+  JavaScript
+</a></li><li class="dropdown-item"><!----> <a href="/categories/CSS/" class="nav-link"><i class="undefined"></i>
+  CSS
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Go/" class="nav-link"><i class="undefined"></i>
+  Go
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Docker/" class="nav-link"><i class="undefined"></i>
+  Docker
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Kubernetes/" class="nav-link"><i class="undefined"></i>
+  Kubernetes
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Monitoring/" class="nav-link"><i class="undefined"></i>
+  Monitoring
+</a></li><li class="dropdown-item"><!----> <a href="/categories/ServiceMesh/" class="nav-link"><i class="undefined"></i>
+  ServiceMesh
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Vue/" class="nav-link"><i class="undefined"></i>
+  Vue
+</a></li></ul></div></div><div class="nav-item"><a href="/tag/" class="nav-link"><i class="iconfont reco-tag"></i>
+  标签
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont icon-tools"></i>
+      工具箱
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="https://www.uupoop.com/" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="undefined"></i>
+  在线PS
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://cowtransfer.com/" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="undefined"></i>
+  奶牛快传
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://www.tiobe.com/tiobe-index/" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="undefined"></i>
+  编程语言排行榜
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div></div><div class="nav-item"><a href="/timeline/" class="nav-link"><i class="iconfont reco-date"></i>
+  时间线
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-message"></i>
+      关于
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/views/About/resume.html" class="nav-link"><i class="iconfont reco-document"></i>
+  简历
+</a></li><li class="dropdown-item"><!----> <a href="https://blog.csdn.net/weixin_41989934" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-csdn"></i>
+  CSDN
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://github.com/Dz6666" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-github"></i>
+  GitHub
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://gitee.com/Dz6666" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-mayun"></i>
+  Gitee
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div></div> <!----></nav></div></header> <div class="sidebar-mask" data-v-130b300a></div> <aside class="sidebar" data-v-130b300a><div class="personal-info-wrapper" data-v-39576ba9 data-v-130b300a><img src="/images/head_portrait.svg" alt="author-avatar" class="personal-img" data-v-39576ba9> <h3 class="name" data-v-39576ba9>
+    Brains
+  </h3> <div class="num" data-v-39576ba9><div data-v-39576ba9><h3 data-v-39576ba9>30</h3> <h6 data-v-39576ba9>Articles</h6></div> <div data-v-39576ba9><h3 data-v-39576ba9>16</h3> <h6 data-v-39576ba9>Tags</h6></div></div> <ul class="social-links" data-v-39576ba9></ul> <hr data-v-39576ba9></div> <nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link"><i class="iconfont reco-home"></i>
+  主页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-category"></i>
+      分类
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/categories/HTML/" class="nav-link"><i class="undefined"></i>
+  HTML
+</a></li><li class="dropdown-item"><!----> <a href="/categories/JavaScript/" class="nav-link"><i class="undefined"></i>
+  JavaScript
+</a></li><li class="dropdown-item"><!----> <a href="/categories/CSS/" class="nav-link"><i class="undefined"></i>
+  CSS
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Go/" class="nav-link"><i class="undefined"></i>
+  Go
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Docker/" class="nav-link"><i class="undefined"></i>
+  Docker
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Kubernetes/" class="nav-link"><i class="undefined"></i>
+  Kubernetes
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Monitoring/" class="nav-link"><i class="undefined"></i>
+  Monitoring
+</a></li><li class="dropdown-item"><!----> <a href="/categories/ServiceMesh/" class="nav-link"><i class="undefined"></i>
+  ServiceMesh
+</a></li><li class="dropdown-item"><!----> <a href="/categories/Vue/" class="nav-link"><i class="undefined"></i>
+  Vue
+</a></li></ul></div></div><div class="nav-item"><a href="/tag/" class="nav-link"><i class="iconfont reco-tag"></i>
+  标签
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont icon-tools"></i>
+      工具箱
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="https://www.uupoop.com/" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="undefined"></i>
+  在线PS
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://cowtransfer.com/" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="undefined"></i>
+  奶牛快传
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://www.tiobe.com/tiobe-index/" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="undefined"></i>
+  编程语言排行榜
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div></div><div class="nav-item"><a href="/timeline/" class="nav-link"><i class="iconfont reco-date"></i>
+  时间线
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-message"></i>
+      关于
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/views/About/resume.html" class="nav-link"><i class="iconfont reco-document"></i>
+  简历
+</a></li><li class="dropdown-item"><!----> <a href="https://blog.csdn.net/weixin_41989934" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-csdn"></i>
+  CSDN
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://github.com/Dz6666" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-github"></i>
+  GitHub
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://gitee.com/Dz6666" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-mayun"></i>
+  Gitee
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div></div> <!----></nav> <!----> </aside> <div class="password-shadow password-wrapper-in" style="display:none;" data-v-25ba6db2 data-v-130b300a><h3 class="title" data-v-25ba6db2 data-v-25ba6db2>03-K8S Basic-kubernetes应用快速入门</h3> <!----> <label id="box" class="inputBox" data-v-25ba6db2 data-v-25ba6db2><input type="password" value="" data-v-25ba6db2> <span data-v-25ba6db2>Konck! Knock!</span> <button data-v-25ba6db2>OK</button></label> <div class="footer" data-v-25ba6db2 data-v-25ba6db2><span data-v-25ba6db2><i class="iconfont reco-theme" data-v-25ba6db2></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-25ba6db2>vuePress-theme-reco</a></span> <span data-v-25ba6db2><i class="iconfont reco-copyright" data-v-25ba6db2></i> <a data-v-25ba6db2><span data-v-25ba6db2>Brains</span>
+            
+          <!---->
+          2022
+        </a></span></div></div> <div data-v-130b300a><main class="page"><section><div class="page-title"><h1 class="title">03-K8S Basic-kubernetes应用快速入门</h1> <div data-v-f875f3fc><i class="iconfont reco-account" data-v-f875f3fc><span data-v-f875f3fc>Brains</span></i> <i class="iconfont reco-date" data-v-f875f3fc><span data-v-f875f3fc>3/16/2019</span></i> <i class="iconfont reco-eye" data-v-f875f3fc><span id="/views/Native/Kubernetes/Kubernetes_Basic/03-K8S%20Basic-kubernetes%E5%BA%94%E7%94%A8%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8.html" data-flag-title="Your Article Title" class="leancloud-visitors" data-v-f875f3fc><a class="leancloud-visitors-count" style="font-size:.9rem;font-weight:normal;color:#999;"></a></span></i> <i class="tags iconfont reco-tag" data-v-f875f3fc><span class="tag-item" data-v-f875f3fc>Kubernetes_Basic</span></i></div></div> <div class="theme-reco-content content__default"><p></p><div class="table-of-contents"><ul><li><a href="#回顾">回顾</a></li><li><a href="#一、kubectl就是api-server客户端程序">一、kubectl就是API Server客户端程序</a><ul><li><a href="#_1-1、api-server介绍">1.1、API Server介绍</a></li><li><a href="#_1-2、api-server客户端-kubectl">1.2、API Server客户端-kubectl</a></li><li><a href="#_1-3、kubectl常用命令表格">1.3、kubectl常用命令表格</a></li><li><a href="#_1-4、kubectl实战命令">1.4、kubectl实战命令</a></li></ul></li></ul></div><p></p> <h2 id="回顾"><a href="#回顾" class="header-anchor">#</a> 回顾</h2> <ul><li>k8s有三个网络
+<ul><li>节点网络</li> <li>pod网络</li> <li>service网络</li></ul></li> <li>整个K8S系统不过是在master上控制层面有三个核心组件
+<ul><li>1.平面控制 API Server（唯一可以接入API Server就是master主机的6443端口）
+<ul><li>部署完成后默认监控在master节点的6443端口上</li> <li>唯一可以介入到API Server的接口就是master主机节点地址的6443端口</li> <li>API Server默认情况下要做用户认证</li></ul></li> <li>2、Scheduler负责调度某一node节点来运行pod</li> <li>3、Contorller 控制器（统称）</li> <li>4、Service</li></ul></li></ul> <h2 id="一、kubectl就是api-server客户端程序"><a href="#一、kubectl就是api-server客户端程序" class="header-anchor">#</a> 一、kubectl就是API Server客户端程序</h2> <h3 id="_1-1、api-server介绍"><a href="#_1-1、api-server介绍" class="header-anchor">#</a> 1.1、API Server介绍</h3> <ul><li>k8s API Server提供了k8s各类资源对象（pod,RC,Service等）的增删改查及watch等HTTP Rest接口，是整个系统的数据总线和数据中心。</li></ul> <h4 id="_1-1-1、api-server的功能"><a href="#_1-1-1、api-server的功能" class="header-anchor">#</a> 1.1.1、API Server的功能</h4> <ul><li>API资源类型</li></ul> <p><img src="https://img2020.cnblogs.com/blog/1600332/202106/1600332-20210613192747139-1000096792.png" alt="image"></p> <ul><li><p>kubernetes API Server的功能（唯一可以接入API Server就是master主机的6443端口）：</p> <ul><li>提供了集群管理的REST API接口(包括认证授权、数据校验以及集群状态变更)；   （REST API表征状态转移）</li> <li>提供其他模块之间的数据交互和通信的枢纽（其他模块通过API Server查询或修改数据，只有API Server才直接操作etcd）;</li> <li>是资源配额控制的入口；</li> <li>拥有完备的集群安全机制.</li></ul></li> <li><p>API Server资源</p> <ul><li>api接口中的资源分成多个逻辑组合</li> <li>每个组合：API Group，api群组</li> <li>每个组可以独立演进</li> <li>每个组还可以多版本并存</li></ul></li> <li><p>资源对象的配置格式</p> <ul><li>API Server接受和返回的所有JSON对象都遵循同一个模式，它们都具有“Kind&quot; 和 “api version” 字段，用于标识对象所属的资源类型、API群组及相关的版本</li> <li>大多数的对象或列表类型的资源还具有三个嵌套型的字典 metadata、apec和status
+<ul><li>metadata : 字段为资源提供的元数据信息，例如：名称、隶属的名称空间和标签等</li> <li>apec：用于定义用户期望的状态，不同的资源类型，其状态的意义各有不同，例如pod资源最为核心的功能在于运行容器</li> <li>stats ：则记录着活动对象当前的状态，它由kubernetes系统自行维护，对于用户来说为只读字段</li></ul></li> <li>kubectl api-resources 命令可以获取集群支持使用的所有资源类型</li></ul></li> <li><p>和解循环（Reconciliation Loop）</p> <ul><li>客户端向API Server提交POST请求以创建对象
+<ul><li>通过JSON格式的body提交</li> <li>YAML格式需要事先完成向JSON的转换</li> <li>对象配置信息保存于etcd中，其定义出的状态也成为“期望的状态（Spec）”</li></ul></li> <li>stats由控制器通过各界循环（loop）不间断地监控着相关地对象地状态，在对象地当前状态发生改变时运行合适地操作当前状态无限接近期望地状态</li></ul></li></ul> <p><img src="https://img2020.cnblogs.com/blog/1600332/202106/1600332-20210613192952354-1453357049.png" alt="image"></p> <ul><li>管理资源对象</li></ul> <p><img src="https://img2020.cnblogs.com/blog/1600332/202106/1600332-20210613193008765-432975855.png" alt="image"></p> <h4 id="_1-1-2、kube-apiserver工作原理"><a href="#_1-1-2、kube-apiserver工作原理" class="header-anchor">#</a> 1.1.2、kube-apiserver工作原理</h4> <ul><li>kube-apiserver提供了k8s的rest api，实现了认证、授权和准入控制等安全功能，同时也负责了集群状态的存储操作。</li> <li>kube-apiserver工作原理图</li></ul> <p><img src="https://img2020.cnblogs.com/blog/1600332/202106/1600332-20210613193036533-1680238648.png" alt="image"></p> <ul><li><p><strong>rest api</strong></p> <ul><li>kube-apiserver支持同时提供https和http api，其中http api是非安全接口，不做任何认证授权机制，不建议生产环境启用，但两个接口提供的rest api格式相同。</li> <li>https api 默认监听在6443端口（–secure-port=6443）；</li> <li>http api 默认监听在127.0.0.1的8080端口（使用参数 --insecure-port=8080）；</li></ul></li> <li><p><strong>访问控制说明</strong></p> <ul><li>k8s api 每个请求都会经过多阶段的访问控制才会被接受，包括认证、授权及准入控制等。</li> <li>认证
+<ul><li>开启TLS情况下，所有请求都需要首先认证。k8s支持多种认证机制，并且支持同时开启多个认证插件（仅一个认证通过即可），如认证成功，则用户的username会传入授权模块做进一步的授权验证，而认证失败的请求则返回http 401</li></ul></li> <li>授权
+<ul><li>认证之后的请求就到了授权模块，和认证类似，k8s也支持多种授权机制，并支持同时开启多个授权插件（仅一个验证通过即可）。如授权成功，则用户的请求会发送到准入控制模块做进一步的请求验证，失败的请求则返回http403</li></ul></li> <li>准入控制
+<ul><li>用来对请求做进一步的验证或添加默认参数，不同于认证和授权只关心请求的用户和操作，准入控制还会处理请求的内容，并且仅对创建、更新、删除或连接（如代理）等有效，而对读操作无效。准入控制也支持同时开启多个插件，但他们是依次调用的，只有全部插件都通过的请求才可以允许进入系统</li></ul></li></ul></li></ul> <h4 id="_1-1-3、访问kubernetes-api"><a href="#_1-1-3、访问kubernetes-api" class="header-anchor">#</a> 1.1.3、访问kubernetes API</h4> <p><code>k8s通过kube-apiserver这个进程提供服务，该进程运行在单个k8s-master节点上，默认有两个端口。</code></p> <ul><li><p><strong>本地端口</strong></p> <ul><li>1.该端口用于接收HTTP请求；</li> <li>2.该端口默认值为8080，可以通过API Server的启动参数“–insecure-port”的值来修改默认值；</li> <li>3.默认的IP地址为“localhost”，可以通过启动参数“–insecure-bind-address”的值来修改该IP地址；</li> <li>4.非认证或授权的HTTP请求通过该端口访问API Server;</li></ul></li> <li><p><strong>安全端口</strong></p> <ul><li>1.该端口默认值为6443，可通过启动参数“–secure-port”的值来修改默认值；</li> <li>2.默认IP地址为非本地（Non-Localhost）网络端口，通过启动参数“–bind-address”设置该值；</li> <li>3.该端口用于接收HTTPS请求；</li> <li>4.用于基于Tocken文件或客户端证书及HTTP Base的认证；</li> <li>5.用于基于策略的授权；</li> <li>6.默认不启动HTTPS安全访问控制</li></ul></li></ul> <h6 id="_1-1-3-1、直接访问api-了解即可"><a href="#_1-1-3-1、直接访问api-了解即可" class="header-anchor">#</a> 1.1.3.1、直接访问api（了解即可）</h6> <ul><li>通过本地8080端口使用curl命令能直接获取REST api的信息,例如：</li></ul> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code>查看所有支持的api
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl api-versions</span>
+        admissionregistration.k8s.io/v1
+        admissionregistration.k8s.io/v1beta1
+        apiextensions.k8s.io/v1
+        apiextensions.k8s.io/v1beta1
+        apiregistration.k8s.io/v1
+        apiregistration.k8s.io/v1beta1
+        apps/v1                    <span class="token comment"># 控制器API群组</span>
+        authentication.k8s.io/v1
+        authentication.k8s.io/v1beta1
+        authorization.k8s.io/v1
+        authorization.k8s.io/v1beta1
+        autoscaling/v1
+        autoscaling/v2beta1
+        autoscaling/v2beta2
+        batch/v1
+        batch/v1beta1
+        certificates.k8s.io/v1beta1
+        coordination.k8s.io/v1
+        coordination.k8s.io/v1beta1
+        csi.storage.k8s.io/v1alpha1
+        events.k8s.io/v1beta1
+        extensions/v1beta1
+        metrics.k8s.io/v1beta1
+        networking.k8s.io/v1
+        networking.k8s.io/v1beta1
+        node.k8s.io/v1beta1
+        policy/v1beta1
+        rbac.authorization.k8s.io/v1
+        rbac.authorization.k8s.io/v1beta1
+        scheduling.k8s.io/v1
+        scheduling.k8s.io/v1beta1
+        storage.k8s.io/v1
+        storage.k8s.io/v1beta1
+        v1                       <span class="token comment">#pod为api核心版本的v1当中</span>
+ 
+ 
+ 
+ 
+ 
+查看版本：
+       <span class="token function">curl</span>  <span class="token number">127.0</span>.0.1:8080/api
+查看支持的资源对象：
+       <span class="token function">curl</span>  <span class="token number">127.0</span>.0.1:8080/api/v1
+查看资源对象信息：
+       <span class="token function">curl</span>  <span class="token number">127.0</span>.0.1:8080/api/v1/nodes
+       <span class="token function">curl</span>  <span class="token number">127.0</span>.0.1:8080/api/v1/pods
+       <span class="token function">curl</span>  <span class="token number">127.0</span>.0.1:8080/api/v1/services
+       <span class="token function">curl</span>  <span class="token number">127.0</span>.0.1:8080/api/v1/replicationcontrollers
+具体到某一个具体的对象：
+       <span class="token function">curl</span> <span class="token number">127.0</span>.0.1:8080/api/v1/nodes/10.0.0.3
+指定不同namespace中的对象进行访问：
+       <span class="token function">curl</span>  http://127.0.0.1:8080/api/v1/namespaces/default/services/php-apache
+直接访问后端服务内容：
+       <span class="token function">curl</span>  http://127.0.0.1:8080/api/v1/namespaces/default/services/http:tomcat-service:/proxy/
+       <span class="token function">curl</span>  http://127.0.0.1:8080/api/v1/namespaces/default/services/http:php-apache:/proxy/
+其他的API信息：
+       <span class="token function">curl</span> <span class="token number">127.0</span>.0.1:8080/apis/batch/v1
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br></div></div><h5 id="_1-1-3-2、kubernetes-proxy"><a href="#_1-1-3-2、kubernetes-proxy" class="header-anchor">#</a> 1.1.3.2、Kubernetes Proxy</h5> <ul><li>Kubernetes Proxy主要用于代理REST请求。 可以通过这种代理方式将API Server收到的REST请求转发到某个Node上的kubelet上，由Kubelet负责响应。</li></ul> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code>创建一个Proxy 接口<span class="token punctuation">(</span>此处创建一个监听本地10.0.0.1上的8001端口<span class="token punctuation">)</span>：
+    kubectl proxy --port<span class="token operator">=</span><span class="token number">8001</span> --accept-hosts<span class="token operator">=</span><span class="token string">'.*'</span> --address<span class="token operator">=</span><span class="token string">'10.0.0.1'</span> <span class="token operator">&amp;</span>
+ 
+ 
+ 如果需要对访问的资源和源地址进行限制，可以使用正则进行匹配，限制对services进行访问：
+     kubectl  proxy --port<span class="token operator">=</span><span class="token number">8001</span>  --accept-hosts<span class="token operator">=</span><span class="token string">'.*'</span>  --address<span class="token operator">=</span><span class="token number">10.0</span>.0.1  --reject-paths<span class="token operator">=</span><span class="token string">'^/api/v1/services'</span>
+ 
+ 
+通过此端口可以在外部直接访问此api代理，在新的版本中，访问方式和常规访问的URL一致：
+    <span class="token function">curl</span>  http://10.0.0.1:8001/api/v1/pods
+    <span class="token function">curl</span>  http://10.0.0.1:8001/api/v1/nodes
+    <span class="token function">curl</span>  http://10.0.0.1:8001/api/v1/services
+    <span class="token function">curl</span>  http://10.0.0.1:8001/api/v1/replicationcontrollers
+    <span class="token function">curl</span>  http://10.0.0.1:8001/api/v1/namespaces/default/pods/tomcat-deployment-65799d5fc4-5dx4h
+    <span class="token function">curl</span>  http://10.0.0.1:8001/api/v1/namespaces/default/services/http:php-apache:/proxy/
+    <span class="token function">curl</span>  <span class="token number">10.0</span>.0.1:8001/apis/batch/v1
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br></div></div><h3 id="_1-2、api-server客户端-kubectl"><a href="#_1-2、api-server客户端-kubectl" class="header-anchor">#</a> 1.2、API Server客户端-kubectl</h3> <h4 id="_1-2-1、kubectl概述"><a href="#_1-2-1、kubectl概述" class="header-anchor">#</a> 1.2.1、kubectl概述</h4> <ul><li>kubectl是Kubernetes集群的命令行工具，通过kubectl能够对集群本身进行管理，并能够在集群上进行容器化应用的安装部署。运行kubectl命令的语法如下所示：</li></ul> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code>$ kubectl <span class="token punctuation">[</span>command<span class="token punctuation">]</span> <span class="token punctuation">[</span>TYPE<span class="token punctuation">]</span> <span class="token punctuation">[</span>NAME<span class="token punctuation">]</span> <span class="token punctuation">[</span>flags<span class="token punctuation">]</span>
+ 
+ 
+<span class="token comment">#comand:</span>
+    指定要对资源执行的操作，例如：create、get、describe和delete
+ 
+ 
+<span class="token comment">#type：</span>
+    指定资源类型，资源类型是大小敏感的。开发者能够以单数、复数和缩略的形式，例如：
+    $ kubectl get pod pod1
+    $ kubectl get pods pod1
+    $ kubectl get po pod1
+ 
+ 
+<span class="token comment">#name:</span>
+    指定资源的名称，名称也是大小写敏感的，如果省略名称，则会显示所有资源，例如：
+    $ kubectl get pods
+ 
+ 
+<span class="token comment">#flags：</span>
+    指定可选的参数，例如，使用-s或者--server参数指定kubernetes API Server的地址和端口
+    另外，可以通过kubectl help获取更多的信息
+ 
+ 
+~<span class="token punctuation">]</span><span class="token comment"># kubectl</span>
+<span class="token comment">#新手使用的基本命令</span>
+Basic Commands <span class="token punctuation">(</span>Beginner<span class="token punctuation">)</span>:
+  create         Create a resource from a <span class="token function">file</span> or from stdin.  在服务器上增加一个资源
+  expose         使用 replication controller, service, deployment 或者 pod 并暴露它作为一个 新的Kubernetes Service
+  run            在集群中运行一个指定的镜像
+  <span class="token builtin class-name">set</span>            为 objects 设置一个指定的特征
+  
+<span class="token comment">#中级基础命令</span>
+Basic Commands <span class="token punctuation">(</span>Intermediate<span class="token punctuation">)</span>:
+  explain        查看资源的文档
+  get            显示一个或更多 resources
+  edit           在服务器上编辑一个资源
+  delete         Delete resources by filenames, stdin, resources and names, or by resources and label selector  在服务器上删除一个资源
+  
+<span class="token comment">#部署应用程序相关的命令</span>
+Deploy Commands:
+  rollout        Manage the rollout of a resource  滚动、回滚
+  scale          为 Deployment, ReplicaSet, Replication Controller 或者 Job 设置一个新的副本数量
+  autoscale      自动调整一个 Deployment, ReplicaSet, 或者 ReplicationController 的副本数量
+  
+<span class="token comment">#集群管理相关的命令</span>
+Cluster Management Commands:
+  certificate    修改 certificate（证书） 资源.
+  cluster-info   显示集群信息
+  <span class="token function">top</span>            Display Resource <span class="token punctuation">(</span>CPU/Memory/Storage<span class="token punctuation">)</span> usage.   cpu、内存、存储
+  cordon         标记 <span class="token function">node</span> 为 unschedulable       标记一个节点不可被调用
+  uncordon       标记 <span class="token function">node</span> 为 schedulable         标记一个节点可被调用
+  drain          Drain <span class="token function">node</span> <span class="token keyword">in</span> preparation <span class="token keyword">for</span> maintenance   排干模式
+  taint          更新一个或者多个 <span class="token function">node</span> 上的 taints           给节点增加污点
+  
+<span class="token comment">#疑难解答和调试命令</span>
+Troubleshooting and Debugging Commands:
+  describe       显示一个指定 resource 或者 group 的 resources 详情     描述一个资源的详细信息
+  logs           输出容器在 pod 中的日志
+  attach         Attach 到一个运行中的 container
+  <span class="token builtin class-name">exec</span>           在一个 container 中执行一个命令
+  port-forward   Forward one or <span class="token function">more</span> <span class="token builtin class-name">local</span> ports to a pod    端口转发
+  proxy          运行一个 proxy 到 Kubernetes API server
+  <span class="token function">cp</span>             复制 files 和 directories 到 containers 和从容器中复制 files 和 directories.    容器之间复制数据，跨容器复制数据
+  auth           Inspect authorization    测试认证
+  
+<span class="token comment">#高级命令</span>
+Advanced Commands:
+  apply          通过文件名或标准输入流<span class="token punctuation">(</span>stdin<span class="token punctuation">)</span>对资源进行配置           创建修改
+  patch          使用 strategic merge patch 更新一个资源的 field<span class="token punctuation">(</span>s<span class="token punctuation">)</span>    打补丁
+  replace        通过 filename 或者 stdin替换一个资源                  替换
+  <span class="token function">wait</span>           Experimental: Wait <span class="token keyword">for</span> one condition on one or many resources
+  convert        在不同的 API versions 转换配置文件
+  
+<span class="token comment">#设置命令</span>
+Settings Commands:
+  label          更新在这个资源上的 labels                             打标签
+  annotate       更新一个资源的注解                                    <span class="token comment">#注解，比labels简单，可打上长度不受限制的K/V对</span>
+  completion     Output shell completion code <span class="token keyword">for</span> the specified shell <span class="token punctuation">(</span>bash or <span class="token function">zsh</span><span class="token punctuation">)</span>     命令补全
+  
+<span class="token comment">#其余的命令</span>
+Other Commands:
+  alpha          Commands <span class="token keyword">for</span> <span class="token for-or-select variable">features</span> <span class="token keyword">in</span> alpha
+  api-resources  Print the supported API resources on the server
+  api-versions   Print the supported API versions on the server, <span class="token keyword">in</span> the form of <span class="token string">&quot;group/version&quot;</span>
+  config         修改 kubeconfig 文件
+  plugin         Runs a command-line plugin      关于插件
+  version        输出 client 和 server 的版本信息
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br><span class="line-number">64</span><br><span class="line-number">65</span><br><span class="line-number">66</span><br><span class="line-number">67</span><br><span class="line-number">68</span><br><span class="line-number">69</span><br><span class="line-number">70</span><br><span class="line-number">71</span><br><span class="line-number">72</span><br><span class="line-number">73</span><br><span class="line-number">74</span><br><span class="line-number">75</span><br><span class="line-number">76</span><br><span class="line-number">77</span><br><span class="line-number">78</span><br><span class="line-number">79</span><br><span class="line-number">80</span><br><span class="line-number">81</span><br><span class="line-number">82</span><br><span class="line-number">83</span><br><span class="line-number">84</span><br><span class="line-number">85</span><br><span class="line-number">86</span><br><span class="line-number">87</span><br><span class="line-number">88</span><br></div></div><h3 id="_1-3、kubectl常用命令表格"><a href="#_1-3、kubectl常用命令表格" class="header-anchor">#</a> 1.3、kubectl常用命令表格</h3> <ul><li>kubectl作为kubernetes的命令行工具，主要的职责就是对集群中的资源的对象进行操作，这些操作包括对资源对象的创建、删除和查看等。下表中显示了kubectl支持的所有操作，以及这些操作的语法和描述信息：</li></ul> <table><thead><tr><th>操作</th> <th>语法</th> <th>描述</th></tr></thead> <tbody><tr><td>annotate</td> <td>kubectl annotate (-f FILENAME | TYPE NAME | TYPE/NAME) KEY_1=VAL_1 … KEY_N=VAL_N [–overwrite] [–all] [–resource-version=version] [flags]</td> <td>添加或更新一个或多个资源的注释</td></tr> <tr><td>api-versions</td> <td>kubectl api-versions [flags]</td> <td>列出可用的API版本</td></tr> <tr><td>apply</td> <td>kubectl apply -f FILENAME [flags]</td> <td>将来自于文件或stdin的配置变更应用到主要对象中</td></tr> <tr><td>attach</td> <td>kubectl attach POD -c CONTAINER [-i] [-t] [flags]</td> <td>连接到正在运行的容器上，以查看输出流或与容器交互（stdin）</td></tr> <tr><td>autoscale</td> <td>kubectl autoscale (-f FILENAME | TYPE NAME | TYPE/NAME) [–min=MINPODS] –max=MAXPODS [–cpu-percent=CPU] [flags]</td> <td>自动扩宿容由副本控制器管理的Pod</td></tr> <tr><td>cluster-info</td> <td>kubectl cluster-info [flags]</td> <td>显示群集中的主节点和服务的的端点信息</td></tr> <tr><td>config</td> <td>kubectl config SUBCOMMAND [flags]</td> <td>修改kubeconfig文件</td></tr> <tr><td>create</td> <td>kubectl create -f FILENAME [flags]</td> <td>从文件或stdin中创建一个或多个资源对象</td></tr> <tr><td>delete</td> <td>kubectl delete (-f FILENAME | TYPE [NAME | /NAME | -l label | –all]) [flags]</td> <td>删除资源对象</td></tr> <tr><td>describe</td> <td>kubectl describe (-f FILENAME | TYPE [NAME_PREFIX | /NAME | -l label]) [flags]</td> <td>显示一个或者多个资源对象的详细信息</td></tr> <tr><td>edit</td> <td>kubectl edit (-f FILENAME | TYPE NAME | TYPE/NAME) [flags]</td> <td>通过默认编辑器编辑和更新服务器上的一个或多个资源对象</td></tr> <tr><td>exec</td> <td>kubectl exec POD [-c CONTAINER] [-i] [-t] [flags] [– COMMAND [args…]]</td> <td>在Pod的容器中执行一个命令</td></tr> <tr><td>explain</td> <td>kubectl explain [–include-extended-apis=true] [–recursive=false] [flags]</td> <td>获取Pod、Node和服务等资源对象的文档</td></tr> <tr><td>expose</td> <td>kubectl expose (-f FILENAME | TYPE NAME | TYPE/NAME) [–port=port] [–protocol=TCP|UDP] [–target-port=number-or-name] [–name=name] [—-external-ip=external-ip-of-service] [–type=type] [flags]</td> <td>为副本控制器、服务或Pod等暴露一个新的服务</td></tr> <tr><td>get</td> <td>kubectl get (-f FILENAME | TYPE [NAME | /NAME | -l label]) [–watch] [–sort-by=FIELD] [[-o | –output]=OUTPUT_FORMAT] [flags]</td> <td>列出一个或多个资源</td></tr> <tr><td>label</td> <td>kubectl label (-f FILENAME | TYPE NAME | TYPE/NAME) KEY_1=VAL_1 … KEY_N=VAL_N [–overwrite] [–all] [–resource-version=version] [flags]</td> <td>添加或更新一个或者多个资源对象的标签</td></tr> <tr><td>logs</td> <td>kubectl logs POD [-c CONTAINER] [–follow] [flags]</td> <td>显示Pod中一个容器的日志</td></tr> <tr><td>patch</td> <td>kubectl patch (-f FILENAME | TYPE NAME | TYPE/NAME) –patch PATCH [flags]</td> <td>使用策略合并补丁过程更新资源对象中的一个或多个字段</td></tr> <tr><td>port-forward</td> <td>kubectl port-forward POD [LOCAL_PORT:]REMOTE_PORT […[LOCAL_PORT_N:]REMOTE_PORT_N] [flags]</td> <td>将一个或多个本地端口转发到Pod</td></tr></tbody></table> <table><thead><tr><th>proxy</th> <th>kubectl proxy [–port=PORT] [–www=static-dir] [–www-prefix=prefix] [–api-prefix=prefix] [flags]</th> <th>为kubernetes API服务器运行一个代理</th></tr></thead> <tbody><tr><td>replace</td> <td>kubectl replace -f FILENAME</td> <td>从文件或stdin中替换资源对象</td></tr> <tr><td>rolling-update</td> <td>kubectl rolling-update OLD_CONTROLLER_NAME ([NEW_CONTROLLER_NAME] –image=NEW_CONTAINER_IMAGE | -f NEW_CONTROLLER_SPEC) [flags]</td> <td>通过逐步替换指定的副本控制器和Pod来执行滚动更新</td></tr> <tr><td>run</td> <td>kubectl run NAME –image=image [–env=”key=value”] [–port=port] [–replicas=replicas] [–dry-run=bool] [–overrides=inline-json] [flags]</td> <td>在集群上运行一个指定的镜像</td></tr> <tr><td>scale</td> <td>kubectl scale (-f FILENAME | TYPE NAME | TYPE/NAME) –replicas=COUNT [–resource-version=version] [–current-replicas=count] [flags]</td> <td>扩宿容副本集的数量</td></tr> <tr><td>version</td> <td>kubectl version [–client] [flags]</td> <td>显示运行在客户端和服务器端的Kubernetes版本</td></tr></tbody></table> <h3 id="_1-4、kubectl实战命令"><a href="#_1-4、kubectl实战命令" class="header-anchor">#</a> 1.4、kubectl实战命令</h3> <h4 id="_1-4-1、集群信息查看"><a href="#_1-4-1、集群信息查看" class="header-anchor">#</a> 1.4.1、集群信息查看</h4> <h5 id="_1-4-1-1、显示集群信息及节点详细信息-kubectl-get"><a href="#_1-4-1-1、显示集群信息及节点详细信息-kubectl-get" class="header-anchor">#</a> 1.4.1.1、显示集群信息及节点详细信息 kubectl get</h5> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code><span class="token number">1</span>、显示集群节点信息
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl get nodes</span>
+    NAME            STATUS   ROLES    AGE   VERSION
+    <span class="token number">192.168</span>.1.141   Ready    <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>   41m   v1.16.4
+    <span class="token number">192.168</span>.1.185   Ready    <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>   37m   v1.16.4
+    <span class="token number">192.168</span>.1.211   Ready    <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>   42m   v1.16.4
+    <span class="token number">192.168</span>.1.247   Ready    <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>   36m   v1.16.4
+    <span class="token number">192.168</span>.1.51    Ready    <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>   33m   v1.16.4
+ 
+<span class="token number">2</span>、查看kubectl和apiserver各自的版本
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl version</span>
+    Client Version: version.Info<span class="token punctuation">{</span>Major:<span class="token string">&quot;1&quot;</span>, Minor:<span class="token string">&quot;16&quot;</span>, GitVersion:<span class="token string">&quot;v1.16.4&quot;</span>, GitCommit:<span class="token string">&quot;224be7bdce5a9dd0c2fd0d46b83865648e2fe0ba&quot;</span>, GitTreeState:<span class="token string">&quot;clean&quot;</span>, BuildDate:<span class="token string">&quot;2019-12-11T12:47:40Z&quot;</span>, GoVersion:<span class="token string">&quot;go1.12.12&quot;</span>, Compiler:<span class="token string">&quot;gc&quot;</span>,   Platform:<span class="token string">&quot;linux/amd64&quot;</span><span class="token punctuation">}</span>
+    Server Version: version.Info<span class="token punctuation">{</span>Major:<span class="token string">&quot;1&quot;</span>, Minor:<span class="token string">&quot;16&quot;</span>, GitVersion:<span class="token string">&quot;v1.16.4&quot;</span>, GitCommit:<span class="token string">&quot;224be7bdce5a9dd0c2fd0d46b83865648e2fe0ba&quot;</span>, GitTreeState:<span class="token string">&quot;clean&quot;</span>, BuildDate:<span class="token string">&quot;2019-12-11T12:37:43Z&quot;</span>, GoVersion:<span class="token string">&quot;go1.12.12&quot;</span>, Compiler:<span class="token string">&quot;gc&quot;</span>, Platform:<span class="token string">&quot;linux/amd64&quot;</span><span class="token punctuation">}</span>
+ 
+<span class="token number">3</span>、查看整个集群的信息
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl cluster-info</span>
+    <span class="token comment">#向外输出的API地址</span>
+    Kubernetes master is running at https://192.168.1.129:6443
+    <span class="token comment">#coredns  从集群外部运行获取路径，集群外部的端口转发的访问方式</span>
+    CoreDNS is running at https://192.168.1.129:6443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+    To further debug and diagnose cluster problems, use <span class="token string">'kubectl cluster-info dump'</span><span class="token builtin class-name">.</span>
+ 
+ 
+ 
+<span class="token number">4</span>、查看一个node节点的详细信息
+~<span class="token punctuation">]</span><span class="token comment"># kubectl describe node 192.168.1.141</span>
+Name:               <span class="token number">192.168</span>.1.141
+Roles:              <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>
+Labels:             <span class="token assign-left variable">UhostID</span><span class="token operator">=</span>uhost-jjckmq54
+                    beta.kubernetes.io/arch<span class="token operator">=</span>amd64
+                    beta.kubernetes.io/os<span class="token operator">=</span>linux
+                    failure-domain.beta.kubernetes.io/region<span class="token operator">=</span>cn-bj2
+                    failure-domain.beta.kubernetes.io/zone<span class="token operator">=</span>cn-bj2-05
+                    kubernetes.io/arch<span class="token operator">=</span>amd64
+                    kubernetes.io/hostname<span class="token operator">=</span><span class="token number">192.168</span>.1.141
+                    kubernetes.io/os<span class="token operator">=</span>linux
+                    node.uk8s.ucloud.cn/instance_type<span class="token operator">=</span>uhost
+                    node.uk8s.ucloud.cn/resource_id<span class="token operator">=</span>uhost-jjckmq54
+                    role.node.kubernetes.io/k8s-node<span class="token operator">=</span>true
+                    topology.udisk.csi.ucloud.cn/region<span class="token operator">=</span>cn-bj2
+                    topology.udisk.csi.ucloud.cn/zone<span class="token operator">=</span>cn-bj2-05
+Annotations:        csi.volume.kubernetes.io/nodeid: <span class="token punctuation">{</span><span class="token string">&quot;udisk.csi.ucloud.cn&quot;</span><span class="token builtin class-name">:</span><span class="token string">&quot;192.168.1.141&quot;</span>,<span class="token string">&quot;ufile.csi.ucloud.cn&quot;</span><span class="token builtin class-name">:</span><span class="token string">&quot;192.168.1.141&quot;</span><span class="token punctuation">}</span>
+                    node.alpha.kubernetes.io/ttl: <span class="token number">0</span>
+CreationTimestamp:  Mon, <span class="token number">17</span> Feb <span class="token number">2020</span> <span class="token number">10</span>:13:18 +0800
+Taints:             <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>
+Unschedulable:      <span class="token boolean">false</span>
+Conditions:
+  Type             Status  LastHeartbeatTime                 LastTransitionTime                Reason                       Message
+  ----             ------  -----------------                 ------------------                ------                       -------
+  MemoryPressure   False   Mon, <span class="token number">17</span> Feb <span class="token number">2020</span> <span class="token number">10</span>:55:19 +0800   Mon, <span class="token number">17</span> Feb <span class="token number">2020</span> <span class="token number">10</span>:13:18 +0800   KubeletHasSufficientMemory   kubelet has sufficient memory available
+  DiskPressure     False   Mon, <span class="token number">17</span> Feb <span class="token number">2020</span> <span class="token number">10</span>:55:19 +0800   Mon, <span class="token number">17</span> Feb <span class="token number">2020</span> <span class="token number">10</span>:13:18 +0800   KubeletHasNoDiskPressure     kubelet has no disk pressure
+  PIDPressure      False   Mon, <span class="token number">17</span> Feb <span class="token number">2020</span> <span class="token number">10</span>:55:19 +0800   Mon, <span class="token number">17</span> Feb <span class="token number">2020</span> <span class="token number">10</span>:13:18 +0800   KubeletHasSufficientPID      kubelet has sufficient PID available
+  Ready            True    Mon, <span class="token number">17</span> Feb <span class="token number">2020</span> <span class="token number">10</span>:55:19 +0800   Mon, <span class="token number">17</span> Feb <span class="token number">2020</span> <span class="token number">10</span>:13:18 +0800   KubeletReady                 kubelet is posting ready status
+Addresses:
+  InternalIP:  <span class="token number">192.168</span>.1.141
+  Hostname:    <span class="token number">192.168</span>.1.141
+Capacity:
+ cpu:                <span class="token number">2</span>
+ ephemeral-storage:  41931756Ki
+ hugepages-1Gi:      <span class="token number">0</span>
+ hugepages-2Mi:      <span class="token number">0</span>
+ memory:             3900272Ki
+ pods:               <span class="token number">110</span>
+Allocatable:
+ cpu:                1800m
+ ephemeral-storage:  <span class="token number">38644306266</span>
+ hugepages-1Gi:      <span class="token number">0</span>
+ hugepages-2Mi:      <span class="token number">0</span>
+ memory:             <span class="token number">2745608599</span>
+ pods:               <span class="token number">110</span>
+System Info:
+ Machine ID:                 60bda943e80613c2542b9b1dadb10720
+ System UUID:                <span class="token number">26179467</span>-6182-4bd3-85be-337cbfbade88
+ Boot ID:                    abcb11eb-c85f-4f6b-b93a-867b95794a61
+ Kernel Version:             <span class="token number">4.19</span>.0-3.el7.ucloud.x86_64
+ OS Image:                   CentOS Linux <span class="token number">7</span> <span class="token punctuation">(</span>Core<span class="token punctuation">)</span>
+ Operating System:           linux
+ Architecture:               amd64
+ Container Runtime Version:  docker://18.9.9
+ Kubelet Version:            v1.16.4
+ Kube-Proxy Version:         v1.16.4
+ProviderID:                  UCloud://cn-bj2-05//uk8s-z3zv2xip-n-x6oha
+Non-terminated Pods:         <span class="token punctuation">(</span><span class="token number">2</span> <span class="token keyword">in</span> total<span class="token punctuation">)</span>
+  Namespace                  Name               CPU Requests  CPU Limits  Memory Requests  Memory Limits  AGE
+  ---------                  ----               ------------  ----------  ---------------  -------------  ---
+  kube-system                csi-udisk-qprnf    <span class="token number">0</span> <span class="token punctuation">(</span><span class="token number">0</span>%<span class="token punctuation">)</span>        <span class="token number">0</span> <span class="token punctuation">(</span><span class="token number">0</span>%<span class="token punctuation">)</span>      <span class="token number">0</span> <span class="token punctuation">(</span><span class="token number">0</span>%<span class="token punctuation">)</span>           <span class="token number">0</span> <span class="token punctuation">(</span><span class="token number">0</span>%<span class="token punctuation">)</span>         42m
+  kube-system                csi-ufile-fkvwt    <span class="token number">0</span> <span class="token punctuation">(</span><span class="token number">0</span>%<span class="token punctuation">)</span>        <span class="token number">0</span> <span class="token punctuation">(</span><span class="token number">0</span>%<span class="token punctuation">)</span>      <span class="token number">0</span> <span class="token punctuation">(</span><span class="token number">0</span>%<span class="token punctuation">)</span>           <span class="token number">0</span> <span class="token punctuation">(</span><span class="token number">0</span>%<span class="token punctuation">)</span>         42m
+Allocated resources:
+  <span class="token punctuation">(</span>Total limits may be over <span class="token number">100</span> percent, i.e., overcommitted.<span class="token punctuation">)</span>
+  Resource           Requests  Limits
+  --------           --------  ------
+  cpu                <span class="token number">0</span> <span class="token punctuation">(</span><span class="token number">0</span>%<span class="token punctuation">)</span>    <span class="token number">0</span> <span class="token punctuation">(</span><span class="token number">0</span>%<span class="token punctuation">)</span>
+  memory             <span class="token number">0</span> <span class="token punctuation">(</span><span class="token number">0</span>%<span class="token punctuation">)</span>    <span class="token number">0</span> <span class="token punctuation">(</span><span class="token number">0</span>%<span class="token punctuation">)</span>
+  ephemeral-storage  <span class="token number">0</span> <span class="token punctuation">(</span><span class="token number">0</span>%<span class="token punctuation">)</span>    <span class="token number">0</span> <span class="token punctuation">(</span><span class="token number">0</span>%<span class="token punctuation">)</span>
+Events:
+  Type    Reason                   Age                From                       Message
+  ----    ------                   ----               ----                       -------
+  Normal  Starting                 42m                kubelet, <span class="token number">192.168</span>.1.141     Starting kubelet.
+  Normal  NodeHasSufficientMemory  42m <span class="token punctuation">(</span>x2 over 42m<span class="token punctuation">)</span>  kubelet, <span class="token number">192.168</span>.1.141     Node <span class="token number">192.168</span>.1.141 status is now: NodeHasSufficientMemory
+  Normal  NodeHasNoDiskPressure    42m <span class="token punctuation">(</span>x2 over 42m<span class="token punctuation">)</span>  kubelet, <span class="token number">192.168</span>.1.141     Node <span class="token number">192.168</span>.1.141 status is now: NodeHasNoDiskPressure
+  Normal  NodeHasSufficientPID     42m <span class="token punctuation">(</span>x2 over 42m<span class="token punctuation">)</span>  kubelet, <span class="token number">192.168</span>.1.141     Node <span class="token number">192.168</span>.1.141 status is now: NodeHasSufficientPID
+  Normal  NodeAllocatableEnforced  42m                kubelet, <span class="token number">192.168</span>.1.141     Updated Node Allocatable limit across pods
+  Normal  Starting                 42m                kube-proxy, <span class="token number">192.168</span>.1.141  Starting kube-proxy.
+ 
+ 
+<span class="token number">5</span>、查看当前集群中的名称空间
+    在k8s上资源有两个级别
+        集群级别的资源，整个集群可以划分为名称空间
+        节点级别的资源
+     
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl get ns     #初始安装完生成的名称空间     kubectl get namespaces</span>
+    NAME              STATUS   AGE
+    default           Active   3h9m   <span class="token comment">#默认的名称空间</span>
+    kube-node-lease   Active   3h9m  
+    kube-public       Active   3h9m   <span class="token comment">#公共的名称空间，任何人都可以访问的名称空间</span>
+    kube-system       Active   3h9m   <span class="token comment">#系统级别的pod都运行在此名称空间</span>
+ 
+     
+<span class="token number">6</span>、当使用get pods命令获取系统上的pod时，实际的意思是列出当前系统上pod，但是pod是名称空间级别的资源，没有指定名称空间，默认的为defaults   <span class="token comment">#（当我们创建pod时没有指定名称空间时默认都会运行在defaults名称空间中）</span>
+    kubectl get pods -n 名称空间    <span class="token comment">#使用-n选项指定查看的名称空间下的pod</span>
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl get pods -n kube-system</span>
+    NAME                                    READY   STATUS    RESTARTS   AGE
+    cloudprovider-ucloud-5679f4ff69-flc64   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          3h14m
+    coredns-68cccdd88-7g46d                 <span class="token number">1</span>/1     Running   <span class="token number">0</span>          3h14m
+    coredns-68cccdd88-q8gmg                 <span class="token number">1</span>/1     Running   <span class="token number">0</span>          3h14m
+    csi-udisk-7h7x2                         <span class="token number">2</span>/2     Running   <span class="token number">0</span>          3h6m
+    csi-udisk-controller-0                  <span class="token number">4</span>/4     Running   <span class="token number">0</span>          3h14m
+    csi-udisk-ps2qb                         <span class="token number">2</span>/2     Running   <span class="token number">0</span>          3h4m
+    csi-udisk-qprnf                         <span class="token number">2</span>/2     Running   <span class="token number">0</span>          3h9m
+    csi-udisk-vnf4j                         <span class="token number">2</span>/2     Running   <span class="token number">0</span>          3h10m
+    csi-udisk-z4lhv                         <span class="token number">2</span>/2     Running   <span class="token number">0</span>          3h1m
+    csi-ufile-8bnst                         <span class="token number">2</span>/2     Running   <span class="token number">0</span>          3h4m
+    csi-ufile-controller-0                  <span class="token number">4</span>/4     Running   <span class="token number">0</span>          3h14m
+    csi-ufile-fd4r2                         <span class="token number">2</span>/2     Running   <span class="token number">0</span>          3h10m
+    csi-ufile-fkvwt                         <span class="token number">2</span>/2     Running   <span class="token number">0</span>          3h9m
+    csi-ufile-hkwpn                         <span class="token number">2</span>/2     Running   <span class="token number">0</span>          3h1m
+    csi-ufile-kmbpc                         <span class="token number">2</span>/2     Running   <span class="token number">0</span>          3h6m
+    metrics-server-c84754b6-ncqvf           <span class="token number">1</span>/1     Running   <span class="token number">0</span>          3h14m
+    uk8s-kubectl-6585dbb994-6vbss           <span class="token number">1</span>/1     Running   <span class="token number">0</span>          3h14m
+ 
+  
+<span class="token number">7</span>、显示指定名称空间下的pod资源，并显示详细格式即长格式信息
+    -o wide
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl get pods -n kube-system -o wide</span>
+                                                                                 <span class="token comment">#pod自己的IP地址    #pod运行的node节点信息</span>
+    NAME                                    READY   STATUS    RESTARTS   AGE     IP                  NODE            NOMINATED NODE   READINESS GATES
+    cloudprovider-ucloud-5679f4ff69-flc64   <span class="token number">1</span>/1     Running   <span class="token number">0</span>          3h16m   <span class="token number">192.168</span>.1.211   <span class="token number">192.168</span>.1.211   <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>           <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>
+    coredns-68cccdd88-7g46d                 <span class="token number">1</span>/1     Running   <span class="token number">0</span>          3h16m   <span class="token number">192.168</span>.1.148   <span class="token number">192.168</span>.1.211   <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>           <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>
+    coredns-68cccdd88-q8gmg                 <span class="token number">1</span>/1     Running   <span class="token number">0</span>          3h16m   <span class="token number">192.168</span>.1.103   <span class="token number">192.168</span>.1.211   <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>           <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>
+    csi-udisk-7h7x2                         <span class="token number">2</span>/2     Running   <span class="token number">0</span>          3h7m    <span class="token number">192.168</span>.1.185   <span class="token number">192.168</span>.1.185   <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>  
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br><span class="line-number">64</span><br><span class="line-number">65</span><br><span class="line-number">66</span><br><span class="line-number">67</span><br><span class="line-number">68</span><br><span class="line-number">69</span><br><span class="line-number">70</span><br><span class="line-number">71</span><br><span class="line-number">72</span><br><span class="line-number">73</span><br><span class="line-number">74</span><br><span class="line-number">75</span><br><span class="line-number">76</span><br><span class="line-number">77</span><br><span class="line-number">78</span><br><span class="line-number">79</span><br><span class="line-number">80</span><br><span class="line-number">81</span><br><span class="line-number">82</span><br><span class="line-number">83</span><br><span class="line-number">84</span><br><span class="line-number">85</span><br><span class="line-number">86</span><br><span class="line-number">87</span><br><span class="line-number">88</span><br><span class="line-number">89</span><br><span class="line-number">90</span><br><span class="line-number">91</span><br><span class="line-number">92</span><br><span class="line-number">93</span><br><span class="line-number">94</span><br><span class="line-number">95</span><br><span class="line-number">96</span><br><span class="line-number">97</span><br><span class="line-number">98</span><br><span class="line-number">99</span><br><span class="line-number">100</span><br><span class="line-number">101</span><br><span class="line-number">102</span><br><span class="line-number">103</span><br><span class="line-number">104</span><br><span class="line-number">105</span><br><span class="line-number">106</span><br><span class="line-number">107</span><br><span class="line-number">108</span><br><span class="line-number">109</span><br><span class="line-number">110</span><br><span class="line-number">111</span><br><span class="line-number">112</span><br><span class="line-number">113</span><br><span class="line-number">114</span><br><span class="line-number">115</span><br><span class="line-number">116</span><br><span class="line-number">117</span><br><span class="line-number">118</span><br><span class="line-number">119</span><br><span class="line-number">120</span><br><span class="line-number">121</span><br><span class="line-number">122</span><br><span class="line-number">123</span><br><span class="line-number">124</span><br><span class="line-number">125</span><br><span class="line-number">126</span><br><span class="line-number">127</span><br><span class="line-number">128</span><br><span class="line-number">129</span><br><span class="line-number">130</span><br><span class="line-number">131</span><br><span class="line-number">132</span><br><span class="line-number">133</span><br><span class="line-number">134</span><br><span class="line-number">135</span><br><span class="line-number">136</span><br><span class="line-number">137</span><br><span class="line-number">138</span><br><span class="line-number">139</span><br><span class="line-number">140</span><br><span class="line-number">141</span><br><span class="line-number">142</span><br><span class="line-number">143</span><br><span class="line-number">144</span><br><span class="line-number">145</span><br><span class="line-number">146</span><br><span class="line-number">147</span><br><span class="line-number">148</span><br><span class="line-number">149</span><br><span class="line-number">150</span><br></div></div><h4 id="_1-4-2、namespace名称空间操作"><a href="#_1-4-2、namespace名称空间操作" class="header-anchor">#</a> 1.4.2、Namespace名称空间操作</h4> <h5 id="_1-4-2-1、k8s名称空间资源增删改查"><a href="#_1-4-2-1、k8s名称空间资源增删改查" class="header-anchor">#</a> 1.4.2.1、k8s名称空间资源增删改查</h5> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code><span class="token comment">#创建</span>
+<span class="token number">1</span>、使用kubectl create 查看可以创建的资源类型
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl create -h    或者  ~]# kubectl api-resources  可以查看到当前系统上所有的资源类型</span>
+        Available Commands:
+            clusterrole         Create a ClusterRole.
+            clusterrolebinding  Create a ClusterRoleBinding <span class="token keyword">for</span> a particular ClusterRole
+            configmap           Create a configmap from a <span class="token builtin class-name">local</span> file, directory or literal value
+            cronjob             Create a cronjob with the specified name.
+            deployment          Create a deployment with the specified name.         <span class="token comment">#创建控制器</span>
+            job                 Create a job with the specified name.
+            namespace           Create a namespace with the specified name           <span class="token comment">#创建名称空间</span>
+            poddisruptionbudget Create a pod disruption budget with the specified name.
+            priorityclass       Create a priorityclass with the specified name.
+            <span class="token function">quota</span>               Create a <span class="token function">quota</span> with the specified name.
+            role                Create a role with single rule.
+            rolebinding         Create a RoleBinding <span class="token keyword">for</span> a particular Role or ClusterRole
+            secret              Create a secret using specified subcommand
+            <span class="token function">service</span>             Create a <span class="token function">service</span> using specified subcommand.          <span class="token comment">#创建service</span>
+            serviceaccount      Create a <span class="token function">service</span> account with the specified name
+ 
+<span class="token number">2</span>、示例创建一个名称空间
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl create namespace develop</span>
+        namespace/develop created
+ 
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl get ns</span>
+        NAME              STATUS   AGE
+        default           Active   3h34m
+        develop           Active   27s
+ 
+<span class="token comment">#删除</span>
+<span class="token number">3</span>、删除这个名称空间     <span class="token comment">#引用资源删除，要先指定类型，在指明资源名，当删除名称空间时，名称空间下的所有资源都将被删除，此名称空间下的pod也会被删除</span>
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl delete namespaces develop           #等价命令   kubectl delete ns/develop      =   kubectl delete namespaces/develop</span>
+            namespace <span class="token string">&quot;develop&quot;</span> deleted
+ 
+ 
+<span class="token comment">#查询</span>
+<span class="token number">4</span>、查询默认的default名称空间信息
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl get ns</span>
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl get ns/default    #指定名称空间显示</span>
+     
+<span class="token number">5</span>、查看名称空间的详细信息yaml格式
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl get ns/default -o yaml</span>
+    apiVersion: v1                             <span class="token comment">#api版本</span>
+    kind: Namespace                            <span class="token comment">#类型为名称空间</span>
+    metadata:                                  <span class="token comment">#元数据</span>
+      creationTimestamp: <span class="token string">&quot;2020-02-17T02:07:43Z&quot;</span>
+      name: default
+      resourceVersion: <span class="token string">&quot;147&quot;</span>
+      selfLink: /api/v1/namespaces/default
+      uid: 844c83d8-5d9d-4787-b0fc-ba088c55f8b1
+    spec:                                      <span class="token comment">#用户期望的状态</span>
+      finalizers:
+      - kubernetes
+    status:                                    <span class="token comment">#当前状态</span>
+      phase: Active
+ 
+<span class="token number">6</span>、看名称空间的详细信息json格式
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl get ns/default -o json</span>
+    <span class="token punctuation">{</span>
+        <span class="token string">&quot;apiVersion&quot;</span><span class="token builtin class-name">:</span> <span class="token string">&quot;v1&quot;</span>,
+        <span class="token string">&quot;kind&quot;</span><span class="token builtin class-name">:</span> <span class="token string">&quot;Namespace&quot;</span>,
+        <span class="token string">&quot;metadata&quot;</span><span class="token builtin class-name">:</span> <span class="token punctuation">{</span>
+            <span class="token string">&quot;creationTimestamp&quot;</span><span class="token builtin class-name">:</span> <span class="token string">&quot;2020-02-17T02:07:43Z&quot;</span>,
+            <span class="token string">&quot;name&quot;</span><span class="token builtin class-name">:</span> <span class="token string">&quot;default&quot;</span>,
+            <span class="token string">&quot;resourceVersion&quot;</span><span class="token builtin class-name">:</span> <span class="token string">&quot;147&quot;</span>,
+            <span class="token string">&quot;selfLink&quot;</span><span class="token builtin class-name">:</span> <span class="token string">&quot;/api/v1/namespaces/default&quot;</span>,
+            <span class="token string">&quot;uid&quot;</span><span class="token builtin class-name">:</span> <span class="token string">&quot;844c83d8-5d9d-4787-b0fc-ba088c55f8b1&quot;</span>
+        <span class="token punctuation">}</span>,
+        <span class="token string">&quot;spec&quot;</span><span class="token builtin class-name">:</span> <span class="token punctuation">{</span>
+            <span class="token string">&quot;finalizers&quot;</span><span class="token builtin class-name">:</span> <span class="token punctuation">[</span>
+                <span class="token string">&quot;kubernetes&quot;</span>
+            <span class="token punctuation">]</span>
+        <span class="token punctuation">}</span>,
+        <span class="token string">&quot;status&quot;</span><span class="token builtin class-name">:</span> <span class="token punctuation">{</span>
+            <span class="token string">&quot;phase&quot;</span><span class="token builtin class-name">:</span> <span class="token string">&quot;Active&quot;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+ 
+<span class="token comment">#描述信息</span>
+<span class="token number">7</span>、查看指定的名称空间的描述信息
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl describe ns/default</span>
+    Name:         default
+    Labels:       <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>
+    Annotations:  <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>
+    Status:       Active
+    No resource quota.
+    No resource limits.
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br><span class="line-number">64</span><br><span class="line-number">65</span><br><span class="line-number">66</span><br><span class="line-number">67</span><br><span class="line-number">68</span><br><span class="line-number">69</span><br><span class="line-number">70</span><br><span class="line-number">71</span><br><span class="line-number">72</span><br><span class="line-number">73</span><br><span class="line-number">74</span><br><span class="line-number">75</span><br><span class="line-number">76</span><br><span class="line-number">77</span><br><span class="line-number">78</span><br><span class="line-number">79</span><br><span class="line-number">80</span><br><span class="line-number">81</span><br><span class="line-number">82</span><br><span class="line-number">83</span><br><span class="line-number">84</span><br><span class="line-number">85</span><br><span class="line-number">86</span><br><span class="line-number">87</span><br></div></div><h4 id="_1-4-3、deployment控制器创建pod资源"><a href="#_1-4-3、deployment控制器创建pod资源" class="header-anchor">#</a> 1.4.3、deployment控制器创建pod资源</h4> <h5 id="_1-4-3-1、k8s名称deployment控制器创建pod资源"><a href="#_1-4-3-1、k8s名称deployment控制器创建pod资源" class="header-anchor">#</a> 1.4.3.1、k8s名称deployment控制器创建pod资源</h5> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code><span class="token comment">#创建</span>
+<span class="token number">1</span>、查看创建帮助deployment控制器
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl create deployment -h</span>
+        --image<span class="token operator">=</span><span class="token punctuation">[</span><span class="token punctuation">]</span>: Image name to run.    <span class="token comment">#指定使用哪个镜像运行为一个容器</span>
+        --save-config<span class="token operator">=</span>false/true          <span class="token comment">#是否保存创建时的命令信息进行保存</span>
+        --dry-run<span class="token operator">=</span>false                   <span class="token comment">#干跑、测试一下</span>
+         
+ 
+<span class="token number">2</span>、创建一个deployment控制器靠 nginx镜像运行 pod
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl create deploy ngx-dep --image=nginx:1.14-alpine   #此时会创建一个ngx-dep控制器，未知定名称空间则为default，这个控制器则试图创建一个pod，pod中会靠nginx镜像运行</span>
+        deployment.apps/ngx-dep created
+ 
+<span class="token number">3</span>、显示default名称空间下的所有资源  
+    <span class="token comment">#(已经创建了三个资源：1、deployment.apps/ngx-dep 控制器， 2、中间层replicaset.apps/ngx-dep-d554574bd 3、pod/ngx-dep-d554574bd-q59fj)</span>
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl get all</span>
+        NAME                                READY   STATUS    RESTARTS   AGE
+        pod/ngx-dep-d554574bd-q59fj         <span class="token number">1</span>/1     Running   <span class="token number">0</span>          29m
+ 
+        NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT<span class="token punctuation">(</span>S<span class="token punctuation">)</span>   AGE
+        service/kubernetes   ClusterIP   <span class="token number">10.2</span>.0.1     <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>        <span class="token number">443</span>/TCP   4h57m
+ 
+        NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
+        deployment.apps/ngx-dep        <span class="token number">1</span>/1     <span class="token number">1</span>            <span class="token number">1</span>           29m
+ 
+        NAME                                      DESIRED   CURRENT   READY   AGE
+        replicaset.apps/ngx-dep-d554574bd         <span class="token number">1</span>         <span class="token number">1</span>         <span class="token number">1</span>       29m
+ 
+<span class="token comment">#信息</span>
+<span class="token number">4</span>、查看当前defaults中的pods以及详细信息
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl get pods</span>
+    NAME                            READY   STATUS    RESTARTS   AGE
+    ngx-dep-d554574bd-q59fj         <span class="token number">1</span>/1     Running   <span class="token number">0</span>          40m
+ 
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl get pods -o wide</span>
+    NAME                            READY   STATUS    RESTARTS   AGE     IP     pod地址         NODE            NOMINATED NODE   READINESS GATES
+    ngx-dep-d554574bd-q59fj         <span class="token number">1</span>/1     Running   <span class="token number">0</span>          41m     <span class="token number">192.168</span>.1.125      <span class="token number">192.168</span>.1.51         <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>           <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>
+     
+<span class="token number">5</span>、访问此pod IP
+    ~<span class="token punctuation">]</span><span class="token comment"># curl -I 192.168.1.125</span>
+        HTTP/1.1 <span class="token number">200</span> OK
+        Server: nginx/1.14.2
+        Date: Mon, <span class="token number">17</span> Feb <span class="token number">2020</span> 07:17:39 GMT
+        Content-Type: text/html
+        Content-Length: <span class="token number">612</span>
+        Last-Modified: Wed, <span class="token number">10</span> Apr <span class="token number">2019</span> 01:08:42 GMT
+        Connection: keep-alive
+        ETag: <span class="token string">&quot;5cad421a-264&quot;</span>
+        Accept-Ranges: bytes
+ 
+ 
+<span class="token comment">#删除pod</span>
+<span class="token number">5</span>、删除defalut资源下的pod
+    删除此pod发生的结果，此pod由deployment.apps/ngx-dep 控制器控制着此pod，一删除此pod，控制器发现此pod没了，但是控制器已经定义必须要有一个pod，则会重新启动一个pod
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl delete pods/ngx-dep-d554574bd-q59fj    </span>
+        pod <span class="token string">&quot;ngx-dep-d554574bd-q59fj&quot;</span> deleted
+ 
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl get pods</span>
+        NAME                            READY   STATUS    RESTARTS   AGE
+        ngx-dep-d554574bd-c5sjp         <span class="token number">1</span>/1     Running   <span class="token number">0</span>          2m41s
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl get pods -o wide</span>
+        NAME                            READY   STATUS    RESTARTS   AGE     IP              NODE            NOMINATED NODE   READINESS GATES
+        ngx-dep-d554574bd-c5sjp         <span class="token number">1</span>/1     Running   <span class="token number">0</span>          3m36s   <span class="token number">192.168</span>.1.160   <span class="token number">192.168</span>.1.247   <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>           <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>
+ 
+    ~<span class="token punctuation">]</span><span class="token comment"># curl -I 192.168.1.160    访问新的pod地址</span>
+        HTTP/1.1 <span class="token number">200</span> OK
+ 
+ 
+ 
+总结：由于创建pod，没有添加service直接供用户访问，则如果pod出现问题时会生成一个全新的pod，则用户访问的IP则会发生变化，如果使得Pod资源发生变化时用户访问的还是一个地址则需要添加service中间层（调度）
+    在创建service时明确指定自身使用什么端口，后端pod上使用什么端口（端口可以一致，但是也可以不一致，但是在一般情况下都保持一致），创建一个service就是创建一个iptables规则或者ipvs规则
+    类似一个DNET规则，但是此规则在每一个node节点上都会生成
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br><span class="line-number">64</span><br><span class="line-number">65</span><br><span class="line-number">66</span><br><span class="line-number">67</span><br><span class="line-number">68</span><br><span class="line-number">69</span><br><span class="line-number">70</span><br><span class="line-number">71</span><br></div></div><h4 id="_1-4-4、service类型示例"><a href="#_1-4-4、service类型示例" class="header-anchor">#</a> 1.4.4、service类型示例</h4> <h5 id="_1-4-4-1、k8s名称deployment控制器下创建一个service绑定pod资源-类型为clusterip"><a href="#_1-4-4-1、k8s名称deployment控制器下创建一个service绑定pod资源-类型为clusterip" class="header-anchor">#</a> 1.4.4.1、k8s名称deployment控制器下创建一个service绑定pod资源 （类型为clusterip）</h5> <ul><li><code>service有四种类型：</code> <ul><li>clusterip   ：最简单也是最常用</li> <li>externalname</li> <li>loadbalancer</li> <li>nodeport</li></ul></li></ul> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code><span class="token number">1</span>、查看创建一个service帮助
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl create service -h</span>
+        Create a <span class="token function">service</span> using specified subcommand.
+ 
+        Aliases:
+        service, svc
+ 
+        Available Commands:
+          clusterip    Create a ClusterIP service.
+          externalname Create an ExternalName service.
+          loadbalancer Create a LoadBalancer service.
+          nodeport     Create a NodePort service.
+ 
+        Usage:
+          kubectl create <span class="token function">service</span> <span class="token punctuation">[</span>flags<span class="token punctuation">]</span> <span class="token punctuation">[</span>options<span class="token punctuation">]</span>
+ 
+<span class="token number">2</span>、查看创建clusterip类型的service的帮助
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl create service clusterip -h</span>
+        --tcp<span class="token operator">=</span><span class="token punctuation">[</span><span class="token punctuation">]</span>: Port pairs can be specified as <span class="token string">'&lt;port&gt;:&lt;targetPort&gt;'</span><span class="token builtin class-name">.</span>    <span class="token comment"># 创建service时要指定本地ip及远端ip  （service端口称为本地端口，targetPort指的是被代理的后端的pod的端口）</span>
+        --dry-run<span class="token operator">=</span>false   <span class="token comment">#干跑</span>
+        --clusterip<span class="token operator">=</span><span class="token string">''</span>    <span class="token comment">#指定集群的ip，如果不指定则动态指定</span>
+ 
+ 
+ 
+ 
+------------------------------------------------------------------------------------------错误示例由于没有指定后端pod--------------------------------------------------------------------------------
+<span class="token number">3</span>、为了运行一个nginx创建一个clusterip类型的service
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl create service clusterip ngx-svc --tcp=80:80 --dry-run</span>
+        service/ngx-svc created <span class="token punctuation">(</span>dry run<span class="token punctuation">)</span>
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl create service clusterip ngx-svc --tcp=80:80</span>
+        service/ngx-svc created
+ 
+<span class="token number">4</span>、查看已经创建的service
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl get svc</span>
+                                <span class="token comment">#创建时未指定--clusterip=''则为动态生成的</span>
+        NAME         TYPE        CLUSTER-IP     EXTERNAL-IP   PORT<span class="token punctuation">(</span>S<span class="token punctuation">)</span>   AGE
+        kubernetes   ClusterIP   <span class="token number">10.2</span>.0.1       <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>        <span class="token number">443</span>/TCP   5h45m
+        ngx-svc      ClusterIP   <span class="token number">10.2</span>.135.254   <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>        <span class="token number">80</span>/TCP    41s
+ 
+    <span class="token comment">#显示详细信息</span>
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl get svc/ngx-svc -o yaml</span>
+        apiVersion: v1
+        kind: Service
+        metadata:
+          creationTimestamp: <span class="token string">&quot;2020-02-17T07:52:16Z&quot;</span>
+          labels:
+            app: ngx-svc
+          name: ngx-svc
+          namespace: default
+          resourceVersion: <span class="token string">&quot;66291&quot;</span>
+          selfLink: /api/v1/namespaces/default/services/ngx-svc
+          uid: c6b6062e-fd7b-4363-ac30-c53816ffb147
+        spec:
+          clusterIP: <span class="token number">10.2</span>.135.254
+          ports:
+          - name: <span class="token number">80</span>-80
+            port: <span class="token number">80</span>         <span class="token comment">#本地service端口</span>
+            protocol: TCP
+            targetPort: <span class="token number">80</span>   <span class="token comment">#远端pod端口</span>
+          selector:
+            app: ngx-svc
+          sessionAffinity: None
+          type: ClusterIP
+        status:
+          loadBalancer: <span class="token punctuation">{</span><span class="token punctuation">}</span>
+ 
+<span class="token number">5</span>、删除已经创建的service
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl delete svc/ngx-svc</span>
+        <span class="token function">service</span> <span class="token string">&quot;ngx-svc&quot;</span> deleted
+ 
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl get service</span>
+        NAME         TYPE        CLUSTER-IP   EXTERNAL-IP   PORT<span class="token punctuation">(</span>S<span class="token punctuation">)</span>   AGE
+        kubernetes   ClusterIP   <span class="token number">10.2</span>.0.1     <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>        <span class="token number">443</span>/TCP   5h50m
+ 
+------------------------------------------------------------------------------------------以上为错误示例--------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------以下为正确示例--------------------------------------------------------------------------------
+ 
+<span class="token number">6</span>、正确的创建一个clusterip类型的service   <span class="token comment">#当创建的service与deployment同名时，会自动将此deployment 下的pod自动关联</span>
+    <span class="token comment"># 查看已经创建的deployment控制器</span>
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl get deployment</span>
+        NAME           READY   UP-TO-DATE   AVAILABLE   AGE
+        ngx-dep        <span class="token number">1</span>/1     <span class="token number">1</span>            <span class="token number">1</span>           104m
+ 
+ 
+    <span class="token comment"># 创建一个和deployment控制同名的service</span>
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl create service clusterip ngx-dep --tcp=80:80            # &lt;port&gt;:&lt;targetport&gt; 指定本地端口及远端被代理的pods端口</span>
+        service/ngx-dep created
+ 
+<span class="token number">7</span>、查看已经创建的service
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl get svc/ngx-dep -o yaml</span>
+        apiVersion: v1
+        kind: Service
+        metadata:
+          creationTimestamp: <span class="token string">&quot;2020-02-17T08:20:16Z&quot;</span>
+          labels:                           <span class="token comment">#service labels</span>
+            app: ngx-dep
+          name: ngx-dep
+          namespace: default
+          resourceVersion: <span class="token string">&quot;71648&quot;</span>
+          selfLink: /api/v1/namespaces/default/services/ngx-dep
+          uid: e9332ba6-29f7-4407-8c7e-6927d0e23d45
+        spec:
+          clusterIP: <span class="token number">10.2</span>.138.37           <span class="token comment"># service地址</span>
+          ports:
+          - name: <span class="token number">80</span>-80
+            port: <span class="token number">80</span>
+            protocol: TCP
+            targetPort: <span class="token number">80</span>
+          selector:
+            app: ngx-dep
+          sessionAffinity: None
+          type: ClusterIP
+        status:
+          loadBalancer: <span class="token punctuation">{</span><span class="token punctuation">}</span>
+ 
+    <span class="token comment">#可以查看到后端被自动关联的pod</span>
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl describe svc/ngx-dep</span>
+        Name:              ngx-dep
+        Namespace:         default
+        Labels:            <span class="token assign-left variable">app</span><span class="token operator">=</span>ngx-dep
+        Annotations:       <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>
+        Selector:          <span class="token assign-left variable">app</span><span class="token operator">=</span>ngx-dep
+        Type:              ClusterIP
+        IP:                <span class="token number">10.2</span>.138.37
+        Port:              <span class="token number">80</span>-80  <span class="token number">80</span>/TCP
+        TargetPort:        <span class="token number">80</span>/TCP
+        Endpoints:         <span class="token number">192.168</span>.1.160:80      <span class="token comment">#自动被关联的pod（当创建的service与deployment同名时，会自动将此deployment 下的pod自动关联）</span>
+        Session Affinity:  None
+        Events:            <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>
+ 
+<span class="token number">8</span>、此时访问service地址则会被映射到访问到后端的pod资源
+    ~<span class="token punctuation">]</span><span class="token comment"># curl -I 10.2.138.37</span>
+        HTTP/1.1 <span class="token number">200</span> OK
+        Server: nginx/1.14.2
+ 
+ 
+<span class="token number">9</span>、测试手动删除当前运行的pod,则控制器则会自动创建一个新的pod，新的pod和之前的pod地址完全不相同，此时再次访问service
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl get pods</span>
+        NAME                            READY   STATUS    RESTARTS   AGE
+        ngx-dep-d554574bd-c5sjp         <span class="token number">1</span>/1     Running   <span class="token number">0</span>          67m
+     
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl delete pods ngx-dep-d554574bd-c5sjp</span>
+        pod <span class="token string">&quot;ngx-dep-d554574bd-c5sjp&quot;</span> deleted
+ 
+ 
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl get pods -o wide</span>
+        NAME                            READY   STATUS    RESTARTS   AGE     IP              NODE            NOMINATED NODE   READINESS GATES
+        ngx-dep-d554574bd-mg7jg         <span class="token number">1</span>/1     Running   <span class="token number">0</span>          3m57s   <span class="token number">192.168</span>.1.68    <span class="token number">192.168</span>.1.51    <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>           <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>
+ 
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl describe svc/ngx-dep</span>
+        Name:              ngx-dep
+        Namespace:         default
+        Labels:            <span class="token assign-left variable">app</span><span class="token operator">=</span>ngx-dep
+    Annotations:       <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>
+        Selector:          <span class="token assign-left variable">app</span><span class="token operator">=</span>ngx-dep
+        Type:              ClusterIP
+        IP:                <span class="token number">10.2</span>.138.37
+        Port:              <span class="token number">80</span>-80  <span class="token number">80</span>/TCP
+        TargetPort:        <span class="token number">80</span>/TCP
+        Endpoints:         <span class="token number">192.168</span>.1.68:80    <span class="token comment">#新的pod地址</span>
+        Session Affinity:  None
+        Events:            <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>
+ 
+    ~<span class="token punctuation">]</span><span class="token comment"># curl -I 10.2.138.37                   #访问service可以正常访问</span>
+        HTTP/1.1 <span class="token number">200</span> OK
+        Server: nginx/1.14.2
+ 
+ 
+<span class="token comment">#总结：在控制器的控制下，pod被干掉时，生成一个新的pod，重建的结果还会响应的反应到service上，所以用户可以通过service的地址固定的来访问pod资源</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br><span class="line-number">64</span><br><span class="line-number">65</span><br><span class="line-number">66</span><br><span class="line-number">67</span><br><span class="line-number">68</span><br><span class="line-number">69</span><br><span class="line-number">70</span><br><span class="line-number">71</span><br><span class="line-number">72</span><br><span class="line-number">73</span><br><span class="line-number">74</span><br><span class="line-number">75</span><br><span class="line-number">76</span><br><span class="line-number">77</span><br><span class="line-number">78</span><br><span class="line-number">79</span><br><span class="line-number">80</span><br><span class="line-number">81</span><br><span class="line-number">82</span><br><span class="line-number">83</span><br><span class="line-number">84</span><br><span class="line-number">85</span><br><span class="line-number">86</span><br><span class="line-number">87</span><br><span class="line-number">88</span><br><span class="line-number">89</span><br><span class="line-number">90</span><br><span class="line-number">91</span><br><span class="line-number">92</span><br><span class="line-number">93</span><br><span class="line-number">94</span><br><span class="line-number">95</span><br><span class="line-number">96</span><br><span class="line-number">97</span><br><span class="line-number">98</span><br><span class="line-number">99</span><br><span class="line-number">100</span><br><span class="line-number">101</span><br><span class="line-number">102</span><br><span class="line-number">103</span><br><span class="line-number">104</span><br><span class="line-number">105</span><br><span class="line-number">106</span><br><span class="line-number">107</span><br><span class="line-number">108</span><br><span class="line-number">109</span><br><span class="line-number">110</span><br><span class="line-number">111</span><br><span class="line-number">112</span><br><span class="line-number">113</span><br><span class="line-number">114</span><br><span class="line-number">115</span><br><span class="line-number">116</span><br><span class="line-number">117</span><br><span class="line-number">118</span><br><span class="line-number">119</span><br><span class="line-number">120</span><br><span class="line-number">121</span><br><span class="line-number">122</span><br><span class="line-number">123</span><br><span class="line-number">124</span><br><span class="line-number">125</span><br><span class="line-number">126</span><br><span class="line-number">127</span><br><span class="line-number">128</span><br><span class="line-number">129</span><br><span class="line-number">130</span><br><span class="line-number">131</span><br><span class="line-number">132</span><br><span class="line-number">133</span><br><span class="line-number">134</span><br><span class="line-number">135</span><br><span class="line-number">136</span><br><span class="line-number">137</span><br><span class="line-number">138</span><br><span class="line-number">139</span><br><span class="line-number">140</span><br><span class="line-number">141</span><br><span class="line-number">142</span><br><span class="line-number">143</span><br><span class="line-number">144</span><br><span class="line-number">145</span><br><span class="line-number">146</span><br><span class="line-number">147</span><br><span class="line-number">148</span><br><span class="line-number">149</span><br><span class="line-number">150</span><br><span class="line-number">151</span><br><span class="line-number">152</span><br><span class="line-number">153</span><br><span class="line-number">154</span><br><span class="line-number">155</span><br><span class="line-number">156</span><br><span class="line-number">157</span><br><span class="line-number">158</span><br><span class="line-number">159</span><br><span class="line-number">160</span><br><span class="line-number">161</span><br><span class="line-number">162</span><br><span class="line-number">163</span><br><span class="line-number">164</span><br><span class="line-number">165</span><br><span class="line-number">166</span><br><span class="line-number">167</span><br><span class="line-number">168</span><br><span class="line-number">169</span><br></div></div><h5 id="_1-4-4-2、如果service的发生改变时用户访问地址改变则使用service的名称空间来访问"><a href="#_1-4-4-2、如果service的发生改变时用户访问地址改变则使用service的名称空间来访问" class="header-anchor">#</a> 1.4.4.2、如果service的发生改变时用户访问地址改变则使用service的名称空间来访问</h5> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code><span class="token number">1</span>、名称空间访问原理
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl get svc</span>
+        NAME         TYPE        CLUSTER-IP    EXTERNAL-IP   PORT<span class="token punctuation">(</span>S<span class="token punctuation">)</span>   AGE
+        kubernetes   ClusterIP   <span class="token number">10.2</span>.0.1      <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>        <span class="token number">443</span>/TCP   6h31m
+        ngx-dep      ClusterIP   <span class="token number">10.2</span>.138.37   <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>        <span class="token number">80</span>/TCP    19m
+     
+    ~<span class="token punctuation">]</span><span class="token comment"># curl ngx-dep</span>
+        curl: <span class="token punctuation">(</span><span class="token number">6</span><span class="token punctuation">)</span> Could not resolve host: ngx-dep<span class="token punctuation">;</span> Unknown error
+    <span class="token comment"># ~]# curl ngx-dep.default.svc.cluster.local</span>
+ 
+ 
+    <span class="token comment"># 这个名称空间为默认在k8s中运行的dns即 coredns</span>
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl get pods -n kube-system</span>
+        NAME                                    READY   STATUS    RESTARTS   AGE
+        coredns-68cccdd88-7g46d                 <span class="token number">1</span>/1     Running   <span class="token number">0</span>          6h33m
+        coredns-68cccdd88-q8gmg                 <span class="token number">1</span>/1     Running   <span class="token number">0</span>          6h33m
+ 
+    <span class="token comment"># coredns也有一个ip地址</span>
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl get svc -n kube-system</span>
+        NAME                   TYPE        CLUSTER-IP     EXTERNAL-IP   PORT<span class="token punctuation">(</span>S<span class="token punctuation">)</span>                  AGE
+        csi-udisk-controller   ClusterIP   <span class="token number">10.2</span>.235.189   <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>        <span class="token number">12345</span>/TCP                6h35m
+        csi-ufile-controller   ClusterIP   <span class="token number">10.2</span>.77.27     <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>        <span class="token number">12345</span>/TCP                6h35m
+        kube-dns               ClusterIP   <span class="token number">10.2</span>.0.2       <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>        <span class="token number">53</span>/UDP,53/TCP,9153/TCP   6h35m   <span class="token comment">##</span>
+        metrics-server         ClusterIP   <span class="token number">10.2</span>.190.58    <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>        <span class="token number">443</span>/TCP                  6h35m
+     
+    <span class="token comment">#所以即使service地址变了，但是service名称没变，都可以通过service的名称访问</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br></div></div><h5 id="_1-4-4-3、deployment可以按需求对后端的pod伸缩资源-kubectl-scale"><a href="#_1-4-4-3、deployment可以按需求对后端的pod伸缩资源-kubectl-scale" class="header-anchor">#</a> 1.4.4.3、deployment可以按需求对后端的pod伸缩资源  (kubectl scale)</h5> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code><span class="token number">1</span>、创建一个deployment     <span class="token comment">##此时会创建一个myapp控制器，未知定名称空间则为default，这个控制器则试图创建一个pod，pod中会靠myapp:v1镜像运行</span>
+    ~<span class="token punctuation">]</span><span class="token comment">#  kubectl create deploy myapp --image=ikubernetes/myapp:v1</span>
+        deployment.apps/myapp created
+     
+<span class="token number">2</span>、查看已经创建的deploy控制器
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl get deploy</span>
+        NAME           READY   UP-TO-DATE   AVAILABLE   AGE
+        myapp          <span class="token number">1</span>/1     <span class="token number">1</span>            <span class="token number">1</span>           91s
+ 
+<span class="token number">3</span>、查看此控制器下的pod
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl get pods</span>
+        NAME                            READY   STATUS    RESTARTS   AGE
+        myapp-5c6976696c-8kpqh          <span class="token number">1</span>/1     Running   <span class="token number">0</span>          2m22s
+ 
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl get pods -o wide</span>
+        NAME                            READY   STATUS    RESTARTS   AGE     IP              NODE            NOMINATED NODE   READINESS GATES
+        myapp-5c6976696c-8kpqh          <span class="token number">1</span>/1     Running   <span class="token number">0</span>          3m14s   <span class="token number">192.168</span>.1.236   <span class="token number">192.168</span>.1.141   <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>           <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>
+ 
+ 
+ 
+<span class="token number">4</span>、访问此pod
+    ~<span class="token punctuation">]</span><span class="token comment"># curl 192.168.1.236</span>
+        Hello MyApp <span class="token operator">|</span> Version: v1 <span class="token operator">|</span> <span class="token operator">&lt;</span>a <span class="token assign-left variable">href</span><span class="token operator">=</span><span class="token string">&quot;hostname.html&quot;</span><span class="token operator">&gt;</span>Pod Name<span class="token operator">&lt;</span>/a<span class="token operator">&gt;</span>
+ 
+    ~<span class="token punctuation">]</span><span class="token comment"># curl 192.168.1.236/hostname.html</span>
+        myapp-5c6976696c-8kpqh
+ 
+<span class="token number">5</span>、给myapp的控制器创建一个对应的service
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl create service clusterip myapp --tcp=80:80</span>
+        service/myapp created
+ 
+<span class="token number">6</span>、由于创建的service和控制器名称一致，则自动被关联的此控制器下的pod
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl get svc</span>
+        NAME         TYPE        CLUSTER-IP    EXTERNAL-IP   PORT<span class="token punctuation">(</span>S<span class="token punctuation">)</span>   AGE
+        kubernetes   ClusterIP   <span class="token number">10.2</span>.0.1      <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>        <span class="token number">443</span>/TCP   6h55m
+        myapp        ClusterIP   <span class="token number">10.2</span>.35.177   <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>        <span class="token number">80</span>/TCP    2m8s
+        ngx-dep      ClusterIP   <span class="token number">10.2</span>.138.37   <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>        <span class="token number">80</span>/TCP    42m
+ 
+<span class="token number">7</span>、查看此service的详细信息
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl get svc/myapp -o yaml</span>
+ 
+ 
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl describe svc/myapp</span>
+        Name:              myapp
+        Namespace:         default
+        Labels:            <span class="token assign-left variable">app</span><span class="token operator">=</span>myapp
+        Annotations:       <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>
+        Selector:          <span class="token assign-left variable">app</span><span class="token operator">=</span>myapp
+        Type:              ClusterIP
+        IP:                <span class="token number">10.2</span>.35.177
+        Port:              <span class="token number">80</span>-80  <span class="token number">80</span>/TCP
+        TargetPort:        <span class="token number">80</span>/TCP
+        Endpoints:         <span class="token number">192.168</span>.1.236:80
+        Session Affinity:  None
+        Events:            <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>
+ 
+<span class="token number">8</span>、通过service的ip访问后端的pod
+    ~<span class="token punctuation">]</span><span class="token comment"># curl 10.2.35.177</span>
+        Hello MyApp <span class="token operator">|</span> Version: v1 <span class="token operator">|</span> <span class="token operator">&lt;</span>a <span class="token assign-left variable">href</span><span class="token operator">=</span><span class="token string">&quot;hostname.html&quot;</span><span class="token operator">&gt;</span>Pod Name<span class="token operator">&lt;</span>/a<span class="token operator">&gt;</span>
+ 
+    ~<span class="token punctuation">]</span><span class="token comment"># curl 10.2.35.177/hostname.html</span>
+        myapp-5c6976696c-8kpqh
+    <span class="token comment"># curl myapp.default.svc.cluster.local.</span>
+ 
+ 
+<span class="token number">9</span>、控制器可以对后端的pod扩缩容
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl scale -h</span>
+        kubectl scale <span class="token punctuation">[</span>--resource-version<span class="token operator">=</span>version<span class="token punctuation">]</span> <span class="token punctuation">[</span>--current-replicas<span class="token operator">=</span>count<span class="token punctuation">]</span> --replicas<span class="token operator">=</span>COUNT <span class="token punctuation">(</span>-f FILENAME <span class="token operator">|</span> TYPE NAME<span class="token punctuation">)</span> <span class="token punctuation">[</span>options<span class="token punctuation">]</span>
+ 
+    <span class="token comment">#指定扩容的pod资源数量， 控制器名称</span>
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl scale --replicas=3 deployment myapp</span>
+        deployment.apps/myapp scaled
+ 
+<span class="token number">10</span>、查看已经扩展的pod资源
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl get pods</span>
+        NAME                            READY   STATUS    RESTARTS   AGE
+        myapp-5c6976696c-8kpqh          <span class="token number">1</span>/1     Running   <span class="token number">0</span>          23m
+        myapp-5c6976696c-sxt79          <span class="token number">1</span>/1     Running   <span class="token number">0</span>          2m7s
+        myapp-5c6976696c-xsvn2          <span class="token number">1</span>/1     Running   <span class="token number">0</span>          2m7s
+ 
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl get pods -o wide</span>
+        NAME                            READY   STATUS    RESTARTS   AGE     IP              NODE            NOMINATED NODE   READINESS GATES
+        myapp-5c6976696c-8kpqh          <span class="token number">1</span>/1     Running   <span class="token number">0</span>          24m     <span class="token number">192.168</span>.1.236   <span class="token number">192.168</span>.1.141   <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>           <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>
+        myapp-5c6976696c-sxt79          <span class="token number">1</span>/1     Running   <span class="token number">0</span>          2m43s   <span class="token number">192.168</span>.1.67    <span class="token number">192.168</span>.1.247   <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>           <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>
+        myapp-5c6976696c-xsvn2          <span class="token number">1</span>/1     Running   <span class="token number">0</span>          2m43s   <span class="token number">192.168</span>.1.233   <span class="token number">192.168</span>.1.51    <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>           <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>
+ 
+ 
+ 
+<span class="token number">11</span>、查看service，会自动的将新创建pod关联到service的Endpoints地址
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl describe svc/myapp</span>
+        Name:              myapp
+        Namespace:         default
+        Labels:            <span class="token assign-left variable">app</span><span class="token operator">=</span>myapp
+        Annotations:       <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>
+        Selector:          <span class="token assign-left variable">app</span><span class="token operator">=</span>myapp
+        Type:              ClusterIP
+        IP:                <span class="token number">10.2</span>.35.177
+        Port:              <span class="token number">80</span>-80  <span class="token number">80</span>/TCP
+        TargetPort:        <span class="token number">80</span>/TCP
+        Endpoints:         <span class="token number">192.168</span>.1.233:80,192.168.1.236:80,192.168.1.67:80
+        Session Affinity:  None
+        Events:            <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>
+ 
+<span class="token number">12</span>、此时访问service地址会实现pod的资源调度  <span class="token comment">#默认的调度方式是随机调度</span>
+    ~<span class="token punctuation">]</span><span class="token comment"># curl 10.2.35.177/hostname.html</span>
+            myapp-5c6976696c-sxt79
+    ~<span class="token punctuation">]</span><span class="token comment"># curl 10.2.35.177/hostname.html</span>
+            myapp-5c6976696c-xsvn2
+    ~<span class="token punctuation">]</span><span class="token comment"># curl 10.2.35.177/hostname.html</span>
+            myapp-5c6976696c-8kpqh
+ 
+ 
+ 
+<span class="token number">13</span>、pod资源缩容
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl scale --replicas=2 deployment myapp</span>
+        deployment.apps/myapp scaled
+ 
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl get pods</span>
+        NAME                            READY   STATUS    RESTARTS   AGE
+        myapp-5c6976696c-8kpqh          <span class="token number">1</span>/1     Running   <span class="token number">0</span>          34m
+        myapp-5c6976696c-sxt79          <span class="token number">1</span>/1     Running   <span class="token number">0</span>          13m
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br><span class="line-number">64</span><br><span class="line-number">65</span><br><span class="line-number">66</span><br><span class="line-number">67</span><br><span class="line-number">68</span><br><span class="line-number">69</span><br><span class="line-number">70</span><br><span class="line-number">71</span><br><span class="line-number">72</span><br><span class="line-number">73</span><br><span class="line-number">74</span><br><span class="line-number">75</span><br><span class="line-number">76</span><br><span class="line-number">77</span><br><span class="line-number">78</span><br><span class="line-number">79</span><br><span class="line-number">80</span><br><span class="line-number">81</span><br><span class="line-number">82</span><br><span class="line-number">83</span><br><span class="line-number">84</span><br><span class="line-number">85</span><br><span class="line-number">86</span><br><span class="line-number">87</span><br><span class="line-number">88</span><br><span class="line-number">89</span><br><span class="line-number">90</span><br><span class="line-number">91</span><br><span class="line-number">92</span><br><span class="line-number">93</span><br><span class="line-number">94</span><br><span class="line-number">95</span><br><span class="line-number">96</span><br><span class="line-number">97</span><br><span class="line-number">98</span><br><span class="line-number">99</span><br><span class="line-number">100</span><br><span class="line-number">101</span><br><span class="line-number">102</span><br><span class="line-number">103</span><br><span class="line-number">104</span><br><span class="line-number">105</span><br><span class="line-number">106</span><br><span class="line-number">107</span><br><span class="line-number">108</span><br><span class="line-number">109</span><br><span class="line-number">110</span><br><span class="line-number">111</span><br><span class="line-number">112</span><br><span class="line-number">113</span><br><span class="line-number">114</span><br><span class="line-number">115</span><br><span class="line-number">116</span><br><span class="line-number">117</span><br><span class="line-number">118</span><br><span class="line-number">119</span><br><span class="line-number">120</span><br><span class="line-number">121</span><br></div></div><h5 id="_1-4-4-5、deployment控制器下创建一个service绑定pod资源-类型为nodeport即节点端口类型-使得集群外部访问"><a href="#_1-4-4-5、deployment控制器下创建一个service绑定pod资源-类型为nodeport即节点端口类型-使得集群外部访问" class="header-anchor">#</a> 1.4.4.5、deployment控制器下创建一个service绑定pod资源 （类型为nodeport即节点端口类型）使得集群外部访问</h5> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code><span class="token number">1</span>、删除之前创建的service
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl delete svc/myapp</span>
+        <span class="token function">service</span> <span class="token string">&quot;myapp&quot;</span> deleted
+ 
+     ~<span class="token punctuation">]</span><span class="token comment"># kubectl get service</span>
+     ~<span class="token punctuation">]</span><span class="token comment"># kubectl get deploy</span>
+        NAME    READY   UP-TO-DATE   AVAILABLE   AGE
+        myapp   <span class="token number">3</span>/3     <span class="token number">3</span>            <span class="token number">3</span>           42s
+ 
+ 
+<span class="token number">2</span>、创建一个nodeport类型的service
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl create service nodeport -h</span>
+        kubectl create <span class="token function">service</span> nodeport NAME <span class="token punctuation">[</span>--tcp<span class="token operator">=</span>port:targetPort<span class="token punctuation">]</span> <span class="token punctuation">[</span>--dry-run<span class="token punctuation">]</span> <span class="token punctuation">[</span>options<span class="token punctuation">]</span>
+ 
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl create service nodeport myapp --tcp=80:80</span>
+        service/myapp created
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl get service</span>
+        NAME         TYPE        CLUSTER-IP     EXTERNAL-IP   PORT<span class="token punctuation">(</span>S<span class="token punctuation">)</span>        AGE
+        kubernetes   ClusterIP   <span class="token number">10.2</span>.0.1       <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>        <span class="token number">443</span>/TCP        8h
+        myapp        NodePort    <span class="token number">10.2</span>.236.100   <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>        <span class="token number">80</span>:34765/TCP   4s      <span class="token comment">#80为service端口，34765为宿主机的端口</span>
+ 
+ 
+<span class="token number">3</span>、由于创建的service和控制器名称一致，则自动被关联的此控制器下的pod
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl get deploy</span>
+        NAME           READY   UP-TO-DATE   AVAILABLE   AGE
+        myapp          <span class="token number">2</span>/2     <span class="token number">2</span>            <span class="token number">2</span>           77m
+ 
+    ~<span class="token punctuation">]</span><span class="token comment"># kubectl describe service/myapp</span>
+        Name:                     myapp
+        Namespace:                default
+        Labels:                   <span class="token assign-left variable">app</span><span class="token operator">=</span>myapp
+        Annotations:              <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>
+        Selector:                 <span class="token assign-left variable">app</span><span class="token operator">=</span>myapp
+        Type:                     NodePort
+        IP:                       <span class="token number">10.2</span>.236.100
+        Port:                     <span class="token number">80</span>-80  <span class="token number">80</span>/TCP
+        TargetPort:               <span class="token number">80</span>/TCP
+        NodePort:                 <span class="token number">80</span>-80  <span class="token number">34765</span>/TCP
+        Endpoints:                <span class="token number">192.168</span>.1.236:80,192.168.1.67:80
+        Session Affinity:         None
+        External Traffic Policy:  Cluster
+        Events:                   <span class="token operator">&lt;</span>none<span class="token operator">&gt;</span>
+ 
+ 
+<span class="token number">4</span>、通过集群中任何节点主机访问34765端口 （其实是反应在每一个主机的iptables规则中  ~<span class="token punctuation">]</span><span class="token comment"># iptables -t nat -vnL）</span>
+    ~<span class="token punctuation">]</span><span class="token comment"># curl 192.168.1.141:34765</span>
+        Hello MyApp <span class="token operator">|</span> Version: v1 <span class="token operator">|</span> <span class="token operator">&lt;</span>a <span class="token assign-left variable">href</span><span class="token operator">=</span><span class="token string">&quot;hostname.html&quot;</span><span class="token operator">&gt;</span>Pod Name<span class="token operator">&lt;</span>/a<span class="token operator">&gt;</span>
+    ~<span class="token punctuation">]</span><span class="token comment"># curl 192.168.1.185:34765</span>
+        Hello MyApp <span class="token operator">|</span> Version: v1 <span class="token operator">|</span> <span class="token operator">&lt;</span>a <span class="token assign-left variable">href</span><span class="token operator">=</span><span class="token string">&quot;hostname.html&quot;</span><span class="token operator">&gt;</span>Pod Name<span class="token operator">&lt;</span>/a<span class="token operator">&gt;</span>
+    ~<span class="token punctuation">]</span><span class="token comment"># curl 192.168.1.211:34765</span>
+        Hello MyApp <span class="token operator">|</span> Version: v1 <span class="token operator">|</span> <span class="token operator">&lt;</span>a <span class="token assign-left variable">href</span><span class="token operator">=</span><span class="token string">&quot;hostname.html&quot;</span><span class="token operator">&gt;</span>Pod Name<span class="token operator">&lt;</span>/a<span class="token operator">&gt;</span>
+ 
+ 
+ 
+<span class="token number">5</span>、防火墙策略查看
+    会生成NodePort类型的防火墙规则，这些都是kube-proxy自动转换的iptable或ipvs规则
+~<span class="token punctuation">]</span><span class="token comment"># iptables -t nat -vnL</span>
+Chain KUBE-NODEPORTS <span class="token punctuation">(</span><span class="token number">1</span> references<span class="token punctuation">)</span>
+ pkts bytes target     prot opt <span class="token keyword">in</span>     out     <span class="token builtin class-name">source</span>               destination        
+    <span class="token number">0</span>     <span class="token number">0</span> KUBE-MARK-MASQ  tcp  --  *      *       <span class="token number">0.0</span>.0.0/0            <span class="token number">0.0</span>.0.0/0            /* default/myapp:80-80 */ tcp dpt:32474
+    <span class="token number">0</span>     <span class="token number">0</span> KUBE-SVC-IJFIQBSXQ4XPPRV7  tcp  --  *      *       <span class="token number">0.0</span>.0.0/0            <span class="token number">0.0</span>.0.0/0            /* default/myapp:80-80 */ tcp dpt:32474
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br></div></div></div></section> <footer class="page-edit"><!----> <!----></footer> <!----> <div class="comments-wrapper"><!----></div> <ul class="side-bar sub-sidebar-wrapper" style="width:12rem;" data-v-cb1513f6><li class="level-2" data-v-cb1513f6><a href="/views/Native/Kubernetes/Kubernetes_Basic/03-K8S%20Basic-kubernetes%E5%BA%94%E7%94%A8%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8.html#回顾" class="sidebar-link reco-side-回顾" data-v-cb1513f6>回顾</a></li><li class="level-2" data-v-cb1513f6><a href="/views/Native/Kubernetes/Kubernetes_Basic/03-K8S%20Basic-kubernetes%E5%BA%94%E7%94%A8%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8.html#一、kubectl就是api-server客户端程序" class="sidebar-link reco-side-一、kubectl就是api-server客户端程序" data-v-cb1513f6>一、kubectl就是API Server客户端程序</a></li><li class="level-3" data-v-cb1513f6><a href="/views/Native/Kubernetes/Kubernetes_Basic/03-K8S%20Basic-kubernetes%E5%BA%94%E7%94%A8%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8.html#_1-1、api-server介绍" class="sidebar-link reco-side-_1-1、api-server介绍" data-v-cb1513f6>1.1、API Server介绍</a></li><li class="level-3" data-v-cb1513f6><a href="/views/Native/Kubernetes/Kubernetes_Basic/03-K8S%20Basic-kubernetes%E5%BA%94%E7%94%A8%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8.html#_1-2、api-server客户端-kubectl" class="sidebar-link reco-side-_1-2、api-server客户端-kubectl" data-v-cb1513f6>1.2、API Server客户端-kubectl</a></li><li class="level-3" data-v-cb1513f6><a href="/views/Native/Kubernetes/Kubernetes_Basic/03-K8S%20Basic-kubernetes%E5%BA%94%E7%94%A8%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8.html#_1-3、kubectl常用命令表格" class="sidebar-link reco-side-_1-3、kubectl常用命令表格" data-v-cb1513f6>1.3、kubectl常用命令表格</a></li><li class="level-3" data-v-cb1513f6><a href="/views/Native/Kubernetes/Kubernetes_Basic/03-K8S%20Basic-kubernetes%E5%BA%94%E7%94%A8%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8.html#_1-4、kubectl实战命令" class="sidebar-link reco-side-_1-4、kubectl实战命令" data-v-cb1513f6>1.4、kubectl实战命令</a></li></ul></main> <!----></div></div></div></div><div class="global-ui"><div class="back-to-ceiling" style="right:1rem;bottom:6rem;width:2.5rem;height:2.5rem;border-radius:.25rem;line-height:2.5rem;display:none;" data-v-c6073ba8 data-v-c6073ba8><svg t="1574745035067" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5404" class="icon" data-v-c6073ba8><path d="M526.60727968 10.90185116a27.675 27.675 0 0 0-29.21455937 0c-131.36607665 82.28402758-218.69155461 228.01873535-218.69155402 394.07834331a462.20625001 462.20625001 0 0 0 5.36959153 69.94390903c1.00431239 6.55289093-0.34802892 13.13561351-3.76865779 18.80351572-32.63518765 54.11355614-51.75690182 118.55860487-51.7569018 187.94566865a371.06718723 371.06718723 0 0 0 11.50484808 91.98906777c6.53300375 25.50556257 41.68394495 28.14064038 52.69160883 4.22606766 17.37162448-37.73630017 42.14135425-72.50938081 72.80769204-103.21549295 2.18761121 3.04276886 4.15646224 6.24463696 6.40373557 9.22774369a1871.4375 1871.4375 0 0 0 140.04691725 5.34970492 1866.36093723 1866.36093723 0 0 0 140.04691723-5.34970492c2.24727335-2.98310674 4.21612437-6.18497483 6.3937923-9.2178004 30.66633723 30.70611158 55.4360664 65.4791928 72.80769147 103.21549355 11.00766384 23.91457269 46.15860503 21.27949489 52.69160879-4.22606768a371.15156223 371.15156223 0 0 0 11.514792-91.99901164c0-69.36717486-19.13165746-133.82216804-51.75690182-187.92578088-3.42062944-5.66790279-4.76302748-12.26056868-3.76865837-18.80351632a462.20625001 462.20625001 0 0 0 5.36959269-69.943909c-0.00994388-166.08943902-87.32547796-311.81420293-218.6915546-394.09823051zM605.93803103 357.87693858a93.93749974 93.93749974 0 1 1-187.89594924 6.1e-7 93.93749974 93.93749974 0 0 1 187.89594924-6.1e-7z" p-id="5405" data-v-c6073ba8></path><path d="M429.50777625 765.63860547C429.50777625 803.39355007 466.44236686 1000.39046097 512.00932183 1000.39046097c45.56695499 0 82.4922232-197.00623328 82.5015456-234.7518555 0-37.75494459-36.9345906-68.35043303-82.4922232-68.34111062-45.57627738-0.00932239-82.52019037 30.59548842-82.51086798 68.34111062z" p-id="5406" data-v-c6073ba8></path></svg></div><!----><div class="kanbanniang" data-v-5775ee02><div class="banniang-container" style="display:;" data-v-5775ee02><div class="messageBox" style="right:68px;bottom:190px;display:none;" data-v-5775ee02>
+      我是Brains,欢迎你的关注 
+    </div> <div class="operation" style="right:90px;bottom:40px;display:;" data-v-5775ee02><i class="kbnfont kbn-ban-home ban-home" data-v-5775ee02></i> <i class="kbnfont kbn-ban-message message" data-v-5775ee02></i> <i class="kbnfont kbn-ban-close close" data-v-5775ee02></i> <a target="_blank" href="https://vuepress-theme-reco.recoluan.com/views/plugins/kanbanniang.html" data-v-5775ee02><i class="kbnfont kbn-ban-info info" data-v-5775ee02></i></a> <i class="kbnfont kbn-ban-theme skin" style="display:;" data-v-5775ee02></i></div> <canvas id="banniang" width="200px" height="250" class="live2d" style="right:90px;bottom:-20px;opacity:0.9;" data-v-5775ee02></canvas></div> <div class="showBanNiang" style="display:none;" data-v-5775ee02>
+    看板娘
+  </div></div><canvas id="vuepress-canvas-cursor"></canvas><!----></div></div>
+    <script src="/assets/js/app.cd5fa041.js" defer></script><script src="/assets/js/3.ee7e7098.js" defer></script><script src="/assets/js/1.277d6ebc.js" defer></script><script src="/assets/js/33.7b2efadd.js" defer></script>
+  </body>
+</html>
